@@ -1,113 +1,150 @@
-import Image from "next/image";
+type post = {
+  post_id: number;
+  user_name: string;
+  time_ago: string;
+  like_count: number;
+  comment_count: number;
+  title: string;
+  body: string;
+};
 
-export default function Home() {
+export default function Community() {
+  // 가짜 body 텍스트
+  const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.";
+
+  // 게시글에 사용될 데이터, (나중에 서버에서 받아올 데이터)
+  const posts: post[] = [
+    {
+      post_id: 1,
+      user_name: "user1",
+      time_ago: "약 1시간 전",
+      like_count: 0,
+      comment_count: 0,
+      title: "TypeScript 오류 관련해서",
+      body: lorem,
+    },
+    {
+      post_id: 2,
+      user_name: "user2",
+      time_ago: "약 3시간 전",
+      like_count: 1,
+      comment_count: 3,
+      title: "취업 관련해서 고민 상담 해주실 분..",
+      body: lorem,
+    },
+    {
+      post_id: 3,
+      user_name: "user3",
+      time_ago: "약 6시간 전",
+      like_count: 2,
+      comment_count: 6,
+      title: "다들 안녕하세요!",
+      body: lorem,
+    },
+    {
+      post_id: 4,
+      user_name: "user4",
+      time_ago: "약 12시간 전",
+      like_count: 3,
+      comment_count: 4,
+      title: "오늘 날씨가 좋진 않네요",
+      body: lorem,
+    },
+    {
+      post_id: 5,
+      user_name: "user5",
+      time_ago: "약 18시간 전",
+      like_count: 4,
+      comment_count: 13,
+      title: "안녕하세요 1번째 글입니다.",
+      body: lorem,
+    },
+  ];
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div>
+      <Header />
+
+      <main className="flex flex-col gap-3 mt-[100px]">
+        {posts.map((post) => (
+          <Post post_data={post} />
+        ))}
+        {posts.map((post) => (
+          <Post post_data={post} />
+        ))}
+        {posts.map((post) => (
+          <Post post_data={post} />
+        ))}
+      </main>
+
+      <Navigation_number />
+
+      <Footer />
+    </div>
+  );
+}
+
+const Header = () => {
+  return (
+    <header className="flex justify-between fixed top-0 w-full py-5 px-1 bg-white border-b">
+      <h1 className="text-2xl font-bold text-cente text-blue-500">Seoul Community</h1>
+      <div className="flex gap-10 items-center">
+        <div className="flex gap-1">
+          <input type="text" className="border p-2 rounded-lg" />
+          <button className="border p-2 rounded-lg text-white bg-blue-500 text-base">검색</button>
+        </div>
+
+        <div className="flex gap-2">
+          <button className="p-2 rounded-xl bg-blue-500 text-white">로그인</button>
+          <button className="p-2 rounded-xl bg-blue-500 text-white">회원가입</button>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+const Post = ({ post_data }: { post_data: post }) => {
+  const { user_name, time_ago, like_count, comment_count, title } = post_data;
+  return (
+    <div className="flex flex-col gap-3 w-[800px] mx-auto border p-5 rounded-md shadow-sm">
+
+      <div className="flex justify-between">
+        <div className="flex gap-3 items-center">
+          <p className="font-semibold">{user_name}</p>
+          <p className="text-sm">{time_ago}</p>
+        </div>
+
+        <div className="flex gap-3 items-center">
+          <p className="text-sm">좋아요 {like_count}</p>
+          <p className="text-sm">댓글 {comment_count}</p>
         </div>
       </div>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      <h3 className="font-bold">{title}</h3>
+
+    </div>
+  )
+}
+
+const Navigation_number = () => {
+  const btn_style = "p-1 rounded-sm";
+  return (
+    <nav className="w-full h-[60px] flex justify-center items-center mt-3">
+      <div className="w-[200px] flex justify-around">
+        <button className={`btn_style underline text-blue-500`}>1</button>
+        <button className={btn_style}>2</button>
+        <button className={btn_style}>3</button>
+        <button className={btn_style}>4</button>
+        <button className={btn_style}>5</button>
+        <button className={btn_style}>...</button>
       </div>
+    </nav>
+  )
+}
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+const Footer = () => {
+  return (
+    <footer className="w-full min-h-[150px] py-3 border mt-[50px] bg-blue-500">
+    </footer>
+  )
 }

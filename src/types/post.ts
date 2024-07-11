@@ -1,0 +1,1 @@
+export type params_type = { id: string };

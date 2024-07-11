@@ -1,19 +1,18 @@
-type post = {
-  post_id: number;
-  user_name: string;
-  time_ago: string;
-  like_count: number;
-  comment_count: number;
-  title: string;
-  body: string;
-};
+// type 정의 import
+import { post_type } from "../types/board";
 
-export default function Community() {
+// 컴포넌트 import
+import Board_main_control_bar from "./components/Board_main_control_bar";
+import Board_main_post_card from "./components/Board_main_post_card";
+import Board_main_navigation_number from "./components/Board_main_navigation_number";
+import Board_footer from "./components/Board_footer";
+
+export default function Board_main() {
   // 가짜 body 텍스트
   const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.";
 
-  // 게시글에 사용될 데이터, (나중에 서버에서 받아올 데이터)
-  const posts: post[] = [
+  // 게시글에 사용될 가짜 데이터, (나중에 서버에서 받아올 데이터에선 구조 변경필요)
+  const posts: post_type[] = [
     {
       post_id: 1,
       user_name: "user1",
@@ -63,88 +62,16 @@ export default function Community() {
 
   return (
     <div>
-      <Header />
+      <main className="flex flex-col gap-3 mt-[100px] max-w-[800px] min-h-[1800px] mx-auto p-2">
+        <Board_main_control_bar />
 
-      <main className="flex flex-col gap-3 mt-[100px]">
-        {posts.map((post) => (
-          <Post post_data={post} />
-        ))}
-        {posts.map((post) => (
-          <Post post_data={post} />
-        ))}
-        {posts.map((post) => (
-          <Post post_data={post} />
+        {posts?.map((post) => (
+          <Board_main_post_card post_data={post} key={post.post_id} />
         ))}
       </main>
 
-      <Navigation_number />
-
-      <Footer />
+      <Board_main_navigation_number />
+      <Board_footer />
     </div>
   );
-}
-
-const Header = () => {
-  return (
-    <header className="flex justify-between fixed top-0 w-full py-5 px-1 bg-white border-b">
-      <h1 className="text-2xl font-bold text-cente text-blue-500">Seoul Community</h1>
-      <div className="flex gap-10 items-center">
-        <div className="flex gap-1">
-          <input type="text" className="border p-2 rounded-lg" />
-          <button className="border p-2 rounded-lg text-white bg-blue-500 text-base">검색</button>
-        </div>
-
-        <div className="flex gap-2">
-          <button className="p-2 rounded-xl bg-blue-500 text-white">로그인</button>
-          <button className="p-2 rounded-xl bg-blue-500 text-white">회원가입</button>
-        </div>
-      </div>
-    </header>
-  )
-}
-
-const Post = ({ post_data }: { post_data: post }) => {
-  const { user_name, time_ago, like_count, comment_count, title } = post_data;
-  return (
-    <div className="flex flex-col gap-3 w-[800px] mx-auto border p-5 rounded-md shadow-sm">
-
-      <div className="flex justify-between">
-        <div className="flex gap-3 items-center">
-          <p className="font-semibold">{user_name}</p>
-          <p className="text-sm">{time_ago}</p>
-        </div>
-
-        <div className="flex gap-3 items-center">
-          <p className="text-sm">좋아요 {like_count}</p>
-          <p className="text-sm">댓글 {comment_count}</p>
-        </div>
-      </div>
-
-      <h3 className="font-bold">{title}</h3>
-
-    </div>
-  )
-}
-
-const Navigation_number = () => {
-  const btn_style = "p-1 rounded-sm";
-  return (
-    <nav className="w-full h-[60px] flex justify-center items-center mt-3">
-      <div className="w-[200px] flex justify-around">
-        <button className={`btn_style underline text-blue-500`}>1</button>
-        <button className={btn_style}>2</button>
-        <button className={btn_style}>3</button>
-        <button className={btn_style}>4</button>
-        <button className={btn_style}>5</button>
-        <button className={btn_style}>...</button>
-      </div>
-    </nav>
-  )
-}
-
-const Footer = () => {
-  return (
-    <footer className="w-full min-h-[150px] py-3 border mt-[50px] bg-blue-500">
-    </footer>
-  )
-}
+};

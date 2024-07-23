@@ -1,13 +1,31 @@
 'use client';
-import { params_type } from "@/types/post";
+import { params_id } from "@/types/post";
+import { useQuery } from "@tanstack/react-query";
+import post_call from "@/api/post_call";
 
-const Post = ({ params }: {params: params_type}) => {
-  const { id } = params; // id 값으로 추후 api 요청을 사용, id 값에 따른 게시글을 가져옴
+const Post = ({ params }: { params: params_id }) => {
+  const { id } = params;
+
+  const { data, isLoading, isError, error, isSuccess } = useQuery({
+    queryKey: ['post', id],
+    queryFn: () => post_call(id),
+  })
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <h1 className="text-4xl">id: {id} - post page</h1>
-
+    <div className="flex flex-col justify-center items-center h-screen">
+      {isLoading && <div className="text-blue-500 font-bold text-5xl">
+        Loading...
+      </div>}
+      {isError && <div className="text-red-500 font-bold text-5xl">
+        {error.toString()}
+      </div>}
+      {isSuccess && (
+        <div>
+          <h1 className="text-4xl">title: {data?.title}</h1>
+          <h2>body: {data?.Body}</h2>
+          <h3>memberNickname: {data?.memberNickname}</h3>
+        </div>
+      )}
     </div>
   );
 }

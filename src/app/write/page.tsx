@@ -1,14 +1,14 @@
 'use client';
 
 import use_write_post from "@/hooks/use_write_post";
-import { write_type } from "@/types/board";
+import { write_update_type } from "@/types/board";
 import { useForm } from "react-hook-form";
 
 const Write = () => {
-  const { register, handleSubmit, reset } = useForm<write_type>();
+  const { register, handleSubmit, reset } = useForm<write_update_type>();
   const write_mutation = use_write_post(reset as () => void);
 
-  const handle_submit = (data: write_type) => {
+  const handle_submit = (data: write_update_type) => {
     if (data.title === '' || data.body === '') return;
     write_mutation.mutate(data);
   };

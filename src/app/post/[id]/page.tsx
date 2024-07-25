@@ -1,8 +1,8 @@
 'use client';
-import { params_id } from "@/types/post";
+import { Params_id } from "@/types/post";
 import use_post from "@/hooks/use_post";
 
-const Post = ({ params }: { params: params_id }) => {
+const Post = ({ params }: { params: Params_id }) => {
   const { id } = params;
 
   const { data, isLoading, isError, error, isSuccess } = use_post(id);

@@ -33,7 +33,7 @@ export default function InputEmailCode() {
     }
 
     return (
-        <div>
+        <div className="flex justify-center items-center h-screen">
             <input type="text" value={code} onChange={(e) => set_code(e.target.value)} />
             <button onClick={() => send_code()}>인증하기</button>
         </div>

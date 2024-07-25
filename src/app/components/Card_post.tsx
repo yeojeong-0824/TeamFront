@@ -1,42 +1,24 @@
 'use client';
-import posts_call from "@/api/posts_call";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
 import Link from "next/link";
 import { Post } from "@/types/post";
-import post_delete from "@/api/delete_post";
+import use_delete_post from "@/hooks/use_delete_post";
+import use_posts from "@/hooks/use_posts";
 
 const Card_post = () => {
-  const queryClient = useQueryClient();
+  const delete_post = use_delete_post();
+  const { data, isLoading, isError, error } = use_posts();
 
-  const { data, error, isLoading, isError } = useQuery({
-    queryKey: ["posts"],
-    queryFn: posts_call,
-  });
-
-  const delete_post = useMutation({
-    mutationFn: (id: number) => post_delete(id),
-    onError: (error) => console.log(error),
-    onSuccess: () => {
-      console.log('글 삭제 완료');
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-    },
-  });
-
-  useEffect(() => {
-    if (delete_post.isError) {
-      console.log(delete_post.error + '글 삭제 실패');
-    }
-  }, [delete_post.isError]);
-
-  if (isLoading || delete_post.isPending) return (
-    <div className="flex justify-center items-center h-screen">
-      <p className="text-blue-500 text-2xl font-bold">
-        Loading...
-      </p>
-    </div>
+  if(isLoading || delete_post.isPending) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-blue-500 text-2xl font-bold">
+          Loading...
+        </p>
+      </div>
     );
-  if (isError) return <p>Error: {error.message}</p>;
+  };
+    
+  if (isError) return <p>Error: {error?.message}</p>;
 
   return (
     <div className="flex flex-col gap-3 w-full mx-auto">

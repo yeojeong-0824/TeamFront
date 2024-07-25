@@ -3,8 +3,9 @@ import { write_type } from "@/types/board";
 
 const write_post = async (data:write_type): Promise<AxiosResponse> => {
     const post_data = {
+      country: 'korea',
+      city: 'seoul',
       ...data,
-      memberName: 'kor8240',
       satisfaction: 0,
     }
 

@@ -1,4 +1,4 @@
-export type write_update_type = { 
+export type WriteUpdateType = { 
   title: string,
   body: string,
   city: string,

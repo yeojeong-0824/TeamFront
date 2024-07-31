@@ -1,15 +1,15 @@
 'use client';
 
-import posts_call from "@/api/posts_call";
+import postsCall from "@/api/postsCall";
 import { useQuery } from "@tanstack/react-query";
 
-const use_posts = () => {
+const usePosts = () => {
   const { data, error, isLoading, isError } = useQuery({
     queryKey: ["posts"],
-    queryFn: posts_call,
+    queryFn: postsCall,
   });
 
   return { data, error, isLoading, isError };
 };
 
-export default use_posts;
+export default usePosts;

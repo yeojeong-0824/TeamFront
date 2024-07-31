@@ -1,11 +1,11 @@
 'use client';
-import { Params_id } from "@/types/post";
-import use_post from "@/hooks/use_post";
+import { ParamsId } from "@/types/post";
+import usePost from "@/hooks/usePost";
 
-const Post = ({ params }: { params: Params_id }) => {
+const Post = ({ params }: { params: ParamsId }) => {
   const { id } = params;
 
-  const { data, isLoading, isError, error, isSuccess } = use_post(id);
+  const { data, isLoading, isError, error, isSuccess } = usePost(id);
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">

@@ -1,18 +1,18 @@
 // 컴포넌트 import
-import Main_control_bar from "./components/Control_bar_main";
-import Main_navigation_number from "./components/Navigation_number_main";
+import ControlBarMain from "./components/ControlBarMain";
+import NavigationNumberMain from "./components/NavigationNumberMain";
 import Footer from "./components/Footer";
-import Card_posts from "./components/Card_posts";
+import CardPosts from "./components/CardPosts";
 
 export default function Board_main() {
   return (
     <div>
       <main className="flex flex-col gap-3 mt-[100px] max-w-[800px] min-h-[1000px] mx-auto p-2">
-        <Main_control_bar />
-        <Card_posts />
+        <ControlBarMain />
+        <CardPosts />
       </main>
 
-      <Main_navigation_number />
+      <NavigationNumberMain />
       <Footer />
     </div>
   );

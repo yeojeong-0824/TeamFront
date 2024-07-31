@@ -2,10 +2,10 @@
 import Link from "next/link";
 import { useState } from "react";
 
-const Board_main_control_bar = () => {
-  const [sort_option_visible, set_sort_option_visible] = useState<boolean>(false);
-
+const ControlBarMain = () => {
+  const [sortOptionVisible, setSortOptionVisible] = useState<boolean>(false);
   const pointer = 'cursor-pointer';
+  
   return (
     <div className="flex justify-between items-center">
       <Link href={'/write'}>
@@ -18,8 +18,8 @@ const Board_main_control_bar = () => {
       </form>
 
       <div>
-        <button className="p-2 rounded-lg border text-blue-500" onClick={() => set_sort_option_visible(!sort_option_visible)}>최신순</button>
-        {sort_option_visible && (
+        <button className="p-2 rounded-lg border text-blue-500" onClick={() => setSortOptionVisible(!sortOptionVisible)}>최신순</button>
+        {sortOptionVisible && (
           <div className="flex flex-col w-[100px] gap-3 p-3 text-sm ml-1 border shadow-md rounded-md absolute bg-white mt-1">
             <p className="text-blue-500">최신순</p> {/* 글 목록 정렬 버튼 */}
             <p className={pointer}>추천순</p>
@@ -32,4 +32,4 @@ const Board_main_control_bar = () => {
   );
 };
 
-export default Board_main_control_bar;
+export default ControlBarMain;

@@ -1,9 +1,9 @@
 'use client';
 
 import Link from "next/link";
-import { Card_post_props } from "@/types/post";
+import { CardPostProps } from "@/types/post";
 
-const Card_post = ({ post, handle_delete }: Card_post_props): JSX.Element => {
+const CardPost = ({ post, handleDelete }: CardPostProps): JSX.Element => {
   return (
     <div key={post.id} className="flex flex-col gap-3 w-full mx-auto border p-5 rounded-md shadow-sm">
       <div className="flex justify-between">
@@ -14,7 +14,7 @@ const Card_post = ({ post, handle_delete }: Card_post_props): JSX.Element => {
         <div className="flex gap-3 items-center">
           <p className="text-sm">좋아요 {post.likeCount}</p>
           <p className="text-sm font-bold hover:text-red-500 cursor-pointer"
-            onClick={() => handle_delete(post.id)}>삭제
+            onClick={() => handleDelete(post.id)}>삭제
           </p>
           <Link className="text-sm font-bold hover:text-green-500 cursor-pointer"
             href={`/update/${post.id}`}>
@@ -29,4 +29,4 @@ const Card_post = ({ post, handle_delete }: Card_post_props): JSX.Element => {
   );
 };
 
-export default Card_post;
+export default CardPost;

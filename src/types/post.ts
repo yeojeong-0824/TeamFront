@@ -1,4 +1,4 @@
-export type Params_id = { id: number };
+export type ParamsId = { id: number };
 
 export type Post = {
   id: number;
@@ -9,7 +9,7 @@ export type Post = {
   view: number;
 }
 
-export interface Card_post_props {
+export interface CardPostProps {
   post: Post;
-  handle_delete: (id: number) => void;
+  handleDelete: (id: number) => void;
 }

@@ -10,7 +10,7 @@ const Header = (): JSX.Element => {
       <div className="flex gap-10 items-center">
         <div className="flex gap-2">
           <Link href={'/login_ui'} className="p-2 rounded-xl bg-blue-500 text-white">로그인</Link>
-          <Link href={'/sign_up'} className="p-2 rounded-xl bg-blue-500 text-white">회원가입</Link>
+          <Link href={'/email_check'} className="p-2 rounded-xl bg-blue-500 text-white">회원가입</Link>
         </div>
       </div>
     </header>

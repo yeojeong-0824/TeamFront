@@ -1,21 +1,21 @@
 'use client';
 
-import post_delete from "@/api/delete_post";
+import deletePost from "@/api/deletePost";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const use_delete_post = () => {
+const useDeletePost = () => {
   const queryClient = useQueryClient();
 
-  const delete_post = useMutation({
-    mutationFn: (id: number) => post_delete(id),
-    onError: (error) => console.log(error),
+  const deletePostM = useMutation({
+    mutationFn: (id: number) => deletePost(id),
+    onError: (error) => console.error(error),
     onSuccess: () => {
       console.log('글 삭제 완료');
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
   });
 
-  return delete_post;
+  return deletePostM;
 };
 
-export default use_delete_post;
+export default useDeletePost;

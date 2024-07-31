@@ -1,16 +1,16 @@
 'use client';
 
-import write_post from "@/api/write_post";
+import writePost from "@/api/writePost";
 import { useMutation } from "@tanstack/react-query";
-import { write_update_type } from "@/types/board";
+import { WriteUpdateType } from "@/types/board";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
-const use_write_post = (reset: ReturnType<typeof useForm>["reset"]) => {
+const useWritePost = (reset: ReturnType<typeof useForm>["reset"]) => {
   const router = useRouter();
 
-  const write_mutation = useMutation({
-    mutationFn: (data: write_update_type) => write_post(data),
+  const writeM = useMutation({
+    mutationFn: (data: WriteUpdateType) => writePost(data),
     onError: (error) => {
       reset(); // 이 부분 잘 작동되는지 테스트 필요
       console.log(`${error}: 글 작성실패`);
@@ -21,7 +21,7 @@ const use_write_post = (reset: ReturnType<typeof useForm>["reset"]) => {
     }
   });
 
-  return write_mutation;
+  return writeM;
 };
 
-export default use_write_post;
+export default useWritePost;

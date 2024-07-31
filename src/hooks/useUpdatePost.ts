@@ -1,15 +1,15 @@
 'use client';
 
-import update_post from "@/api/update_post";
+import updatePost from "@/api/updatePost";
 import { useMutation } from "@tanstack/react-query";
-import { write_type } from "@/types/board";
+import { WriteUpdateType } from "@/types/board";
 import { useRouter } from "next/navigation";
 
-const use_update_post = (id: number) => {
+const useUpdatePost = (id: number) => {
   const router = useRouter();
 
-  const update_mutation = useMutation({
-    mutationFn: (data: write_type) => update_post(data, id),
+  const updateM = useMutation({
+    mutationFn: (data: WriteUpdateType) => updatePost(data, id),
     onError: (error) => console.log(error),
     onSuccess: () => {
       router.push(`/`);
@@ -17,7 +17,7 @@ const use_update_post = (id: number) => {
     },
   });
 
-  return update_mutation;
+  return updateM;
 };
 
-export default use_update_post;
+export default useUpdatePost;

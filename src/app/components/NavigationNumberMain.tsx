@@ -1,4 +1,4 @@
-const Board_main_navigation_number = () => {
+const NavigationNumberMain = () => {
   const btn_style = "p-1 rounded-sm w-[25px]";
   return (
     <nav className="w-full flex justify-center mt-3">
@@ -14,4 +14,4 @@ const Board_main_navigation_number = () => {
   )
 }
 
-export default Board_main_navigation_number;
+export default NavigationNumberMain;

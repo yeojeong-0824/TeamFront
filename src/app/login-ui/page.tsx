@@ -91,8 +91,8 @@ catch (error) {
         </div>
         <input type="submit" value="로그인" />
       </form>
-      <Link href={'/email_check'}>회원가입</Link>
-      <Link href={'/find_pw'} >암호찾기</Link>
+      <Link href={'/email-check'}>회원가입</Link>
+      <Link href={'/find-pw'} >암호찾기</Link>
     </div>
   );
 }

@@ -23,7 +23,7 @@ export default function InputEmailCode() {
             console.log(response.status);  // 응답 상태 코드 확인
             if (response.status === 200) {
                 alert("인증되었습니다");
-                router.push('/sign_up');
+                router.push('/sign-up');
             } else if (response.status === 401) {
                 alert("인증에 실패하였습니다. 이메일 인증 코드를 바르게 입력해주세요");
             }

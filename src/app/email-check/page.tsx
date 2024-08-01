@@ -16,7 +16,7 @@ async function check_email_for_sign_up() {  try {
 
   if (response.status===200){
 alert('이메일이 전송되었습니다')
-router.push('/input_email_code');
+router.push('/input-email-code');
 
 
   } else if (response.status===400){
@@ -34,8 +34,8 @@ catch (error) {
 };
 
     return (
-<div><input             type="text"
-            pattern='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+<div><input           
+ type="text"
             value={email}
             onChange={(e) => set_email(e.target.value)}
             required

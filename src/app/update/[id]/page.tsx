@@ -1,40 +1,30 @@
 'use client';
-import post_call from "@/api/post_call";
-import update_post from "@/api/update_post";
-import { write_type } from "@/types/board";
-import { params_id } from "@/types/post";
-import { useRouter } from "next/navigation";
-import { useQuery, useMutation } from "@tanstack/react-query";
+// post 데이터 input 값으로 추후 사용 
+import { WriteUpdateType } from "@/types/board";
+import { ParamsId } from "@/types/post";
 import { useForm } from "react-hook-form";
+import useUpdatePost from "@/hooks/useUpdatePost";
 
-const Update = ({ params }: { params: params_id }) => {
-  const { register, handleSubmit, reset } = useForm<write_type>();
-  const router = useRouter();
+const Update = ({ params }: { params: ParamsId }) => {
+  const { register, handleSubmit, reset } = useForm<WriteUpdateType>();
   const { id } = params;
+  const updateMutation = useUpdatePost(id);
 
   // const { data } = useQuery({
   //   queryKey: ['update_data', id],
   //   queryFn: () => post_call(id),
   // });
 
-  const update_mutation = useMutation({
-    mutationFn: (data: write_type) => update_post(data, id),
-    onError: (error) => console.log(error),
-    onSuccess: () => {
-      reset();
-      router.push(`/`);
-      console.log('글 수정완료');
-    },
-  });
-
-  const handle_submit = (data: write_type) => {
+  const onSubmitForm = (data: WriteUpdateType) => {
     if (data.title === '' || data.body === '') return;
-    update_mutation.mutate(data);
+    updateMutation.mutate(data);
   };
+
+  updateMutation.isSuccess && reset();
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <form className="flex flex-col gap-3 min-w-[600px] max-h-[800px] border p-3" onSubmit={handleSubmit(handle_submit)}>
+      <form className="flex flex-col gap-3 min-w-[600px] max-h-[800px] border p-3" onSubmit={handleSubmit(onSubmitForm)}>
       <h1 className="text-xl text-blue-500 font-bold">Update Post id: {id}</h1>
         <input type="text" placeholder="title" className="p-1 border" {...register('title')} />
         <textarea placeholder="content" className="p-1 border min-h-[300px]" {...register('body')} autoComplete="off" />

@@ -1,4 +1,4 @@
-export type params_id = { id: number };
+export type ParamsId = { id: number };
 
 export type Post = {
   id: number;
@@ -7,4 +7,9 @@ export type Post = {
   satisfaction: number;
   title: string;
   view: number;
+}
+
+export interface CardPostProps {
+  post: Post;
+  handleDelete: (id: number) => void;
 }

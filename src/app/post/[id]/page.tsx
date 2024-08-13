@@ -1,15 +1,11 @@
 'use client';
-import { params_id } from "@/types/post";
-import { useQuery } from "@tanstack/react-query";
-import post_call from "@/api/post_call";
+import { ParamsId } from "@/types/post";
+import usePost from "@/hooks/usePost";
 
-const Post = ({ params }: { params: params_id }) => {
+const Post = ({ params }: { params: ParamsId }) => {
   const { id } = params;
 
-  const { data, isLoading, isError, error, isSuccess } = useQuery({
-    queryKey: ['post', id],
-    queryFn: () => post_call(id),
-  })
+  const { data, isLoading, isError, error, isSuccess } = usePost(id);
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
@@ -17,7 +13,7 @@ const Post = ({ params }: { params: params_id }) => {
         Loading...
       </div>}
       {isError && <div className="text-red-500 font-bold text-5xl">
-        {error.toString()}
+        {error?.toString()}
       </div>}
       {isSuccess && (
         <div>

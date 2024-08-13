@@ -1,44 +1,39 @@
 'use client';
-import write_post from "@/api/write_post";
-import { useMutation } from "@tanstack/react-query";
-import { write_type } from "@/types/board";
+
+import useWritePost from "@/hooks/useWritePost";
+import { WriteUpdateType } from "@/types/board";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 const Write = () => {
-  const { register, handleSubmit, reset } = useForm<write_type>();
-  const router = useRouter();
+  const { register, handleSubmit, reset } = useForm<WriteUpdateType>();
+  const writeMutation = useWritePost(reset as () => void);
 
-  const writeMutation = useMutation({
-    mutationFn:(data:write_type)=> write_post(data),
-    onError: (error) => console.log(error),
-  });
-
-  const handle_submit = (data: write_type) => {
+  const onSubmitForm = (data: WriteUpdateType) => {
     if (data.title === '' || data.body === '') return;
     writeMutation.mutate(data);
   };
 
-  useEffect(()=>{
-    if(writeMutation.isSuccess) {
-      reset();
-      router.push(`/`);
-      console.log('글 작성완료');
-    };
-    if (writeMutation.isError) {
-      reset();
-      console.log(`${writeMutation.error}: 글 작성실패`);
-    }
-  }, [writeMutation.isSuccess, writeMutation.isError]);
-
   if(writeMutation.isPending) {
-    return <p className="text-blue-500">loading...</p>;
-  }
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-blue-500 text-2xl text-center font-bold">
+          Loading...
+        </p>
+      </div>
+  )};
+
+  if(writeMutation.isError) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-red-500 text-2xl text-center font-bold">
+          Error: {writeMutation.error.message}
+        </p>
+      </div>
+  )};
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <form className="flex flex-col gap-3 min-w-[600px] max-h-[800px] border p-3" onSubmit={handleSubmit(handle_submit)}>
+      <form className="flex flex-col gap-3 min-w-[600px] max-h-[800px] border p-3" onSubmit={handleSubmit(onSubmitForm)}>
       <h1 className="text-xl text-blue-500 font-bold">Write Post</h1>
         <input type="text" placeholder="title" className="p-1 border" {...register('title')} />
         <textarea placeholder="content" className="p-1 border min-h-[300px]" {...register('body')} autoComplete="off" />

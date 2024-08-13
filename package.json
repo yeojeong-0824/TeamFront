@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.51.5",
+    "@types/jwt-decode": "^3.1.0",
     "axios": "^1.7.2",
+    "jsonwebtoken": "^9.0.2",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
@@ -19,6 +21,7 @@
   },
   "devDependencies": {
     "@tanstack/react-query-devtools": "^5.51.5",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

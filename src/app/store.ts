@@ -1,4 +1,5 @@
 // store.ts
+import { useEffect } from 'react';
 import { create } from 'zustand';
 
 interface UserJwtInfo {
@@ -47,3 +48,45 @@ interface User_signup_info {
   }));
   
  export const url = process.env.NEXT_PUBLIC_API_URL
+
+
+
+ // 인증토큰 상태값으로 불러오기
+ interface AuthState {
+  accessToken: string | null;
+  setAccessToken: (token: string) => void;
+  clearTokens: () => void;
+}
+
+const useAuthStore = create<AuthState>((set) => ({
+  accessToken: null, // 초기 상태는 null로 설정
+  setAccessToken: (token: string) => {
+    localStorage.setItem('accessToken', token);
+    set({ accessToken: token });
+  },
+  clearTokens: () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    set({ accessToken: null });
+  },
+}));
+
+export const useAuthInitializer = () => {
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      setAccessToken(token);
+    }
+  }, [setAccessToken]);
+};
+
+export default useAuthStore;
+
+
+// 로그인 함수 예시
+const handleLogin = () => {
+  const token = 'newAccessToken';
+  useAuthStore.getState().setAccessToken(token); // Zustand에서 상태를 직접 업데이트
+};

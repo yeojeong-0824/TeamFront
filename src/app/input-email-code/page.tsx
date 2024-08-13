@@ -10,17 +10,15 @@ export default function InputEmailCode() {
     const router = useRouter();
 
     async function send_code() {
-        console.log("Button clicked");  // 디버그 로그 추가
-       const number_code = {email: email, option: "join", key: code}
+       const number_code = {key:code}
         try {
-            const response = await fetch(`${url}/member/emailAuthed`, {
+            const response = await fetch(`${url}/member/emailAuthed/${email}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(number_code),  // body should be an object
             });
-            console.log(response.status);  // 응답 상태 코드 확인
             if (response.status === 200) {
                 alert("인증되었습니다");
                 router.push('/sign-up');

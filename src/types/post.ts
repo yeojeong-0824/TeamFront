@@ -11,5 +11,4 @@ export type Post = {
 
 export interface CardPostProps {
   post: Post;
-  handleDelete: (id: number) => void;
 }

@@ -5,8 +5,8 @@ import { WriteUpdateType } from "@/types/board";
 import { useForm } from "react-hook-form";
 
 const Write = () => {
-  const { register, handleSubmit, reset } = useForm<WriteUpdateType>();
-  const writeMutation = useWritePost(reset as () => void);
+  const { register, handleSubmit } = useForm<WriteUpdateType>();
+  const writeMutation = useWritePost();
 
   const onSubmitForm = (data: WriteUpdateType) => {
     if (data.title === '' || data.body === '') return;
@@ -18,15 +18,6 @@ const Write = () => {
       <div className="flex justify-center items-center h-screen">
         <p className="text-blue-500 text-2xl text-center font-bold">
           Loading...
-        </p>
-      </div>
-  )};
-
-  if(writeMutation.isError) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-red-500 text-2xl text-center font-bold">
-          Error: {writeMutation.error.message}
         </p>
       </div>
   )};

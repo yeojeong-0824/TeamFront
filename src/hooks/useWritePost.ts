@@ -4,20 +4,41 @@ import writePost from "@/api/writePost";
 import { useMutation } from "@tanstack/react-query";
 import { WriteUpdateType } from "@/types/board";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
+import { useQueryClient } from "@tanstack/react-query";
+import { CustomError } from "@/types/error";
 
-const useWritePost = (reset: ReturnType<typeof useForm>["reset"]) => {
+const useWritePost = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const writeM = useMutation({
     mutationFn: (data: WriteUpdateType) => writePost(data),
-    onError: (error) => {
-      reset(); // 이 부분 잘 작동되는지 테스트 필요
-      console.log(`${error}: 글 작성실패`);
+    onError: (error: CustomError) => {
+      if(error?.response.status === 403) {
+        Swal.fire({
+          icon: 'error',
+          title: '글 작성 실패',
+          text: '로그인 후 이용해주세요',
+        });
+        router.push(`/login-ui`);
+      }
+      Swal.fire({
+        icon: 'error',
+        title: '글 작성 실패',
+        text: '다시 시도해주세요',
+      });
     },
     onSuccess: () => {
+      Swal.fire({
+        icon: 'success',
+        title: '글 작성 성공',
+        text: '글 작성이 완료되었습니다',
+        showConfirmButton: false,
+        timer: 1000
+      });
+      queryClient.invalidateQueries({queryKey: ['posts']});
       router.push(`/`);
-      console.log('글 작성완료');
     }
   });
 

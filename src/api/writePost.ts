@@ -5,17 +5,18 @@ const writePost = async (data: WriteUpdateType): Promise<AxiosResponse> => {
     const postData = {
       ...data,
       satisfaction: 0,
-      country: 'korea',
-      city: 'seoul',
+      locationName: 'korea',
+      formattedAddress: 'seoul',
+      latitude: 37.5665,
+      longitude: 126.978,
     }
 
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/board`, postData, {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/board/authed`, postData, {
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
       }
     });
-
-    console.log(response);
     return response.data;
 };
 

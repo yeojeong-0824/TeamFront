@@ -1,31 +1,35 @@
 'use client';
 import CardPost from "./CardPost";
 import { Post } from "@/types/post";
-import useDeletePost from "@/hooks/useDeletePost";
 import usePosts from "@/hooks/usePosts";
 
 const CardPosts = () => {
-  const deletePost = useDeletePost();
   const { data, isLoading, isError, error } = usePosts();
 
-  if(isLoading || deletePost.isPending) {
+  if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center mt-32">
         <p className="text-blue-500 text-2xl font-bold">
           Loading...
         </p>
       </div>
     );
   };
-  
-  const handleDelete = (id: number) => deletePost.mutate(id);
 
-  if (isError) return <p>Error: {error?.message}</p>;
+  if (isError) {
+    return (
+      <div className="flex justify-center mt-32">
+        <p className="text-red-500 text-2xl font-bold">
+          Error: {error?.message}
+        </p>
+      </div>
+    );
+  };
 
   return (
     <div className="flex flex-col gap-3 w-full mx-auto">
       {data?.content.map((post: Post) => (
-        <CardPost key={post.id} post={post} handleDelete={handleDelete} />
+        <CardPost key={post.id} post={post} />
       ))}
     </div>
   );

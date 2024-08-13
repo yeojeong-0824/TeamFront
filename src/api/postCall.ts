@@ -6,7 +6,6 @@ const postCall = async (id: number) => {
       'Content-Type': 'application/json',
     }
   });
-  console.log(response);
   return response.data;
 }
 

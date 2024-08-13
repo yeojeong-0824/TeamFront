@@ -33,7 +33,7 @@ const Signup: React.FC = () => {
 
       if (response.status===201) {
 alert("회원 가입이 완료되었습니다!")
-
+router.push('/'); 
 
       } else {
         alert('회원가입 실패: ' + response.statusText);
@@ -103,7 +103,7 @@ if (response.status===200){
           />
         </div>
         <div>
-          <label htmlFor="username">닉네임:</label>
+          <label htmlFor="nickname">닉네임:</label>
           <input
             type="text"
             id="nickname"

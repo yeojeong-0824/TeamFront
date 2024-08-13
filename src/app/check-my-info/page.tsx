@@ -2,12 +2,16 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from "next/link";
+import useAuthStore from '../store';
+import { useRouter } from 'next/navigation';
 
 
 import { url} from '../store';
 
 export default function CheckMyInfo() {
+  const router = useRouter();
 
+  const { clearTokens } = useAuthStore();
 
 const [username, set_username] = useState("");
 const [nickname, set_nickname] = useState("");
@@ -67,7 +71,10 @@ if (responseagain.status === 200) {
 }
 
 } else {
-alert("세션이 만료되었습니다. 다시 로그인해주세요")
+  alert("세션이 만료되었습니다. 다시 로그인해주세요")
+  clearTokens();
+  router.push('/'); 
+
   }
 
 
@@ -78,7 +85,6 @@ alert("세션이 만료되었습니다. 다시 로그인해주세요")
     }
   }
       
-
 
   return (
     <div className="flex justify-center items-center h-screen">

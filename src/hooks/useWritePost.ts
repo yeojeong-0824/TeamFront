@@ -38,7 +38,7 @@ const useWritePost = () => {
         timer: 1000
       });
       queryClient.invalidateQueries({queryKey: ['posts']});
-      router.push(`/`);
+      router.back();
     }
   });
 

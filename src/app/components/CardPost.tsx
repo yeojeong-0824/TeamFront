@@ -6,8 +6,8 @@ import { CardPostProps } from "@/types/post";
 const CardPost = ({ post }: CardPostProps): JSX.Element => {
   
   return (
-    <div className="flex flex-col gap-3 w-full mx-auto border p-5 rounded-md shadow-sm">
-      <div className="flex justify-between">
+    <div className="border p-3 rounded-md">
+      <div className="flex justify-between mb-3">
         <div className="flex gap-3 items-center">
           <p className="text-sm">{post.memberNickname}</p>
           {/* <p className="text-sm">시간</p> */}

@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const postsCall = async () => {
-  const response = await axios(`${process.env.NEXT_PUBLIC_API_URL}/board/list`, {
+const postsCall = async (currentPage: number) => {
+  const response = await axios(`${process.env.NEXT_PUBLIC_API_URL}/board/list?page=${currentPage}`, {
     headers: {
       "Content-Type": "application/json",
     },

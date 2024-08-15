@@ -13,6 +13,7 @@ const ControlBarMain = () => {
   const router = useRouter();
 
   const onSubmit = (formData: any) => {
+    localStorage.removeItem('SearchCurrentPage');
     router.push(`/search/${formData.keyword}`);
   };
 

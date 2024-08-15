@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CardPostProps } from "@/types/post";
 
 const CardPost = ({ post }: CardPostProps): JSX.Element => {
-  
+
   return (
     <div className="border p-3 rounded-md">
       <div className="flex justify-between mb-3">

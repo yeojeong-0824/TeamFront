@@ -38,8 +38,6 @@ const NavigationNumberMain = ({ currentPage, setCurrentPage, totalPage, searchMo
     return btns;
   };
 
-  console.log(currentPage, totalPage);
-
   return (
     <nav className="flex justify-center mt-3 absolute bottom-0 left-1/2 transform -translate-x-1/2">
       <div className="w-[500px] flex justify-center gap-1">

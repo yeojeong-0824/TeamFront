@@ -3,10 +3,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { searchPosts } from "@/api/searchPosts";
 
-const useSearch = (keyword: string, currentPage: number) => {
+const useSearch = (keyword: string, currentPage: number, sortKeyword: string) => {
   const searchQuery = useQuery({
-    queryKey: ["searchPosts", keyword, currentPage],
-    queryFn: () => searchPosts(keyword, "title", currentPage) as Promise<any>,
+    queryKey: ["searchPosts", keyword, currentPage, sortKeyword],
+    queryFn: () => searchPosts(keyword, currentPage, sortKeyword),
   });
 
   return searchQuery;

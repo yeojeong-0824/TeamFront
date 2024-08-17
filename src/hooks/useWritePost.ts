@@ -37,7 +37,7 @@ const useWritePost = () => {
         showConfirmButton: false,
         timer: 1000
       });
-      queryClient.invalidateQueries({queryKey: ['posts']});
+      queryClient.invalidateQueries({queryKey: ['sortPosts']});
       router.back();
     }
   });

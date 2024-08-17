@@ -3,19 +3,36 @@
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ControlBarMainProps } from "@/types/controlbar";
+import { usePathname } from "next/navigation";
 
-const ControlBarMain = () => {
+const ControlBarMain = ({sortOption, setSortOption, setCurrentPage}: ControlBarMainProps) => {
   const [sortOptionVisible, setSortOptionVisible] = useState<boolean>(false);
   const pointer = 'cursor-pointer';
   const { register, handleSubmit } = useForm();
   const router = useRouter();
+  const pathname = usePathname();
+  const isSearchPage = pathname.includes('search');
 
   const onSubmit = (formData: any) => {
-    localStorage.removeItem('SearchCurrentPage');
-    router.push(`/search/${formData.keyword}`);
+    router.push(`/search/${formData.keyword}`)
+    // 새 검색이 시작되므로 로컬스토리지에 있는 searchpage 모든 정보들을 삭제
+    localStorage.removeItem('searchPageid');
+    localStorage.removeItem('searchPagelatest');
+    localStorage.removeItem('searchPagecomment');
+    localStorage.removeItem('SearchSortOption');
   };
+
+  useEffect(() => {
+    if(isSearchPage) {
+      const SearchSortOption = localStorage.getItem('SearchSortOption');
+      SearchSortOption && setSortOption(SearchSortOption);
+    }
+    const sortOption = localStorage.getItem('sortOption');
+    sortOption && setSortOption(sortOption);
+  }, []);
 
   const onInvalid = (error: any) => {
     Swal.fire({
@@ -25,9 +42,25 @@ const ControlBarMain = () => {
     });
   };
 
+  const handleSortOption = (option: string) => {
+    setSortOption(option);
+    setSortOptionVisible(false);
+    setCurrentPage(1);
+    if(pathname === '/') {
+      const sortPostsPage = localStorage.getItem(`sortPosts${option}`);
+      localStorage.setItem('sortOption', option);
+      sortPostsPage && setCurrentPage(Number(sortPostsPage));
+    } 
+    if(isSearchPage) {
+      const searchPage = localStorage.getItem(`searchPage${option}`);
+      localStorage.setItem('SearchSortOption', option);
+      searchPage && setCurrentPage(Number(searchPage));
+    }
+  };
+
   return (
     <div className="flex justify-between items-center">
-      <Link href={'/write'}>
+      <Link href="/write">
         <button className="p-2 rounded-lg text-white bg-blue-500">작성하기</button>
       </Link>
 
@@ -45,14 +78,21 @@ const ControlBarMain = () => {
       </form>
 
       <div>
-        <button className="p-2 rounded-lg border text-blue-500" 
-        onClick={() => setSortOptionVisible(!sortOptionVisible)}>최신</button>
+        <button className="p-2 rounded-lg border text-blue-500" onClick={() => setSortOptionVisible(!sortOptionVisible)}>
+          {sortOption}
+        </button>
         {sortOptionVisible && (
           <div className="flex flex-col w-[100px] gap-3 p-3 text-sm ml-1 border shadow-md rounded-md absolute bg-white mt-1">
-            <p className="text-blue-500">최신</p> {/* 글 목록 정렬 버튼 */}
-            <p className={pointer}>아이디</p>
-            <p className={pointer}>좋아요</p>
-            <p className={pointer}>댓글</p>
+            {['latest', 'id', 'comment'].map((option) => (
+              // like오류 때문에 제외하였음, 추후 추가
+              <p
+                key={option}
+                className={`${pointer} ${sortOption === option ? 'text-blue-500' : ''}`}
+                onClick={() => handleSortOption(option)}
+              >
+                {option}
+              </p>
+            ))}
           </div>
         )}
       </div>

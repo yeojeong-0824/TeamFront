@@ -8,12 +8,15 @@ import { useState } from "react";
 import CardPost from "@/app/components/CardPost";
 import NavigationNumberMain from "@/app/components/NavigationNumberMain";
 import Footer from "@/app/components/Footer";
+import { usePathname } from "next/navigation";
 
 const searchPage = ({ params }: { params: ParmasKeyword }) => {
   const keyword = decodeURIComponent(params.keyword);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [sortOption, setSortOption] = useState<string>('latest');
+  const pathname = usePathname();
 
-  const { data, isLoading, isError, error } = useSearch(keyword, currentPage);
+  const { data, isLoading, isError, error } = useSearch(keyword, currentPage, sortOption);
 
   const totalPages = data?.totalPages;
 
@@ -53,12 +56,17 @@ const searchPage = ({ params }: { params: ParmasKeyword }) => {
     <>
       <div className="flex flex-col gap-3 max-w-[800px] min-h-[1100px] mx-auto mt-10 relative p-2">
         <div className="flex flex-col gap-3 mt-10">
-          <ControlBarMain />
+          <ControlBarMain sortOption={sortOption}
+            setSortOption={setSortOption}
+            setCurrentPage={setCurrentPage} />
           {renderNoPostsFound()}
           {data?.content.map((post: Post) => (
             <CardPost key={post.id} post={post} />
           ))}
-          <NavigationNumberMain currentPage={currentPage} setCurrentPage={setCurrentPage} totalPage={totalPages} searchMode={true} />
+          <NavigationNumberMain currentPage={currentPage} 
+          setCurrentPage={setCurrentPage} 
+          totalPage={totalPages}
+          sortOption={sortOption} />
         </div>
       </div>
       <Footer />

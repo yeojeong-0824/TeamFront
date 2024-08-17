@@ -14,7 +14,7 @@ const Header = (): JSX.Element => {
   return (
     <header className="flex justify-between w-full py-5 px-1 bg-white border-b shadow-md">
       <Link href={'/'}>
-        <h1 className="text-2xl font-bold text-blue-500">Seoul Community</h1>
+        <h1 className="text-2xl font-bold">여 정</h1>
       </Link>   
       {accessToken ? (
         <div className="flex gap-10 items-center">

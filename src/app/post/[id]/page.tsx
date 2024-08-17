@@ -3,6 +3,7 @@ import { ParamsId } from "@/types/post";
 import usePost from "@/hooks/usePost";
 import useDeletePost from "@/hooks/useDeletePost";
 import Link from "next/link";
+import Comment from "@/app/components/comment";
 
 const Post = ({ params }: { params: ParamsId }) => {
   const { id } = params;
@@ -11,6 +12,8 @@ const Post = ({ params }: { params: ParamsId }) => {
   const { data, isLoading, isError, error, isSuccess } = usePost(id);
 
   const handleDelete = () => mutate(id);
+
+  console.log(data);
 
   return (
     <div className="p-2">
@@ -36,6 +39,7 @@ const Post = ({ params }: { params: ParamsId }) => {
           </div>
         </div>
       )}
+      {isSuccess && <Comment boardId={id}/>}
     </div>
   );
 }

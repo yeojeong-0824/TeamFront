@@ -29,9 +29,12 @@ const useUpdatePost = (id: number) => {
         icon: 'success',
         title: '글 수정 성공',
         text: '글 수정이 완료되었습니다',
+        showConfirmButton: false,
+        timer: 1500,
+        
       });
-      queryClient.invalidateQueries({queryKey: ['posts']});
       queryClient.invalidateQueries({queryKey: ['post', id]});
+      queryClient.invalidateQueries({queryKey: ['sortPosts']});
       router.push(`/post/${id}`);
     },
   });

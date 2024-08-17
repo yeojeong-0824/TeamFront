@@ -1,15 +1,16 @@
 'use client';
 import CardPost from "./CardPost";
 import { Post } from "@/types/post";
-import usePosts from "@/hooks/usePosts";
 import NavigationNumberMain from "./NavigationNumberMain";
 import { useState } from "react";
 import ControlBarMain from "./ControlBarMain";
+import useSortPosts from "@/hooks/useSortPosts";
 
 const CardPosts = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [sortOption, setSortOption] = useState<string>('latest');
 
-  const { data, isLoading, isError, error } = usePosts(currentPage);
+  const { data, isLoading, isError, error } = useSortPosts(currentPage, sortOption);
 
   const totalPages = data?.totalPages;
 
@@ -47,12 +48,14 @@ const CardPosts = () => {
 
   return (
     <div className="flex flex-col gap-3 mt-10">
-      <ControlBarMain />
+      <ControlBarMain sortOption={sortOption}
+        setSortOption={setSortOption}
+        setCurrentPage={setCurrentPage} />
       {renderNoPostsFound()}
       {data?.content.map((post: Post) => (
         <CardPost key={post.id} post={post} />
       ))}
-        <NavigationNumberMain currentPage={currentPage} setCurrentPage={setCurrentPage} totalPage={totalPages} searchMode={false} />
+      <NavigationNumberMain currentPage={currentPage} setCurrentPage={setCurrentPage} totalPage={totalPages} sortOption={sortOption}/>
     </div>
   );
 }

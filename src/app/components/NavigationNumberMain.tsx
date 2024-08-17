@@ -10,25 +10,18 @@ const NavigationNumberMain = ({ currentPage, setCurrentPage, totalPage, sortOpti
   const isSearchPage = pathname.includes('search');
 
   useEffect(() => {
-    if(pathname === '/') {
-      const sortPostsPage = localStorage.getItem(`sortPosts${sortOption}`);
-      sortPostsPage && setCurrentPage(Number(sortPostsPage));
+    const pageKey = isSearchPage ? `searchPage${sortOption}` : `sortPosts${sortOption}`;
+    const getPage = localStorage.getItem(pageKey);
+    if (getPage) {
+      setCurrentPage(Number(getPage));
     }
-    if(isSearchPage) {
-      const searchPage = localStorage.getItem(`searchPage${sortOption}`);
-      searchPage && setCurrentPage(Number(searchPage));
-    }
-  }, [sortOption]);
+  }, [isSearchPage, sortOption, setCurrentPage]);
 
   const handlePage = (page: number) => {
     if (page < 1 || page > totalPage) return;
     setCurrentPage(page);
-    if(pathname === '/') {
-      localStorage.setItem(`sortPosts${sortOption}`, page.toString());
-    }
-    if(isSearchPage) {
-      localStorage.setItem(`searchPage${sortOption}`, page.toString());
-    }
+    const pageKey = isSearchPage ? `searchPage${sortOption}` : `sortPosts${sortOption}`;
+    localStorage.setItem(pageKey, page.toString());
   };
 
   return (

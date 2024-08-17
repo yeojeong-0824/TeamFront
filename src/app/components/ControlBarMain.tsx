@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { ControlBarMainProps } from "@/types/controlbar";
 import { usePathname } from "next/navigation";
 
-const ControlBarMain = ({sortOption, setSortOption, setCurrentPage}: ControlBarMainProps) => {
+const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBarMainProps) => {
   const [sortOptionVisible, setSortOptionVisible] = useState<boolean>(false);
   const pointer = 'cursor-pointer';
   const { register, handleSubmit } = useForm();
@@ -17,22 +17,23 @@ const ControlBarMain = ({sortOption, setSortOption, setCurrentPage}: ControlBarM
   const isSearchPage = pathname.includes('search');
 
   const onSubmit = (formData: any) => {
-    router.push(`/search/${formData.keyword}`)
-    // 새 검색이 시작되므로 로컬스토리지에 있는 searchpage 모든 정보들을 삭제
-    localStorage.removeItem('searchPageid');
-    localStorage.removeItem('searchPagelatest');
-    localStorage.removeItem('searchPagecomment');
+    Object.keys(localStorage).forEach((key) => {
+      if (key.includes('searchPage')) {
+        localStorage.removeItem(key);
+      }
+    });
     localStorage.removeItem('SearchSortOption');
+    setSortOption('latest');
+    setCurrentPage(1);
+    router.push(`/search/${formData.keyword}`);
   };
 
   useEffect(() => {
-    if(isSearchPage) {
-      const SearchSortOption = localStorage.getItem('SearchSortOption');
-      SearchSortOption && setSortOption(SearchSortOption);
+    const getSortOption = localStorage.getItem(isSearchPage ? 'SearchSortOption' : 'sortOption');
+    if (getSortOption) {
+      setSortOption(getSortOption);
     }
-    const sortOption = localStorage.getItem('sortOption');
-    sortOption && setSortOption(sortOption);
-  }, []);
+  }, [isSearchPage, setSortOption]);
 
   const onInvalid = (error: any) => {
     Swal.fire({
@@ -46,16 +47,13 @@ const ControlBarMain = ({sortOption, setSortOption, setCurrentPage}: ControlBarM
     setSortOption(option);
     setSortOptionVisible(false);
     setCurrentPage(1);
-    if(pathname === '/') {
-      const sortPostsPage = localStorage.getItem(`sortPosts${option}`);
-      localStorage.setItem('sortOption', option);
-      sortPostsPage && setCurrentPage(Number(sortPostsPage));
-    } 
-    if(isSearchPage) {
-      const searchPage = localStorage.getItem(`searchPage${option}`);
-      localStorage.setItem('SearchSortOption', option);
-      searchPage && setCurrentPage(Number(searchPage));
+    const pageKey = isSearchPage ? `searchPage` : `sortPosts`;
+    const getPage = localStorage.getItem(pageKey + option);
+    const sortKey = isSearchPage ? 'SearchSortOption' : 'sortOption';
+    if (getPage) {
+      setCurrentPage(Number(getPage));
     }
+    localStorage.setItem(sortKey, option);
   };
 
   return (

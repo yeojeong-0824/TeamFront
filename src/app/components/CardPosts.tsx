@@ -2,17 +2,23 @@
 import CardPost from "./CardPost";
 import { Post } from "@/types/post";
 import NavigationNumberMain from "./NavigationNumberMain";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ControlBarMain from "./ControlBarMain";
 import useSortPosts from "@/hooks/useSortPosts";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CardPosts = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [sortOption, setSortOption] = useState<string>('latest');
+  const queryClient = useQueryClient();
 
   const { data, isLoading, isError, error } = useSortPosts(currentPage, sortOption);
 
   const totalPages = data?.totalPages;
+
+  useEffect(()=> {
+    queryClient.invalidateQueries({queryKey: ['sortPosts', currentPage, sortOption]});
+  }, [currentPage, sortOption]);
 
   if (isLoading) {
     return (

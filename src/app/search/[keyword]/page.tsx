@@ -8,13 +8,11 @@ import { useState } from "react";
 import CardPost from "@/app/components/CardPost";
 import NavigationNumberMain from "@/app/components/NavigationNumberMain";
 import Footer from "@/app/components/Footer";
-import { usePathname } from "next/navigation";
 
 const searchPage = ({ params }: { params: ParmasKeyword }) => {
   const keyword = decodeURIComponent(params.keyword);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [sortOption, setSortOption] = useState<string>('latest');
-  const pathname = usePathname();
 
   const { data, isLoading, isError, error } = useSearch(keyword, currentPage, sortOption);
 

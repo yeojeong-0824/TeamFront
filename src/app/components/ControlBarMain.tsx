@@ -81,8 +81,7 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
         </button>
         {sortOptionVisible && (
           <div className="flex flex-col w-[100px] gap-3 p-3 text-sm ml-1 border shadow-md rounded-md absolute bg-white mt-1">
-            {['latest', 'id', 'comment'].map((option) => (
-              // like오류 때문에 제외하였음, 추후 추가
+            {['latest', 'score', 'comment'].map((option) => (
               <p
                 key={option}
                 className={`${pointer} ${sortOption === option ? 'text-blue-500' : ''}`}

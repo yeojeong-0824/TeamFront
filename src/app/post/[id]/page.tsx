@@ -32,7 +32,7 @@ const Post = ({ params }: { params: ParamsId }) => {
               <h3 className="text-sm">조회수 <span>{data?.view}</span></h3>
             </div>
           </div>
-          <h2 className="flex-grow border p-3">{data?.Body}</h2>
+          <h2 className="flex-grow border p-3">{data?.body}</h2>
           <div className="flex justify-end gap-3">
             <Link className="hover:text-blue-500 font-bold" href={`/update/${id}`}>수정</Link>
             <button className="hover:text-red-500 font-bold" onClick={handleDelete}>삭제</button>

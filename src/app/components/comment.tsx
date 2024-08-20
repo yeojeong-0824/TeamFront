@@ -1,6 +1,7 @@
 'use client';
+import { ParamsId } from "@/types/post";
 
-const Comment = ({boardId}: {boardId: number}) => {
+const Comment = () => {
   
   return (
     <div className="flex flex-col mx-auto max-w-[800px] p-3 border">

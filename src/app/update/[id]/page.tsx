@@ -24,7 +24,7 @@ const Update = ({ params }: { params: ParamsId }) => {
   useEffect(() => {
     reset({
       title: data?.title,
-      body: data?.Body,
+      body: data?.body,
     });
   }, [data]);
 

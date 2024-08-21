@@ -1,8 +1,9 @@
-export type WriteUpdateType = { 
+export type WriteUpdateType = {
+  locationName: string,
+  formattedAddress: string,
+  latitude: number,
+  longitude: number,
   title: string,
-  body: string,
-  city: string,
-  country: string,
-  satisfaction: number,
+  body: string
 };
 

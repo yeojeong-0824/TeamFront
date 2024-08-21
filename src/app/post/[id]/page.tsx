@@ -33,7 +33,7 @@ const Post = ({ params }: { params: ParamsId }) => {
   const deleteScore = () => {
     deleteScoreMutate(id);
     localStorage.removeItem(`score${id}`);
-  }
+  };
 
   return (
     <div className="p-2">
@@ -53,6 +53,13 @@ const Post = ({ params }: { params: ParamsId }) => {
             </div>
           </div>
           <h2 className="flex-grow border p-3">{data?.body}</h2>
+          <div className="border p-3">
+            <h2 className="text-xl font-bold">위치 정보</h2>
+            <h3>{data?.formattedAddress}</h3>
+            <h3>{data?.locationName}</h3>
+            <h3>{data?.latitude}</h3>
+            <h3>{data?.longitude}</h3>
+          </div>
           <div className="flex justify-between">
             <div className="flex gap-3">
               <Link className="hover:text-blue-500 font-bold" href={`/update/${id}`}>글 수정</Link>

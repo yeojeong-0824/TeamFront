@@ -62,7 +62,7 @@ const Post = ({ params }: { params: ParamsId }) => {
           <div>
             <Slider
               size="md"
-              step={0.5}
+              step={1}
               color="success"
               label="별점"
               showSteps={true}

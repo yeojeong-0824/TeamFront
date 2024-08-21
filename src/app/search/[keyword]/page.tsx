@@ -4,19 +4,43 @@ import { ParmasKeyword } from "@/types/search";
 import { Post } from "@/types/post";
 import useSearch from "@/hooks/useSearch";
 import ControlBarMain from "@/app/components/ControlBarMain";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CardPost from "@/app/components/CardPost";
 import NavigationNumberMain from "@/app/components/NavigationNumberMain";
 import Footer from "@/app/components/Footer";
 
+import { useRouter, useSearchParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+
 const searchPage = ({ params }: { params: ParmasKeyword }) => {
+  const router = useRouter(); // Add this line
+  const searchParams = useSearchParams(); // Add this line
+  const queryClient = useQueryClient(); // Add this line
+
+  const initialPage = parseInt(searchParams.get('page') || '1', 10); // Add this line
+  const initialSortOption = searchParams.get('sort') || 'latest'; // Add this line
+
   const keyword = decodeURIComponent(params.keyword);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [sortOption, setSortOption] = useState<string>('latest');
+  // const [currentPage, setCurrentPage] = useState<number>(1);
+  // const [sortOption, setSortOption] = useState<string>('latest');
+  const [currentPage, setCurrentPage] = useState<number>(initialPage); // Change this line
+  const [sortOption, setSortOption] = useState<string>(initialSortOption); // Change this line
 
   const { data, isLoading, isError, error } = useSearch(keyword, currentPage, sortOption);
 
   const totalPages = data?.totalPages;
+
+  useEffect(()=>{ // Add this block
+    router.push(`?page=${currentPage}&sort=${sortOption}`); 
+    queryClient.invalidateQueries({queryKey: ['sortPosts', currentPage, sortOption]});
+  }, [currentPage, sortOption]);
+
+  useEffect(()=> { // Add this block
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const sort = searchParams.get('sort') || 'latest';
+    setCurrentPage(page);
+    setSortOption(sort);
+  }, [searchParams]);
 
   if (isLoading) {
     return (

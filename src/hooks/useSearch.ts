@@ -9,6 +9,7 @@ const useSearch = (keyword: string, currentPage: number, sortKeyword: string) =>
   const searchQuery = useQuery({
     queryKey: ["searchPosts", keyword, validPage, sortKeyword],
     queryFn: () => searchPosts(keyword, validPage, sortKeyword),
+    placeholderData: (previousData, previousQuery)=> previousData,
   });
 
   return searchQuery;

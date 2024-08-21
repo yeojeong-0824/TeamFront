@@ -6,40 +6,36 @@ import { useEffect, useState } from "react";
 import ControlBarMain from "./ControlBarMain";
 import useSortPosts from "@/hooks/useSortPosts";
 import { useQueryClient } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+
+import { useRouter, useSearchParams } from "next/navigation";
 
 const CardPosts = () => {
-  const searchParams = useSearchParams();
-  const [currentPage, setCurrentPage] = useState<number>(parseInt(searchParams.get('page') || '1') || 1);
-  const [sortOption, setSortOption] = useState<string>(searchParams.get('sort') || 'latest');
+  const router = useRouter(); // Add this line
+  const searchParams = useSearchParams(); // Add this line
+
+  const initialPage = parseInt(searchParams.get('page') || '1', 10); // Add this line
+  const initialSortOption = searchParams.get('sort') || 'latest'; // Add this line
+
+  // const [currentPage, setCurrentPage] = useState<number>(1);
+  // const [sortOption, setSortOption] = useState<string>('latest');
+  const [currentPage, setCurrentPage] = useState<number>(initialPage); // Change this line
+  const [sortOption, setSortOption] = useState<string>(initialSortOption); // Change this line
+
   const queryClient = useQueryClient();
-  const router = useRouter();
   const { data, isLoading, isError, error } = useSortPosts(currentPage, sortOption);
-
   const totalPages = data?.totalPages;
-  
-  // 만약 url에서 sort 옵션이 변경되면 sortOption을 url 값으로 변경
-  useEffect(() => {
-    const query = new URLSearchParams(window.location.search);
-    const page = query.get('page');
-    const sort = query.get('sort');
 
-    if (page) {
-      setCurrentPage(Number(page));
-    }
+  useEffect(()=>{ // Add this block
+    router.push(`?page=${currentPage}&sort=${sortOption}`); 
+    queryClient.invalidateQueries({queryKey: ['sortPosts', currentPage, sortOption]});
+  }, [currentPage, sortOption]);
 
-    if (sort) {
-      setSortOption(sort);
-    }
-  }, [window.location.search]);
-
-  useEffect(() => {
-    const query = new URLSearchParams();
-    query.set('page', currentPage.toString());
-    query.set('sort', sortOption);
-    router.push(`/?${query.toString()}`);
-  }, [currentPage, sortOption, router]);
+  useEffect(()=> { // Add this block
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const sort = searchParams.get('sort') || 'latest';
+    setCurrentPage(page);
+    setSortOption(sort);
+  }, [searchParams]);
 
   useEffect(()=> {
     queryClient.invalidateQueries({queryKey: ['sortPosts', currentPage, sortOption]});

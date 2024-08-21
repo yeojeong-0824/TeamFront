@@ -1,5 +1,3 @@
-'use client';
-
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import Link from "next/link";
@@ -31,10 +29,6 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
     setSortOption(option);
     setSortOptionVisible(false);
     setCurrentPage(1);
-    const query = new URLSearchParams(window.location.search);
-    query.set('page', '1');
-    query.set('sort', option);
-    router.push(`${window.location.pathname}?${query.toString()}`);
   };
 
   return (

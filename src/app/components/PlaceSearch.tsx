@@ -23,7 +23,7 @@ const PlaceSearch: React.FC<{
   setLongitude: (longitude: number) => void;
 }> = ({setLocation, setFormattedAddress, setLatitude, setLongitude}) => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyC2-KeY70M7jNV7JAZ4qSp75j1NOg3f1bY' as string,
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string,
     libraries,
   });
 

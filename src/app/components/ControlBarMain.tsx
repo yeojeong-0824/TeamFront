@@ -3,38 +3,22 @@
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ControlBarMainProps } from "@/types/controlbar";
-import { usePathname } from "next/navigation";
 
 const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBarMainProps) => {
   const [sortOptionVisible, setSortOptionVisible] = useState<boolean>(false);
   const pointer = 'cursor-pointer';
   const { register, handleSubmit } = useForm();
   const router = useRouter();
-  const pathname = usePathname();
-  const isSearchPage = pathname.includes('search');
-
+  
   const onSubmit = (formData: any) => {
-    Object.keys(localStorage).forEach((key) => {
-      if (key.includes('searchPage')) {
-        localStorage.removeItem(key);
-      }
-    });
-    localStorage.removeItem('SearchSortOption');
     setSortOption('latest');
     setCurrentPage(1);
     router.push(`/search/${formData.keyword}`);
   };
-
-  useEffect(() => {
-    const getSortOption = localStorage.getItem(isSearchPage ? 'SearchSortOption' : 'sortOption');
-    if (getSortOption) {
-      setSortOption(getSortOption);
-    }
-  }, [isSearchPage, setSortOption]);
-
+  
   const onInvalid = (error: any) => {
     Swal.fire({
       icon: 'error',
@@ -47,13 +31,10 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
     setSortOption(option);
     setSortOptionVisible(false);
     setCurrentPage(1);
-    const pageKey = isSearchPage ? `searchPage` : `sortPosts`;
-    const getPage = localStorage.getItem(pageKey + option);
-    const sortKey = isSearchPage ? 'SearchSortOption' : 'sortOption';
-    if (getPage) {
-      setCurrentPage(Number(getPage));
-    }
-    localStorage.setItem(sortKey, option);
+    const query = new URLSearchParams(window.location.search);
+    query.set('page', '1');
+    query.set('sort', option);
+    router.push(`${window.location.pathname}?${query.toString()}`);
   };
 
   return (

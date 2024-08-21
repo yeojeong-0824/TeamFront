@@ -64,7 +64,7 @@ const searchPage = ({ params }: { params: ParmasKeyword }) => {
           <NavigationNumberMain currentPage={currentPage} 
           setCurrentPage={setCurrentPage} 
           totalPage={totalPages}
-          sortOption={sortOption} />
+          />
         </div>
       </div>
       <Footer />

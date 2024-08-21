@@ -8,9 +8,11 @@ import { useEffect, useState } from "react";
 import CardPost from "@/app/components/CardPost";
 import NavigationNumberMain from "@/app/components/NavigationNumberMain";
 import Footer from "@/app/components/Footer";
+import Link from "next/link";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+
 
 const searchPage = ({ params }: { params: ParmasKeyword }) => {
   const router = useRouter(); // Add this line
@@ -65,10 +67,11 @@ const searchPage = ({ params }: { params: ParmasKeyword }) => {
   const renderNoPostsFound = () => {
     if (data?.content.length === 0) {
       return (
-        <div className="flex justify-center mt-32">
+        <div className="flex flex-col gap-6 items-center mt-32">
           <p className="text-red-500 text-2xl font-bold">
             게시글이 존재하지 않습니다.
           </p>
+          <Link href={'/'} className="text-blue-500 text-xl font-bold hover:opacity-60">돌아가기</Link>
         </div>
       )
     }

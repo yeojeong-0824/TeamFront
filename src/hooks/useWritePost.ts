@@ -29,7 +29,7 @@ const useWritePost = () => {
         text: '다시 시도해주세요',
       });
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       Swal.fire({
         icon: 'success',
         title: '글 작성 성공',

@@ -5,6 +5,7 @@ import { WriteUpdateType } from "@/types/board";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import PlaceSearch from "../components/PlaceSearch";
+import { useRouter } from "next/navigation";
 
 const Write = () => {
   const { register, handleSubmit } = useForm<WriteUpdateType>();
@@ -13,6 +14,7 @@ const Write = () => {
   const [formattedAddress, setFormattedAddress] = useState<string>('');
   const [latitude, setLatitude] = useState<number>(0);
   const [longitude, setLongitude] = useState<number>(0);
+  const router = useRouter();
 
   const onSubmitForm = (data: WriteUpdateType) => {
     if (data.title === '' || data.body === '') return;
@@ -36,6 +38,12 @@ const Write = () => {
     )
   };
 
+  const handleCancel = () => {
+    router.back();
+  };
+
+  const btnS = 'text-white rounded-sm p-1 hover:bg-opacity-60';
+
   return (
     <div className="flex justify-center items-center h-screen">
       <form className="flex flex-col gap-3 min-w-[600px] max-h-[800px] border p-3" onSubmit={handleSubmit(onSubmitForm)}>
@@ -46,7 +54,8 @@ const Write = () => {
         setLongitude={setLongitude} />
         <input type="text" placeholder="title" className="p-1 border" {...register('title')} />
         <textarea placeholder="content" className="p-1 border min-h-[300px]" {...register('body')} autoComplete="off" />
-        <button className="text-white bg-blue-500 rounded-sm p-1">submit</button>
+        <button className={`${btnS} bg-blue-500`}>submit</button>
+        <button className={`${btnS} bg-red-500`} type="button" onClick={handleCancel}>cancel</button>
       </form>
     </div>
   )

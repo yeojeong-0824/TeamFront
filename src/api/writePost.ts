@@ -8,8 +8,6 @@ const writePost = async (data: WriteUpdateType): Promise<AxiosResponse> => {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
       }
     });
-    console.log(response);
-    console.log(data);
     return response.data;
 };
 

@@ -11,7 +11,7 @@ const useSetScore = (id: number) => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const { mutate, isError } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: (score: number)=>setScore(score, id),
     onSuccess: () => {
       Swal.fire({
@@ -43,7 +43,7 @@ const useSetScore = (id: number) => {
     }
   });
 
-  return { mutate, isError };
+  return { mutate };
 }
 
 export default useSetScore;

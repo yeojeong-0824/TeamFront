@@ -15,25 +15,17 @@ const Post = ({ params }: { params: ParamsId }) => {
   const { mutate: deletePostMutate } = useDeletePost();
   const { data, isLoading, isError, error, isSuccess } = usePost(id);
   const [score, setScore] = useState<number>(0);
-  const { mutate: scoreMutate, isError: scoreIsError } = useSetScore(id);
+  const { mutate: scoreMutate } = useSetScore(id);
   const { mutate: deleteScoreMutate } = useDeleteScore(id);
-  const getScore = localStorage.getItem(`score${id}`);
+  const memberScoreInfo = data?.MemberScoreInfo;
 
   const handlePostDelete = () => deletePostMutate(id);
 
   const handleScoreChange = (value: number | number[]) => setScore(value as number);
 
-  if(scoreIsError) localStorage.removeItem(`score${id}`);
+  const postScore = () => scoreMutate(score);
 
-  const postScore = () => {
-    scoreMutate(score);
-    localStorage.setItem(`score${id}`, String(score));
-  };
-
-  const deleteScore = () => {
-    deleteScoreMutate(id);
-    localStorage.removeItem(`score${id}`);
-  };
+  const deleteScore = () => deleteScoreMutate(id);
 
   return (
     <div className="p-2">
@@ -75,17 +67,17 @@ const Post = ({ params }: { params: ParamsId }) => {
               showSteps={true}
               maxValue={10}
               minValue={0}
-              defaultValue={getScore ? Number(getScore) : 0}
+              defaultValue={memberScoreInfo ? memberScoreInfo : 0}
               className="max-w-sm"
               onChange={handleScoreChange}
-              isDisabled={getScore ? true : false}
+              isDisabled={memberScoreInfo ? true : false}
             />
-            {!getScore ? (
+            {memberScoreInfo === null ? (
               <Button
                 color="success"
                 className="text-white font-bold"
                 onClick={postScore}
-                isDisabled={score < 1}>
+              >
                 별점 등록
               </Button>
             ) : (

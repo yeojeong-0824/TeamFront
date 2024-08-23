@@ -25,10 +25,9 @@ const useSetScore = (id: number) => {
     onError: (error: CustomError) => {
       if(error?.response.status === 403) {
         Swal.fire({
-          title: '별점 등록에 실패했습니다.',
-          text: '로그인 후 이용해주세요',
           icon: 'error',
-          confirmButtonText: '확인',
+          title: '로그인 필요',
+          text: '로그인이 필요한 서비스입니다'
         });
         router.push('/login-ui');
       }

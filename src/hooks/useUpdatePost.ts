@@ -18,8 +18,8 @@ const useUpdatePost = (id: number) => {
       if(error?.response.status === 403) {
         Swal.fire({
           icon: 'error',
-          title: '글 수정 실패',
-          text: '로그인 후 이용해주세요',
+          title: '로그인 필요',
+          text: '로그인이 필요한 서비스입니다'
         });
         router.push(`/login-ui`);
       }

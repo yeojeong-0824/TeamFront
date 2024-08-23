@@ -9,6 +9,8 @@ import { Button } from "@nextui-org/react";
 import { useState } from "react";
 import useSetScore from "@/hooks/useSetScore";
 import useDeleteScore from "@/hooks/useDeleteScore";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 const Post = ({ params }: { params: ParamsId }) => {
   const { id } = params;
@@ -18,14 +20,42 @@ const Post = ({ params }: { params: ParamsId }) => {
   const { mutate: scoreMutate } = useSetScore(id);
   const { mutate: deleteScoreMutate } = useDeleteScore(id);
   const memberScoreInfo = data?.MemberScoreInfo;
+  const router = useRouter();
 
   const handlePostDelete = () => deletePostMutate(id);
 
   const handleScoreChange = (value: number | number[]) => setScore(value as number);
 
-  const postScore = () => scoreMutate(score);
+  const postScore = () => {
+    const token = localStorage.getItem('accessToken');
+    if(!token) {
+      Swal.fire({
+        icon: 'error',
+        title: '로그인 필요',
+        text: '로그인이 필요한 서비스입니다'
+      });
+      router.push(`/login-ui`);
+      return;
+    }
+    if (score === 0) return;
+    scoreMutate(score);
+  };
 
   const deleteScore = () => deleteScoreMutate(id);
+
+  const handleUpdate = () => {
+    const token = localStorage.getItem('accessToken');
+    if(!token) {
+      Swal.fire({
+        icon: 'error',
+        title: '로그인 필요',
+        text: '로그인이 필요한 서비스입니다'
+      });
+      router.push(`/login-ui`);
+      return;
+    }
+    router.push(`/update/${id}`);
+  }
 
   return (
     <div className="p-2">
@@ -45,16 +75,18 @@ const Post = ({ params }: { params: ParamsId }) => {
             </div>
           </div>
           <h2 className="flex-grow border p-3">{data?.body}</h2>
-          <div className="border p-3">
-            <h2 className="text-xl font-bold">위치 정보</h2>
-            <h3>{data?.formattedAddress}</h3>
-            <h3>{data?.locationName}</h3>
-            <h3>{data?.latitude}</h3>
-            <h3>{data?.longitude}</h3>
-          </div>
+          {data?.latitude !== '0' && (
+            <div className="border p-3">
+              <h2 className="text-xl font-bold">위치 정보</h2>
+              <h3>{data?.formattedAddress}</h3>
+              <h3>{data?.locationName}</h3>
+              <h3>{data?.latitude}</h3>
+              <h3>{data?.longitude}</h3>
+            </div>
+          )}
           <div className="flex justify-between">
             <div className="flex gap-3">
-              <Link className="hover:text-blue-500 font-bold" href={`/update/${id}`}>글 수정</Link>
+              <button className="hover:text-blue-500 font-bold" onClick={handleUpdate}>글 수정</button>
               <button className="hover:text-red-500 font-bold" onClick={handlePostDelete}>글 삭제</button>
             </div>
           </div>

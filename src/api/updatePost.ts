@@ -3,14 +3,7 @@ import { WriteUpdateType } from "@/types/board";
 
 const updatePost = async (data: WriteUpdateType, id: number) => {
   const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/board/authed/update/${id}`, 
-    {
-      ...data,
-      locationName: "string",
-      formattedAddress: "string",
-      latitude: "string",
-      longitude: "string",
-      satisfaction: 0
-    },
+    data,
     {
       headers: {
         'Content-Type': 'application/json',

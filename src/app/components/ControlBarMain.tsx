@@ -31,11 +31,25 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
     setCurrentPage(1);
   };
 
+  const handlePost = () => {
+    const token = localStorage.getItem('accessToken');
+    if(!token) {
+      Swal.fire({
+        icon: 'error',
+        title: '로그인 필요',
+        text: '로그인이 필요한 서비스입니다'
+      });
+      router.push('/login-ui');
+      return;
+    }
+    router.push('/write');
+  }
+
   return (
     <div className="flex justify-between items-center">
-      <Link href="/write">
-        <button className="p-2 rounded-lg text-white bg-blue-500">작성하기</button>
-      </Link>
+      <button onClick={handlePost} className="p-2 rounded-lg text-white bg-blue-500">
+        작성하기
+      </button>
 
       <form className="flex gap-1" onSubmit={handleSubmit(onSubmit, onInvalid)}>
         <input

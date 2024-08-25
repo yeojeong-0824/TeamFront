@@ -1,27 +1,131 @@
 'use client';
 import { ParamsId } from "@/types/post";
 import usePost from "@/hooks/usePost";
+import useDeletePost from "@/hooks/useDeletePost";
+import Link from "next/link";
+import Comment from "@/app/components/comment";
+import { Slider } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
+import { useState } from "react";
+import useSetScore from "@/hooks/useSetScore";
+import useDeleteScore from "@/hooks/useDeleteScore";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 const Post = ({ params }: { params: ParamsId }) => {
   const { id } = params;
-
+  const { mutate: deletePostMutate } = useDeletePost();
   const { data, isLoading, isError, error, isSuccess } = usePost(id);
+  const [score, setScore] = useState<number>(0);
+  const { mutate: scoreMutate } = useSetScore(id);
+  const { mutate: deleteScoreMutate } = useDeleteScore(id);
+  const memberScoreInfo = data?.MemberScoreInfo;
+  const router = useRouter();
+
+  const handlePostDelete = () => deletePostMutate(id);
+
+  const handleScoreChange = (value: number | number[]) => setScore(value as number);
+
+  const postScore = () => {
+    const token = localStorage.getItem('accessToken');
+    if(!token) {
+      Swal.fire({
+        icon: 'error',
+        title: '로그인 필요',
+        text: '로그인이 필요한 서비스입니다'
+      });
+      router.push(`/login-ui`);
+      return;
+    }
+    if (score === 0) return;
+    scoreMutate(score);
+  };
+
+  const deleteScore = () => deleteScoreMutate(id);
+
+  const handleUpdate = () => {
+    const token = localStorage.getItem('accessToken');
+    if(!token) {
+      Swal.fire({
+        icon: 'error',
+        title: '로그인 필요',
+        text: '로그인이 필요한 서비스입니다'
+      });
+      router.push(`/login-ui`);
+      return;
+    }
+    router.push(`/update/${id}`);
+  }
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen">
-      {isLoading && <div className="text-blue-500 font-bold text-5xl">
+    <div className="p-2">
+      {isLoading && <div className="flex justify-center mt-72 text-blue-500 font-bold text-3xl">
         Loading...
       </div>}
       {isError && <div className="text-red-500 font-bold text-5xl">
         {error?.toString()}
       </div>}
       {isSuccess && (
-        <div>
-          <h1 className="text-4xl">title: {data?.title}</h1>
-          <h2>body: {data?.Body}</h2>
-          <h3>memberNickname: {data?.memberNickname}</h3>
+        <div className="flex flex-col gap-3 justify-between max-w-[800px] min-h-[400px] mx-auto mt-40 border p-3">
+          <div className="flex justify-between border p-3" >
+            <h1 className="text-2xl">{data?.title}</h1>
+            <div className="flex gap-3 items-center">
+              <h3 className="font-bold">{data?.memberNickname}</h3>
+              <h3 className="text-sm">조회수 <span>{data?.view}</span></h3>
+            </div>
+          </div>
+          <h2 className="flex-grow border p-3">{data?.body}</h2>
+          {data?.latitude !== '0' && (
+            <div className="border p-3">
+              <h2 className="text-xl font-bold">위치 정보</h2>
+              <h3>{data?.formattedAddress}</h3>
+              <h3>{data?.locationName}</h3>
+              <h3>{data?.latitude}</h3>
+              <h3>{data?.longitude}</h3>
+            </div>
+          )}
+          <div className="flex justify-between">
+            <div className="flex gap-3">
+              <button className="hover:text-blue-500 font-bold" onClick={handleUpdate}>글 수정</button>
+              <button className="hover:text-red-500 font-bold" onClick={handlePostDelete}>글 삭제</button>
+            </div>
+          </div>
+          <div>
+            <Slider
+              size="md"
+              step={1}
+              color="success"
+              label="별점"
+              showSteps={true}
+              maxValue={10}
+              minValue={0}
+              defaultValue={memberScoreInfo ? memberScoreInfo : 0}
+              className="max-w-sm"
+              onChange={handleScoreChange}
+              isDisabled={memberScoreInfo ? true : false}
+            />
+            {memberScoreInfo === null ? (
+              <Button
+                color="success"
+                className="text-white font-bold"
+                onClick={postScore}
+              >
+                별점 등록
+              </Button>
+            ) : (
+              <Button
+                color="danger"
+                className="text-white font-bold"
+                onClick={deleteScore}
+              >
+                별점 삭제
+              </Button>
+            )}
+            <p className="text-xl mt-3 font-bold">평균 별점 {data?.avgScore / 100}</p>
+          </div>
         </div>
       )}
+      {isSuccess && <Comment />}
     </div>
   );
 }

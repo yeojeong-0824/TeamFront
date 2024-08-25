@@ -3,23 +3,18 @@
 import Link from "next/link";
 import { CardPostProps } from "@/types/post";
 
-const CardPost = ({ post, handleDelete }: CardPostProps): JSX.Element => {
+const CardPost = ({ post }: CardPostProps): JSX.Element => {
+
   return (
-    <div key={post.id} className="flex flex-col gap-3 w-full mx-auto border p-5 rounded-md shadow-sm">
-      <div className="flex justify-between">
+    <div className="border p-3 rounded-md">
+      <div className="flex justify-between mb-3">
         <div className="flex gap-3 items-center">
           <p className="text-sm">{post.memberNickname}</p>
           {/* <p className="text-sm">시간</p> */}
         </div>
         <div className="flex gap-3 items-center">
           <p className="text-sm">좋아요 {post.likeCount}</p>
-          <p className="text-sm font-bold hover:text-red-500 cursor-pointer"
-            onClick={() => handleDelete(post.id)}>삭제
-          </p>
-          <Link className="text-sm font-bold hover:text-green-500 cursor-pointer"
-            href={`/update/${post.id}`}>
-            수정
-          </Link>
+          <p className="text-sm">조회수 {post.view}</p> {/* 조회수가 0으로 반환됨 */}
         </div>
       </div>
       <Link href={`/post/${post.id}`} className="font-bold hover:text-blue-500 inline">

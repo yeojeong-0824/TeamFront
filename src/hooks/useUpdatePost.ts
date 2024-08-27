@@ -4,6 +4,7 @@ import updatePost from "@/api/updatePost";
 import { useMutation } from "@tanstack/react-query";
 import { WriteUpdateType } from "@/types/board";
 import { useRouter } from "next/navigation";
+
 import Swal from "sweetalert2";
 import { useQueryClient } from "@tanstack/react-query";
 import { CustomError } from "@/types/error";

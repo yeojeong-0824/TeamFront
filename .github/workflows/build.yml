@@ -38,16 +38,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: 서버 연결 및 실행
-        run: |
-          echo -e "${{ secrets.EC2_PRIVATE_KEY }}" > key.pem
-          chmod 600 key.pem
-          ssh -i key.pem ${{ secrets.EC2_HOST }}
-          
-          sudo docker login -u ${{ secrets.DOCKERHUB_ID }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-          sudo docker pull ${{secrets.DOCKERHUB_USERNAME}}/front
-          sudo docker stop front
-          sudo docker container rm front
-          sudo docker run -dit -p 80:3000 --name front ${{secrets.DOCKERHUB_USERNAME}}/front
-          sudo docker image prune -f
-          
+      - name: excuting remote ssh commands
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            sudo docker login -u ${{ secrets.DOCKERHUB_ID }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+            sudo docker pull ${{secrets.DOCKERHUB_USERNAME}}/front
+            sudo docker stop front
+            sudo docker container rm front
+            sudo docker run -dit -p 80:3000 --name front ${{secrets.DOCKERHUB_USERNAME}}/front
+            sudo docker image prune -f

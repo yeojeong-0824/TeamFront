@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import ControlBarMain from "./ControlBarMain";
 import useSortPosts from "@/hooks/useSortPosts";
 import { useQueryClient } from "@tanstack/react-query";
+import LoadingSpinner from "./Loading";
+import ErrorShow from "./Error";
 
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -21,40 +23,17 @@ const CardPosts = () => {
   const [sortOption, setSortOption] = useState<string>(initialSortOption); 
 
   const queryClient = useQueryClient();
-  const { data, isLoading, isError, error } = useSortPosts(currentPage, sortOption);
+  const { data, isLoading, isFetching, isError, error } = useSortPosts(currentPage, sortOption);
   const totalPages = data?.totalPages;
 
-  useEffect(()=>{ 
-    router.push(`?page=${currentPage}&sort=${sortOption}`); 
-    queryClient.invalidateQueries({queryKey: ['sortPosts', currentPage, sortOption]});
+  useEffect(() => {
+    router.push(`?page=${currentPage}&sort=${sortOption}`);
+    queryClient.invalidateQueries({ queryKey: ['sortPosts', currentPage, sortOption] });
   }, [currentPage, sortOption, queryClient, router]);
 
-  useEffect(()=> {
-    queryClient.invalidateQueries({queryKey: ['sortPosts', currentPage, sortOption]});
-  }, [currentPage, sortOption, queryClient, router]);
-  useEffect(()=> {
-    queryClient.invalidateQueries({queryKey: ['sortPosts', currentPage, sortOption]});
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['sortPosts', currentPage, sortOption] });
   }, [currentPage, sortOption, queryClient]);
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center mt-32">
-        <p className="text-blue-500 text-2xl font-bold">
-          Loading...
-        </p>
-      </div>
-    );
-  };
-
-  if (isError) {
-    return (
-      <div className="flex justify-center mt-32">
-        <p className="text-red-500 text-2xl font-bold">
-          Error: {error?.message}
-        </p>
-      </div>
-    );
-  };
 
   const renderNoPostsFound = () => {
     if (data?.content.length === 0) {
@@ -65,7 +44,7 @@ const CardPosts = () => {
           </p>
         </div>
       )
-    }
+    };
   };
 
   return (
@@ -74,6 +53,8 @@ const CardPosts = () => {
         setSortOption={setSortOption}
         setCurrentPage={setCurrentPage} />
       {renderNoPostsFound()}
+      {isLoading || isFetching ? <LoadingSpinner size={15} mt={40} /> : null}
+      {isError && <ErrorShow error={error?.message}/>}
       {data?.content.map((post: Post) => (
         <CardPost key={post.id} post={post} />
       ))}

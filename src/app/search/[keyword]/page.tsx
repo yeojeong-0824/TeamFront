@@ -4,7 +4,7 @@ import { ParmasKeyword } from "@/types/search";
 import { Post } from "@/types/post";
 import useSearch from "@/hooks/useSearch";
 import ControlBarMain from "@/app/components/ControlBarMain";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CardPost from "@/app/components/CardPost";
 import NavigationNumberMain from "@/app/components/NavigationNumberMain";
 import Footer from "@/app/components/Footer";
@@ -12,6 +12,7 @@ import Link from "next/link";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import LoadingSpinner from "@/app/components/Loading";
 
 const SearchPage = ({ params }: { params: ParmasKeyword }) => {
   const router = useRouter(); 
@@ -41,16 +42,6 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
     setSortOption(sort);
   }, [searchParams]);
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center mt-32">
-        <p className="text-blue-500 text-2xl font-bold">
-          Loading...
-        </p>
-      </div>
-    );
-  };
-
   if (isError) {
     return (
       <div className="flex justify-center mt-32">
@@ -75,13 +66,14 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
   };
 
   return (
-    <Suspense fallback={<div>Loading Page...</div>}>
+    <>
       <div className="flex flex-col gap-3 max-w-[800px] min-h-[1100px] mx-auto mt-10 relative p-2">
         <div className="flex flex-col gap-3 mt-10">
           <ControlBarMain sortOption={sortOption}
             setSortOption={setSortOption}
             setCurrentPage={setCurrentPage} />
           {renderNoPostsFound()}
+          {isLoading && <LoadingSpinner size={10} mt={40} />}
           {data?.content.map((post: Post) => (
             <CardPost key={post.id} post={post} />
           ))}
@@ -92,7 +84,7 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
         </div>
       </div>
       <Footer />
-    </Suspense>
+    </>
   );
 }
 

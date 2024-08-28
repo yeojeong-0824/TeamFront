@@ -5,7 +5,7 @@ import { Pagination } from "@nextui-org/react";
 import { useEffect } from "react";
 
 const NavigationNumberMain = ({ currentPage, setCurrentPage, totalPage }: NavigationNumberMainProps) => {
-  useEffect(() => { // Add this block
+  useEffect(() => { 
     const validPage = Math.max(1, currentPage);
     if (validPage <= totalPage) {
       setCurrentPage(validPage);

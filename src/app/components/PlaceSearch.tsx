@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useLoadScript } from '@react-google-maps/api';
+import LoadingSpinner from './Loading';
 
 const libraries: ["places"] = ["places"];
 
@@ -71,7 +72,7 @@ const PlaceSearch: React.FC<{
   };
 
   if (loadError) return <div>Error loading maps</div>;
-  if (!isLoaded) return <div>Loading...</div>;
+  if (!isLoaded) return <LoadingSpinner size={10}/>;
 
   return (
     <div className='flex flex-col gap-3'>

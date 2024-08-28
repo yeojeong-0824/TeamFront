@@ -11,6 +11,7 @@ import useDeleteScore from "@/hooks/useDeleteScore";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import { Rate } from "antd";
+import LoadingSpinner from "@/app/components/Loading";
 
 const Post = ({ params }: { params: ParamsId }) => {
   const { id } = params;
@@ -58,9 +59,7 @@ const Post = ({ params }: { params: ParamsId }) => {
   return (
     <div className="p-2">
       {isLoading && (
-        <div className="flex justify-center mt-72 text-blue-500 font-bold text-3xl">
-          Loading...
-        </div>
+        <LoadingSpinner size={15}/>
       )}
       {isError && (
         <div className="text-red-500 font-bold text-5xl">

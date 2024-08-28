@@ -19,26 +19,27 @@ const Header = (): JSX.Element => {
   };
 
   return (
-    <header className="w-full top-0 z-50 flex justify-between p-2 bg-white border-b-2 fixed">
-      <Link href={'/'}>
-        <Image src='/여정logo.png' alt="메인 로고" width={80} height={80} />
-      </Link>
-      {accessToken ? (
-        <div className="flex gap-10 items-center">
+    <header className="w-full top-0 z-50 flex justify-between items-center p-2 border-b-2 fixed bg-white">
+      <div className="flex-1 flex justify-center">
+        <Link href={'/'} className="ml-[180px]">
+          <Image src='/여정logo.png' alt="메인 로고" width={80} height={80} />
+        </Link>
+      </div>
+      <div className="flex gap-10 items-center">
+        {accessToken ? (
           <div className="flex gap-2">
             <button onClick={handleLogout} className="px-4 p-2 rounded-full border hover:bg-gray-100 text-sm">로그아웃</button>
-            <Link href={'/check-my-info'} className="px-4 p-2 rounded-full bg-blue-800 text-white hover:bg-blue-900 text-sm">회원정보</Link>
+            <Link href={'/check-my-info'} className="px-4 p-2 rounded-full bg-[#3D6691] text-white hover:bg-[#2f5072] text-sm">회원정보</Link>
           </div>
-        </div>
-      ) : (
-        <div className="flex gap-10 items-center">
+        ) : (
           <div className="flex gap-2">
             <Link href={'/login-ui'} className="px-4 p-2 rounded-full border hover:bg-gray-100 text-sm">로그인</Link>
-            <Link href={'/email-check'} className="px-4 p-2 rounded-full bg-blue-800 text-white hover:bg-blue-900 text-sm">회원가입</Link>
+            <Link href={'/email-check'} className="px-4 p-2 rounded-full bg-[#3D6691] text-white hover:bg-[#2f5072] text-sm">회원가입</Link>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </header>
+
   );
 };
 

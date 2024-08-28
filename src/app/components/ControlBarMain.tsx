@@ -56,7 +56,7 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
 
   return (
     <div className="flex justify-between items-center pb-8 border-b-2 mt-[30px]">
-        <button onClick={handlePost} className="flex items-center gap-1 px-3 p-2 rounded-lg text-white bg-blue-800 hover:bg-blue-900 text-sm">
+        <button onClick={handlePost} className="flex items-center gap-1 px-3 p-2 rounded-lg text-white bg-[#6EB4FB] hover:bg-blue-500 text-sm">
         <PiNotePencilThin className="inline text-xl"/>
         작성하기
         </button>

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest"  // Jest를 사용하는 테스트 스크립트 추가
   },
   "dependencies": {
     "@nextui-org/react": "^2.4.6",
@@ -35,6 +36,8 @@
     "eslint-config-next": "14.2.5",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "jest": "^29.0.0",  // Jest 추가
+    "@types/jest": "^29.0.0"  // Jest의 타입 정의 추가
   }
 }

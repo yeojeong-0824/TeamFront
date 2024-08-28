@@ -23,7 +23,7 @@ const CardPosts = () => {
   const [sortOption, setSortOption] = useState<string>(initialSortOption); 
 
   const queryClient = useQueryClient();
-  const { data, isLoading, isFetching, isError, error } = useSortPosts(currentPage, sortOption);
+  const { data, isLoading, isError, error } = useSortPosts(currentPage || 1, sortOption);
   const totalPages = data?.totalPages;
 
   useEffect(() => {
@@ -48,12 +48,12 @@ const CardPosts = () => {
   };
 
   return (
-    <div className="flex flex-col gap-3 mt-10">
+    <div className="flex flex-col gap-3 mt-10 mb-16 h-[1100px]">
       <ControlBarMain sortOption={sortOption}
         setSortOption={setSortOption}
         setCurrentPage={setCurrentPage} />
       {renderNoPostsFound()}
-      {isLoading || isFetching ? <LoadingSpinner size={15} mt={40} /> : null}
+      {isLoading ? <LoadingSpinner size={15} mt={40} /> : null}
       {isError && <ErrorShow error={error?.message}/>}
       {data?.content.map((post: Post) => (
         <CardPost key={post.id} post={post} />

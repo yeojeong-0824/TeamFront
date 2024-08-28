@@ -78,7 +78,7 @@ const Signup: React.FC = () => {
 
 
   return (
-    <div>
+    <div className='mt-32'>
       <h1>회원가입</h1>
       <div>
         <label htmlFor="email">이메일:</label>

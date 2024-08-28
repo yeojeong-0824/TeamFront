@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import { Rate } from "antd";
 import LoadingSpinner from "@/app/components/Loading";
+import ErrorShow from "@/app/components/Error";
 
 const Post = ({ params }: { params: ParamsId }) => {
   const { id } = params;
@@ -59,13 +60,9 @@ const Post = ({ params }: { params: ParamsId }) => {
   return (
     <div className="p-2">
       {isLoading && (
-        <LoadingSpinner size={15}/>
+        <LoadingSpinner size={15} mt={40}/>
       )}
-      {isError && (
-        <div className="text-red-500 font-bold text-5xl">
-          {error?.toString()}
-        </div>
-      )}
+      {isError && <ErrorShow error={error?.message}/>}
       {isSuccess && (
         <div className="flex flex-col gap-3 justify-between max-w-[800px] min-h-[400px] mx-auto mt-40 border p-3">
           <div className="flex justify-between border p-3" >

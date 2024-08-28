@@ -66,7 +66,7 @@ export default function LoginUi() {
   };
 
   return (
-    <div>
+    <div className='mt-32'>
       <h1>로그인</h1>
       <form onSubmit={handleSubmit}>
         <div>

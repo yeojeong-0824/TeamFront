@@ -30,7 +30,9 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
     Swal.fire({
       icon: 'error',
       title: '검색 실패',
-      text: `${error.keyword?.message}`
+      text: `${error.keyword?.message}`,
+      showConfirmButton: false,
+      timer: 800,
     });
   };
 
@@ -55,13 +57,13 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
   };
 
   return (
-    <div className="flex justify-between items-center pb-8 border-b-2 mt-[30px]">
+    <div className="flex justify-between items-center pb-8 border-b-1 mt-[30px]">
         <button onClick={handlePost} className="flex items-center gap-1 px-3 p-2 rounded-lg text-white bg-[#6EB4FB] hover:bg-blue-500 text-sm">
         <PiNotePencilThin className="inline text-xl"/>
         작성하기
         </button>
 
-      <form className="flex gap-1" onSubmit={handleSubmit(onSubmit, onInvalid)}>
+      <form className="flex gap-1 items-end" onSubmit={handleSubmit(onSubmit, onInvalid)}>
         <Input
           aria-label="검색"
           type="text"
@@ -75,8 +77,8 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
           onChange={(e) => setValue('keyword', e.target.value)}
           isClearable
         />
-        <button type="submit">
-          <CiSearch className="text-gray-900 text-2xl mt-5" />
+        <button type="submit" className="h-[24px]">
+          <CiSearch className="text-gray-900 text-2xl" />
         </button>
       </form>
 

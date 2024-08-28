@@ -56,10 +56,10 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
     if (data?.content.length === 0) {
       return (
         <div className="flex flex-col gap-6 items-center mt-32">
-          <p className="text-red-500 text-2xl font-bold">
+          <p className="text-gray-900 text-2xl font-bold">
             게시글이 존재하지 않습니다.
           </p>
-          <Link href={'/'} className="text-blue-500 text-xl font-bold hover:opacity-60">돌아가기</Link>
+          <Link href={'/'} className="text-blue-500 text-xl font-bold hover:text-blue-600">돌아가기</Link>
         </div>
       )
     }

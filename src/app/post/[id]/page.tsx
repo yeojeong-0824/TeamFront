@@ -51,7 +51,7 @@ const Post = ({ params }: { params: ParamsId }) => {
       return;
     }
     if (value === 0) return;
-    scoreMutate(value); // Update the score with the selected value
+    scoreMutate(value); 
     setScore(value);
   };
 

@@ -1,4 +1,5 @@
 'use client';
+
 import CardPost from "./CardPost";
 import { Post } from "@/types/post";
 import NavigationNumberMain from "./NavigationNumberMain";
@@ -10,36 +11,30 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const CardPosts = () => {
-  const router = useRouter(); // Add this line
-  const searchParams = useSearchParams(); // Add this line
+  const router = useRouter(); 
+  const searchParams = useSearchParams(); 
 
-  const initialPage = parseInt(searchParams.get('page') || '1', 10); // Add this line
-  const initialSortOption = searchParams.get('sort') || 'latest'; // Add this line
+  const initialPage = parseInt(searchParams.get('page') || '1', 10); 
+  const initialSortOption = searchParams.get('sort') || 'latest';
 
-  // const [currentPage, setCurrentPage] = useState<number>(1);
-  // const [sortOption, setSortOption] = useState<string>('latest');
-  const [currentPage, setCurrentPage] = useState<number>(initialPage); // Change this line
-  const [sortOption, setSortOption] = useState<string>(initialSortOption); // Change this line
+  const [currentPage, setCurrentPage] = useState<number>(initialPage); 
+  const [sortOption, setSortOption] = useState<string>(initialSortOption); 
 
   const queryClient = useQueryClient();
   const { data, isLoading, isError, error } = useSortPosts(currentPage, sortOption);
   const totalPages = data?.totalPages;
 
-  useEffect(()=>{ // Add this block
+  useEffect(()=>{ 
     router.push(`?page=${currentPage}&sort=${sortOption}`); 
     queryClient.invalidateQueries({queryKey: ['sortPosts', currentPage, sortOption]});
-  }, [currentPage, sortOption]);
-
-  useEffect(()=> { // Add this block
-    const page = parseInt(searchParams.get('page') || '1', 10);
-    const sort = searchParams.get('sort') || 'latest';
-    setCurrentPage(page);
-    setSortOption(sort);
-  }, [searchParams]);
+  }, [currentPage, sortOption, queryClient, router]);
 
   useEffect(()=> {
     queryClient.invalidateQueries({queryKey: ['sortPosts', currentPage, sortOption]});
-  }, [currentPage, sortOption]);
+  }, [currentPage, sortOption, queryClient, router]);
+  useEffect(()=> {
+    queryClient.invalidateQueries({queryKey: ['sortPosts', currentPage, sortOption]});
+  }, [currentPage, sortOption, queryClient]);
 
   if (isLoading) {
     return (

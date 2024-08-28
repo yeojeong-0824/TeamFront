@@ -4,7 +4,7 @@ import { ParmasKeyword } from "@/types/search";
 import { Post } from "@/types/post";
 import useSearch from "@/hooks/useSearch";
 import ControlBarMain from "@/app/components/ControlBarMain";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import CardPost from "@/app/components/CardPost";
 import NavigationNumberMain from "@/app/components/NavigationNumberMain";
 import Footer from "@/app/components/Footer";
@@ -13,31 +13,28 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
+const SearchPage = ({ params }: { params: ParmasKeyword }) => {
+  const router = useRouter(); 
+  const searchParams = useSearchParams(); 
+  const queryClient = useQueryClient(); 
 
-const searchPage = ({ params }: { params: ParmasKeyword }) => {
-  const router = useRouter(); // Add this line
-  const searchParams = useSearchParams(); // Add this line
-  const queryClient = useQueryClient(); // Add this line
-
-  const initialPage = parseInt(searchParams.get('page') || '1', 10); // Add this line
-  const initialSortOption = searchParams.get('sort') || 'latest'; // Add this line
+  const initialPage = parseInt(searchParams.get('page') || '1', 10); 
+  const initialSortOption = searchParams.get('sort') || 'latest'; 
 
   const keyword = decodeURIComponent(params.keyword);
-  // const [currentPage, setCurrentPage] = useState<number>(1);
-  // const [sortOption, setSortOption] = useState<string>('latest');
-  const [currentPage, setCurrentPage] = useState<number>(initialPage); // Change this line
-  const [sortOption, setSortOption] = useState<string>(initialSortOption); // Change this line
+  const [currentPage, setCurrentPage] = useState<number>(initialPage); 
+  const [sortOption, setSortOption] = useState<string>(initialSortOption);
 
   const { data, isLoading, isError, error } = useSearch(keyword, currentPage, sortOption);
 
   const totalPages = data?.totalPages;
 
-  useEffect(()=>{ // Add this block
+  useEffect(() => { 
     router.push(`?page=${currentPage}&sort=${sortOption}`); 
-    queryClient.invalidateQueries({queryKey: ['sortPosts', currentPage, sortOption]});
-  }, [currentPage, sortOption]);
+    queryClient.invalidateQueries({ queryKey: ['sortPosts', currentPage, sortOption] });
+  }, [currentPage, sortOption, queryClient, router]);
 
-  useEffect(()=> { // Add this block
+  useEffect(()=> {
     const page = parseInt(searchParams.get('page') || '1', 10);
     const sort = searchParams.get('sort') || 'latest';
     setCurrentPage(page);
@@ -78,7 +75,7 @@ const searchPage = ({ params }: { params: ParmasKeyword }) => {
   };
 
   return (
-    <>
+    <Suspense fallback={<div>Loading Page...</div>}>
       <div className="flex flex-col gap-3 max-w-[800px] min-h-[1100px] mx-auto mt-10 relative p-2">
         <div className="flex flex-col gap-3 mt-10">
           <ControlBarMain sortOption={sortOption}
@@ -95,8 +92,8 @@ const searchPage = ({ params }: { params: ParmasKeyword }) => {
         </div>
       </div>
       <Footer />
-    </>
+    </Suspense>
   );
 }
 
-export default searchPage;
+export default SearchPage;

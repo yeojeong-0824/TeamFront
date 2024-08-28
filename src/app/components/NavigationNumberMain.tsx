@@ -1,3 +1,5 @@
+'use client';
+
 import { NavigationNumberMainProps } from "@/types/navigation";
 import { Pagination } from "@nextui-org/react";
 import { useEffect } from "react";

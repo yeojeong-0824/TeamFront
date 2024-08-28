@@ -37,7 +37,7 @@ const Update = ({ params }: { params: ParamsId }) => {
       title: data?.title,
       body: data?.body,
     });
-  }, [data]);
+  }, [data, reset]);
 
   const onSubmitForm = (data: WriteUpdateType) => {
     if (

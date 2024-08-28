@@ -25,7 +25,7 @@ const [age, set_age] = useState(0);
   
   useEffect(() => {
     get_my_info();
-  }, []);
+  }, [get_my_info]);
 
 
   async function get_my_info() {

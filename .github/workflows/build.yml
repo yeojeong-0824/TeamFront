@@ -43,6 +43,7 @@ jobs:
           echo "${{ secrets.EC2_PRIVATE_KEY }}" > key.pem
           chmod 600 key.pem
           ssh -i key.pem ${{ secrets.EC2_HOST }}
+          
           sudo docker login -u ${{ secrets.DOCKERHUB_ID }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
           sudo docker pull ${{secrets.DOCKERHUB_USERNAME}}/front
           sudo docker stop front

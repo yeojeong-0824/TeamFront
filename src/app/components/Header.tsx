@@ -25,7 +25,7 @@ const Header = (): JSX.Element => {
       {accessToken ? (
         <div className="flex gap-10 items-center">
           <div className="flex gap-2">
-            <button onClick={handleLogout} className="p-2 rounded-xl bg-red-500 text-white">로그아웃</button>
+            <button onClick={handleLogout} className="p-2 rounded-xl bg-blue-500 text-white">로그아웃</button>
             <Link href={'/check-my-info'} className="p-2 rounded-xl bg-blue-500 text-white">회원정보</Link>
           </div>
         </div>

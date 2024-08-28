@@ -38,9 +38,7 @@ const Write = () => {
     )
   };
 
-  const handleCancel = () => {
-    router.back();
-  };
+  const handleCancel = () => router.back();
 
   const btnS = 'text-white rounded-sm p-1 hover:bg-opacity-60';
 

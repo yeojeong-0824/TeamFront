@@ -22,7 +22,6 @@ const Signup: React.FC = () => {
     try {
 
       if (password === password_check) {
-<<<<<<< HEAD
         const data = { username, password, email, age, nickname, name };
         const response = await fetch(`${url}/member`, {
           method: 'POST',
@@ -39,20 +38,6 @@ const Signup: React.FC = () => {
         } else {
           alert('회원가입 실패: ' + response.statusText);
         }
-=======
-      const data = { username, password, email, age, nickname, name };
-      const response = await fetch(`${url}/member`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.status===201) {
-alert("회원 가입이 완료되었습니다!")
-router.push('/'); 
->>>>>>> 0278ba74ccfe66f6e68a01ad41fe4362d3ad5db1
       } else {
         alert("비밀번호가 일치하지 않습니다")
       }
@@ -106,7 +91,6 @@ router.push('/');
           readOnly
         />        </div>
 
-<<<<<<< HEAD
       <div>
         <label htmlFor="username">아이디:</label>
         <input
@@ -127,29 +111,6 @@ router.push('/');
           onChange={(e) => set_nickname(e.target.value)}
           required
           readOnly={checked_jungbok}
-=======
-        <div>
-          <label htmlFor="username">아이디:</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => set_username(e.target.value)}
-            required
-            readOnly={checked_jungbok}
-          />
-        </div>
-        <div>
-          <label htmlFor="nickname">닉네임:</label>
-
-          <input
-            type="text"
-            id="nickname"
-            value={nickname}
-            onChange={(e) => set_nickname(e.target.value)}
-            required
-            readOnly={checked_jungbok}
->>>>>>> 0278ba74ccfe66f6e68a01ad41fe4362d3ad5db1
 
         />          <button onClick={() => check_jungbok()}>중복 확인</button>
 

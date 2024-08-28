@@ -16,7 +16,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
+
+      - name: .env 파일 설정
+        run: echo ${{secrets.ENV}} >> .env
+        
       - name: Docker 이미지 빌드
         run: docker build -t ${{secrets.DOCKERHUB_USERNAME}}/front .
 

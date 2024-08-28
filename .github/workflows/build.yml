@@ -36,7 +36,7 @@ jobs:
     needs: build
 
     steps:
-      - uses: actions/checkout@v3=
+      - uses: actions/checkout@v3
 
       - name: 서버 연결 및 실행
         run: |

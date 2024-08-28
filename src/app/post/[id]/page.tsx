@@ -1,51 +1,34 @@
 'use client';
+
 import { ParamsId } from "@/types/post";
 import usePost from "@/hooks/usePost";
 import useDeletePost from "@/hooks/useDeletePost";
-import Link from "next/link";
 import Comment from "@/app/components/comment";
-import { Slider } from "@nextui-org/react";
 import { Button } from "@nextui-org/react";
 import { useState } from "react";
 import useSetScore from "@/hooks/useSetScore";
 import useDeleteScore from "@/hooks/useDeleteScore";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { Rate } from "antd";
 
 const Post = ({ params }: { params: ParamsId }) => {
   const { id } = params;
-  const { mutate: deletePostMutate } = useDeletePost();
   const { data, isLoading, isError, error, isSuccess } = usePost(id);
-  const [score, setScore] = useState<number>(0);
+  const { mutate: deletePostMutate } = useDeletePost();
   const { mutate: scoreMutate } = useSetScore(id);
   const { mutate: deleteScoreMutate } = useDeleteScore(id);
-  const memberScoreInfo = data?.MemberScoreInfo;
+  const [score, setScore] = useState(0);
   const router = useRouter();
+  const memberScoreInfo = data?.MemberScoreInfo;
+  const token = localStorage.getItem('accessToken');
 
   const handlePostDelete = () => deletePostMutate(id);
-
-  const handleScoreChange = (value: number | number[]) => setScore(value as number);
-
-  const postScore = () => {
-    const token = localStorage.getItem('accessToken');
-    if(!token) {
-      Swal.fire({
-        icon: 'error',
-        title: '로그인 필요',
-        text: '로그인이 필요한 서비스입니다'
-      });
-      router.push(`/login-ui`);
-      return;
-    }
-    if (score === 0) return;
-    scoreMutate(score);
-  };
 
   const deleteScore = () => deleteScoreMutate(id);
 
   const handleUpdate = () => {
-    const token = localStorage.getItem('accessToken');
-    if(!token) {
+    if (!token) {
       Swal.fire({
         icon: 'error',
         title: '로그인 필요',
@@ -57,14 +40,33 @@ const Post = ({ params }: { params: ParamsId }) => {
     router.push(`/update/${id}`);
   }
 
+  const handleRate = (value: number) => {
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: '로그인 필요',
+        text: '로그인이 필요한 서비스입니다'
+      });
+      router.push('/login-ui');
+      return;
+    }
+    if (value === 0) return;
+    scoreMutate(value); // Update the score with the selected value
+    setScore(value);
+  };
+
   return (
     <div className="p-2">
-      {isLoading && <div className="flex justify-center mt-72 text-blue-500 font-bold text-3xl">
-        Loading...
-      </div>}
-      {isError && <div className="text-red-500 font-bold text-5xl">
-        {error?.toString()}
-      </div>}
+      {isLoading && (
+        <div className="flex justify-center mt-72 text-blue-500 font-bold text-3xl">
+          Loading...
+        </div>
+      )}
+      {isError && (
+        <div className="text-red-500 font-bold text-5xl">
+          {error?.toString()}
+        </div>
+      )}
       {isSuccess && (
         <div className="flex flex-col gap-3 justify-between max-w-[800px] min-h-[400px] mx-auto mt-40 border p-3">
           <div className="flex justify-between border p-3" >
@@ -86,33 +88,21 @@ const Post = ({ params }: { params: ParamsId }) => {
           )}
           <div className="flex justify-between">
             <div className="flex gap-3">
-              <button className="hover:text-blue-500 font-bold" onClick={handleUpdate}>글 수정</button>
-              <button className="hover:text-red-500 font-bold" onClick={handlePostDelete}>글 삭제</button>
+              <button className="hover:text-blue-500 font-bold" onClick={handleUpdate}>
+                글 수정
+              </button>
+              <button className="hover:text-red-500 font-bold" onClick={handlePostDelete}>
+                글 삭제
+              </button>
             </div>
           </div>
           <div>
-            <Slider
-              size="md"
-              step={1}
-              color="success"
-              label="별점"
-              showSteps={true}
-              maxValue={10}
-              minValue={0}
-              defaultValue={memberScoreInfo ? memberScoreInfo : 0}
-              className="max-w-sm"
-              onChange={handleScoreChange}
-              isDisabled={memberScoreInfo ? true : false}
-            />
-            {memberScoreInfo === null ? (
-              <Button
-                color="success"
-                className="text-white font-bold"
-                onClick={postScore}
-              >
-                별점 등록
-              </Button>
-            ) : (
+            <p>
+              <Rate onChange={handleRate} 
+                value={score}
+                defaultValue={memberScoreInfo ? memberScoreInfo : 0} />
+            </p>
+            {memberScoreInfo && (
               <Button
                 color="danger"
                 className="text-white font-bold"

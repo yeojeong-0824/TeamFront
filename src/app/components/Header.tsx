@@ -1,6 +1,7 @@
 'use client';
 import Link from "next/link";
 import useAuthStore, { useAuthInitializer } from '../store';
+import Swal from "sweetalert2";
 
 const Header = (): JSX.Element => {
   useAuthInitializer(); // 상태 초기화 훅 호출
@@ -9,6 +10,11 @@ const Header = (): JSX.Element => {
   
   const handleLogout = () => {
     clearTokens(); // 액세스 토큰과 리프레쉬 토큰 삭제
+    Swal.fire({
+      icon: 'success',
+      title: '로그아웃 성공',
+      text: '로그아웃 되었습니다',
+    });
   };
 
   return (

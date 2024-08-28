@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import useAuthStore from '../store'; // Zustand 스토어 가져오기
 import Link from 'next/link';
 import { url } from '../store'
+import Swal from 'sweetalert2';
 
 export default function LoginUi() {
   const [formData, setFormData] = useState({
@@ -43,7 +44,13 @@ export default function LoginUi() {
           localStorage.setItem('accessToken', token);
           localStorage.setItem('refreshToken', refresh);
           setAccessToken(token);
-          alert('로그인하였습니다');
+          Swal.fire({
+            icon: 'success',
+            title: '로그인 성공',
+            text: '로그인 되었습니다',
+            timer: 1000,
+            showConfirmButton: false
+          });
           router.push('/'); // 로그인 후 메인 페이지로 리다이렉트
         } else {
           alert('인증토큰을 불러오지 못했습니다. 다시 로그인해보세요.');

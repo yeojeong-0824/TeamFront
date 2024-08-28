@@ -1,0 +1,41 @@
+name: Ci/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build and create Docker image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Build Docker Image
+        run: docker build -t ${{secrets.DOCKERHUB_USERNAME}}/front .
+
+  # deploy:
+  #   name: Run
+  #   runs-on: ubuntu-latest
+  #   permissions: write-all
+  #   needs: build
+
+  #   steps:
+  #     - uses: actions/checkout@v3
+
+  #     - name: Run
+  #       uses: appleboy/ssh-action@v1.0.0
+  #       with:
+  #         host: ${{secrets.HOST}}
+  #         username: ${{secrets.GCP_USERNAME}}
+  #         key: ${{secrets.GCP_PRIVATEKEY}}
+  #         script: |
+  #           sudo docker login -u ${{ secrets.DOCKERHUB_ID }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+  #           sudo docker pull ${{secrets.DOCKERHUB_USERNAME}}/micro-member
+  #           sudo docker stop member
+  #           sudo docker container rm member
+  #           sudo docker run -dit -p 8082:8082 --network server --name member ${{secrets.DOCKERHUB_USERNAME}}/micro-member
+  #           sudo docker image prune -f

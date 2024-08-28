@@ -5,30 +5,25 @@ import Link from "next/link";
 import useAuthStore from '../store';
 import { useRouter } from 'next/navigation';
 
-
-import { url} from '../store';
+import { url } from '../store';
 
 export default function CheckMyInfo() {
   const router = useRouter();
-
   const { clearTokens } = useAuthStore();
 
-const [username, set_username] = useState("");
-const [nickname, set_nickname] = useState("");
-const [real_name, set_real_name] = useState("");
-const [email, set_email] = useState("");
-const [age, set_age] = useState(0);
+  const [userInfo, setUserInfo] = useState({
+    username: '',
+    nickname: '',
+    real_name: '',
+    email: '',
+    age: 0
+  });
 
-
-
-
-  
   useEffect(() => {
-    get_my_info();
-  }, [get_my_info]);
+    getMyInfo();
+  }, []);
 
-
-  async function get_my_info() {
+  const getMyInfo = async () => {
     try {
       const response = await fetch(`${url}/member/authed`, {
         method: 'GET',
@@ -37,54 +32,59 @@ const [age, set_age] = useState(0);
           'Content-Type': 'application/json'
         }
       });
-  
+
       if (response.status === 200) {
-        const data = await response.json(); // 응답의 본문을 JSON 형식으로 변환하여 저장
-        set_username(data.username);
-        set_nickname(data.nickname);
-        set_email(data.email);
-        set_real_name(data.name);
-        set_age(data.age);
-
+        const data = await response.json();
+        setUserInfo({
+          username: data.username,
+          nickname: data.nickname,
+          email: data.email,
+          real_name: data.name,
+          age: data.age
+        });
       } else if (response.status === 400) {
-alert("사용자 정보를 찾을 수 없습니다")
+        alert("사용자 정보를 찾을 수 없습니다");
       } else if (response.status === 403) {
-// 리프레쉬 토큰 불러오기
-const responseagain = await fetch(`${url}/member/authed`, {
-  method: 'GET',
-  headers: {
-    'Refresh': `${localStorage.getItem("refreshToken")}`,
-    'Content-Type': 'application/json'
-  }
-});
-if (responseagain.status === 200) {
-  const data = await responseagain.json(); // 응답의 본문을 JSON 형식으로 변환하여 저장
-  set_username(data.username);
-  set_nickname(data.nickname);
-  set_email(data.email);
-  set_real_name(data.name);
-  set_age(data.age);
-
-  const token = responseagain.headers.get('Authorization');
-   if (typeof token === 'string') {
-  localStorage.setItem('accessToken', token);
-}
-
-} else {
-  alert("세션이 만료되었습니다. 다시 로그인해주세요")
-  clearTokens();
-  router.push('/'); 
-
-  }
-
-
+        await handleTokenRefresh();
       }
-  
     } catch (error) {
-      alert(error);
+      alert("Error");
     }
-  }
-      
+  };
+
+  const handleTokenRefresh = async () => {
+    try {
+      const response = await fetch(`${url}/member/authed`, {
+        method: 'GET',
+        headers: {
+          'Refresh': `${localStorage.getItem("refreshToken")}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.status === 200) {
+        const data = await response.json();
+        setUserInfo({
+          username: data.username,
+          nickname: data.nickname,
+          email: data.email,
+          real_name: data.name,
+          age: data.age
+        });
+
+        const token = response.headers.get('Authorization');
+        if (token) {
+          localStorage.setItem('accessToken', token);
+        }
+      } else {
+        alert("세션이 만료되었습니다. 다시 로그인해주세요");
+        clearTokens();
+        router.push('/');
+      }
+    } catch (error) {
+      alert("Error");
+    }
+  };
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -97,7 +97,7 @@ if (responseagain.status === 200) {
         <tbody>
           <tr>
             <td>아이디</td>
-            <td>{username}</td>
+            <td>{userInfo.username}</td>
           </tr>
           <tr>
             <td>암호</td>
@@ -105,24 +105,22 @@ if (responseagain.status === 200) {
           </tr>
           <tr>
             <td>닉네임</td>
-            <td>{nickname}<Link href={'/change-nickname'}>변경</Link></td>
+            <td>{userInfo.nickname} <Link href={'/change-nickname'}>변경</Link></td>
           </tr>
           <tr>
             <td>email</td>
-            <td>{email}</td>
+            <td>{userInfo.email}</td>
           </tr>
           <tr>
             <td>이름</td>
-            <td>{real_name}</td>
+            <td>{userInfo.real_name}</td>
           </tr>
           <tr>
             <td>생년</td>
-            <td>{age}</td>
+            <td>{userInfo.age}</td>
           </tr>
         </tbody>
       </table>
     </div>
   );
-  
-
 }

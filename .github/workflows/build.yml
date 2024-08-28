@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build and create Docker image
+    name: CI
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -30,7 +30,7 @@ jobs:
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/front
 
   deploy:
-    name: CI
+    name: CD
     runs-on: ubuntu-latest
     permissions: write-all
     needs: build
@@ -39,16 +39,15 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: key 생성
-        run: echo "${{ secrets.EC2_PRIVATE_KEY }}" > key.pem
+        run: echo ${{ secrets.EC2_PRIVATE_KEY }} > key.pem
 
-      - name: 서버 연결
-        run: ssh -i key.pem ${{ secrets.EC2_HOST }}
-
-      - name: 실행
+      - name: 서버 연결 및 실행
         run: |
+          ssh -i key.pem ${{ secrets.EC2_HOST }}
           sudo docker login -u ${{ secrets.DOCKERHUB_ID }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
           sudo docker pull ${{secrets.DOCKERHUB_USERNAME}}/front
           sudo docker stop front
           sudo docker container rm front
           sudo docker run -dit -p 80:3000 --name front ${{secrets.DOCKERHUB_USERNAME}}/front
           sudo docker image prune -f
+          

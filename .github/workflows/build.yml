@@ -36,13 +36,12 @@ jobs:
     needs: build
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: key 생성
-        run: echo ${{ secrets.EC2_PRIVATE_KEY }} > key.pem
+      - uses: actions/checkout@v3=
 
       - name: 서버 연결 및 실행
         run: |
+          echo "${{ secrets.EC2_PRIVATE_KEY }}" > key.pem
+          chmod 600 private_key.pem
           ssh -i key.pem ${{ secrets.EC2_HOST }}
           sudo docker login -u ${{ secrets.DOCKERHUB_ID }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
           sudo docker pull ${{secrets.DOCKERHUB_USERNAME}}/front

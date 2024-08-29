@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import PlaceSearch from "../components/PlaceSearch";
 import { useRouter } from "next/navigation";
+import LoadingSpinner from "../components/Loading";
 
 const Write = () => {
   const { register, handleSubmit } = useForm<WriteUpdateType>();
@@ -28,15 +29,7 @@ const Write = () => {
     writeMutation.mutate(locationData);
   };
 
-  if (writeMutation.isPending) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-blue-500 text-2xl text-center font-bold">
-          Loading...
-        </p>
-      </div>
-    )
-  };
+  if (writeMutation.isPending) return <LoadingSpinner size={20} mt={40} />;
 
   const handleCancel = () => router.back();
 

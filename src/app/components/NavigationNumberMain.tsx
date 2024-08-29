@@ -10,7 +10,7 @@ const NavigationNumberMain = ({ currentPage, setCurrentPage, totalPage }: Naviga
     if (validPage <= totalPage) {
       setCurrentPage(validPage);
     } else {
-      setCurrentPage(totalPage);
+      setCurrentPage(1);
     }
   }, [currentPage, setCurrentPage, totalPage]);
 
@@ -19,7 +19,7 @@ const NavigationNumberMain = ({ currentPage, setCurrentPage, totalPage }: Naviga
     if (validPage <= totalPage) {
       setCurrentPage(validPage);
     } else {
-      setCurrentPage(totalPage);
+      setCurrentPage(1);
     }
   }, [currentPage, setCurrentPage, totalPage]);
   

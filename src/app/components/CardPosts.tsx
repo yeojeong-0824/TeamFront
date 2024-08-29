@@ -48,12 +48,12 @@ const CardPosts = () => {
   };
 
   return (
-    <div className="flex flex-col gap-3 mt-10 mb-16 h-[1100px]">
+    <div className="flex flex-col gap-3 mt-10 mb-16">
       <ControlBarMain sortOption={sortOption}
         setSortOption={setSortOption}
         setCurrentPage={setCurrentPage} />
       {renderNoPostsFound()}
-      {isLoading ? <LoadingSpinner size={15} mt={40} /> : null}
+      {isLoading && <LoadingSpinner size={15} mt={40} />}
       {isError && <ErrorShow error={error?.message}/>}
       {data?.content.map((post: Post) => (
         <CardPost key={post.id} post={post} />

@@ -42,13 +42,13 @@ const Update = ({ params }: { params: ParamsId }) => {
   const onSubmitForm = (data: WriteUpdateType) => {
     if (
       data.title === defaultValues?.title &&
-      data.body === defaultValues?.body
+      data.body === defaultValues?.body  
     ) {
       Swal.fire({
-        icon: "warning",
-        title: "No changes in title or body",
-        showConfirmButton: false,
-        timer: 1500,
+      icon: "warning",
+      title: "게시글에 변경사항이 없습니다",
+      showConfirmButton: false,
+      timer: 1000,
       });
       return;
     }

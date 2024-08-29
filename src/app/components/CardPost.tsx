@@ -6,6 +6,17 @@ import { IoEyeOutline } from "react-icons/io5";
 import { FaRegCommentDots } from "react-icons/fa6";
 
 const CardPost = ({ post }: CardPostProps): JSX.Element => {
+  const titleCut = () => {
+    let title = post?.title;
+    const maxLength = 50;
+    if(title.length > maxLength) {
+      let truncated = title.slice(0, maxLength);
+      const lastSpace = truncated.lastIndexOf(" ");
+      truncated = lastSpace > 0 ? truncated.slice(0, lastSpace) : truncated;
+      title = `${truncated}...`;
+    }
+    return title;
+  }
 
   return (
     <div className="border-b-1.5 p-3 text-gray-900">
@@ -26,8 +37,9 @@ const CardPost = ({ post }: CardPostProps): JSX.Element => {
           {/* <p className="text-sm">별 2개(별 아이콘으로)</p> */}
         </div>
       </div>
-      <Link href={`/post/${post.id}`} className="font-bold hover:text-blue-500 inline">
-        {post.title}
+      <Link href={`/post/${post.id}`} 
+      className="font-bold hover:text-blue-500 inline">
+        {titleCut()}
       </Link>
     </div>
   );

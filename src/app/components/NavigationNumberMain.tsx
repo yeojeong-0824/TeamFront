@@ -5,6 +5,7 @@ import { Pagination } from "@nextui-org/react";
 import { useEffect } from "react";
 
 const NavigationNumberMain = ({ currentPage, setCurrentPage, totalPage }: NavigationNumberMainProps) => {
+
   useEffect(() => { 
     const validPage = Math.max(1, currentPage);
     if (validPage <= totalPage) {
@@ -29,7 +30,7 @@ const NavigationNumberMain = ({ currentPage, setCurrentPage, totalPage }: Naviga
   };
 
   return (
-    <nav className="flex justify-center mt-3 absolute bottom-0 left-1/2 transform -translate-x-1/2">
+    <nav className="flex mt-3 absolute bottom-32 left-1/2 transform -translate-x-1/2">
       <div className="w-[500px] flex justify-center gap-1">
         <Pagination
           total={totalPage}

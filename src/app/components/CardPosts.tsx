@@ -35,6 +35,22 @@ const CardPosts = () => {
     queryClient.invalidateQueries({ queryKey: ['sortPosts', currentPage, sortOption] });
   }, [currentPage, sortOption, queryClient]);
 
+  // 컴포넌트가 마운트될 때 상태 초기화
+  useEffect(() => {
+    const newPage = parseInt(searchParams.get('page') || '1', 10);
+    const newSortOption = searchParams.get('sort') || 'latest';
+    setCurrentPage(newPage);
+    setSortOption(newSortOption);
+  }, []);
+
+  // URL 변경 사항을 감지하여 상태 업데이트
+  useEffect(() => {
+    const newPage = parseInt(searchParams.get('page') || '1', 10);
+    const newSortOption = searchParams.get('sort') || 'latest';
+    setCurrentPage(newPage);
+    setSortOption(newSortOption);
+  }, [searchParams]);
+
   const renderNoPostsFound = () => {
     if (data?.content.length === 0) {
       return (
@@ -48,7 +64,7 @@ const CardPosts = () => {
   };
 
   return (
-    <div className="flex flex-col gap-3 mt-10 mb-16">
+    <div className="flex flex-col gap-3 h-[1300px]">
       <ControlBarMain sortOption={sortOption}
         setSortOption={setSortOption}
         setCurrentPage={setCurrentPage} />

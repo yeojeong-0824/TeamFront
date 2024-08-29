@@ -20,7 +20,6 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
   const router = useRouter();
 
   const onSubmit: SubmitHandler<FormData> = (formData) => {
-    console.log(formData.keyword);
     setSortOption('latest');
     setCurrentPage(1);
     router.push(`/search/${formData.keyword}`);

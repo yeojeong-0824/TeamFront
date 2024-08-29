@@ -9,7 +9,7 @@ const CardPost = ({ post }: CardPostProps): JSX.Element => {
   const titleCut = () => {
     let title = post?.title;
     const maxLength = 50;
-    if(title.length > maxLength) {
+    if (title.length > maxLength) {
       let truncated = title.slice(0, maxLength);
       const lastSpace = truncated.lastIndexOf(" ");
       truncated = lastSpace > 0 ? truncated.slice(0, lastSpace) : truncated;
@@ -19,28 +19,32 @@ const CardPost = ({ post }: CardPostProps): JSX.Element => {
   }
 
   return (
-    <div className="border-b-1.5 p-3 text-gray-900">
+    <div className="border-b p-3 text-gray-900">
+
       <div className="flex justify-between mb-3">
+
         <div className="flex gap-3 items-center">
           <p className="text-sm">user1{post.memberNickname}</p>
-          <p className="text-sm">7시간전</p>
+          <p className="text-sm">7시간 전</p>
         </div>
+
         <div className="flex gap-3 items-center font-semibold">
-          <p className="text-sm">
-            <FaRegCommentDots className="inline text-md mr-[1.5px] mb-[2px]"/>
-              {/* {post.comment} */}0
+          <p className="text-sm flex items-center">
+            <FaRegCommentDots className="text-md mr-1" />
+            0
           </p>
-          <p className="text-sm">
-            <IoEyeOutline className="inline text-lg mr-[1.5px] mb-[1.5px]" /> 
+          <p className="text-sm flex items-center">
+            <IoEyeOutline className="text-lg mr-1" />
             {post.view}
           </p>
-          {/* <p className="text-sm">별 2개(별 아이콘으로)</p> */}
         </div>
+
       </div>
-      <Link href={`/post/${post.id}`} 
-      className="font-bold hover:text-blue-500 inline">
+
+      <Link href={`/post/${post.id}`} className="font-bold hover:text-blue-500">
         {titleCut()}
       </Link>
+
     </div>
   );
 };

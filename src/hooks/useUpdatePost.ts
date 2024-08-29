@@ -34,7 +34,6 @@ const useUpdatePost = (id: number) => {
         timer: 1500,
         
       });
-      queryClient.invalidateQueries({queryKey: ['post', id]});
       queryClient.invalidateQueries({queryKey: ['sortPosts']});
       router.push(`/post/${id}`);
     },

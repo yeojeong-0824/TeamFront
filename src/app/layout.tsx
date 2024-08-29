@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "./components/Header";
 import QueryProvider from "./components/QueryProvider";
 import { NextUIProvider } from "@nextui-org/react";
+import Footer from "./components/Footer";
 
 const inter = Noto_Sans_KR({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default function RootLayout({
           <NextUIProvider>
             <Header />
             {children}
+            <Footer />
           </NextUIProvider>
         </QueryProvider>
       </body>

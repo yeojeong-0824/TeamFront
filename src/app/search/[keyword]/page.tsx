@@ -7,7 +7,6 @@ import ControlBarMain from "@/app/components/ControlBarMain";
 import { useEffect, useState } from "react";
 import CardPost from "@/app/components/CardPost";
 import NavigationNumberMain from "@/app/components/NavigationNumberMain";
-import Footer from "@/app/components/Footer";
 import Link from "next/link";
 
 import { useRouter, useSearchParams } from "next/navigation";
@@ -83,7 +82,6 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
           />
         </div>
       </div>
-      <Footer />
     </>
   );
 }

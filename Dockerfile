@@ -6,10 +6,6 @@ COPY package*.json ./
 
 RUN npm ci
 
-RUN npm uninstall @swc/helpers
-
-RUN npm install @swc/helpers
-
 COPY . .
 
 RUN npm run build

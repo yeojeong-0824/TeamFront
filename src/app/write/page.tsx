@@ -46,7 +46,7 @@ const Write = () => {
   return (
     <>
       <div className="min-h-[1100px] p-2 my-12 text-gray-900">
-        {writeMutation.isPending && <LoadingSpinner size={15} mt={40} />}
+        <LoadingSpinner size={15} mt={40} isLoading={writeMutation.isPending} />
         {writeMutation.isError && <ErrorShow error={writeMutation.error.message} />}
         <form className="flex flex-col gap-8 max-w-[800px] mx-auto mt-24 p-3" onSubmit={handleSubmit(onSubmitForm)}>
           <div className="flex flex-col gap-2">

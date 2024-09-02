@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLoadScript } from '@react-google-maps/api';
 import LoadingSpinner from './Loading';
+import ErrorShow from './Error';
 
 const libraries: ["places"] = ["places"];
 
@@ -71,31 +72,32 @@ const PlaceSearch: React.FC<{
     setLongitude(0);
   };
 
-  if (loadError) return <div>Error loading maps</div>;
-  if (!isLoaded) return <LoadingSpinner size={10}/>;
-
   return (
-    <div className='flex flex-col gap-3'>
-      <input
-        ref={inputRef}
-        type="text"
-        value={inputValue}
-        onChange={handleInputChange}
-        placeholder="지역을 입력해주세요."
-        className='border p-2 w-full rounded-md'
-        id='local-search'
-      />
-      {selectedPlace && (
-        <div className='flex flex-col gap-1 p-2'>
-          <h3>선택된 지역 정보</h3>
-          <p>이름: {selectedPlace.name || 'N/A'}</p>
-          <p>주소: {selectedPlace.formatted_address || 'N/A'}</p>
-          <div className='flex justify-end'>
-            <button className='px-6 p-2 rounded-lg text-gray-900 hover:bg-gray-100 border' onClick={handlePlaceCancel} type='button'>지역 선택 취소하기</button>
+    <>
+      <LoadingSpinner size={10} isLoading={!isLoaded}/>
+      <ErrorShow error='지도를 불러오는데 실패했습니다.'/>
+      <div className='flex flex-col gap-3'>
+        <input
+          ref={inputRef}
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder="지역을 입력해주세요."
+          className='border p-2 w-full rounded-md'
+          id='local-search'
+        />
+        {selectedPlace && (
+          <div className='flex flex-col gap-1 p-2'>
+            <h3>선택된 지역 정보</h3>
+            <p>이름: {selectedPlace.name || 'N/A'}</p>
+            <p>주소: {selectedPlace.formatted_address || 'N/A'}</p>
+            <div className='flex justify-end'>
+              <button className='px-6 p-2 rounded-lg text-gray-900 hover:bg-gray-100 border' onClick={handlePlaceCancel} type='button'>지역 선택 취소하기</button>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 };
 

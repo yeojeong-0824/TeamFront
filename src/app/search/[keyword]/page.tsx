@@ -68,7 +68,7 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
   return (
     <>
       <div className="flex flex-col gap-3 max-w-[800px] min-h-[1100px] mx-auto mt-10 relative p-2">
-        {isLoading && <LoadingSpinner size={15} mt={400} />}
+        <LoadingSpinner size={15} mt={400} isLoading={isLoading}/>
         {isError && <ErrorShow error={error} />}
         <div className="flex flex-col gap-3 mt-10">
           <ControlBarMain sortOption={sortOption}

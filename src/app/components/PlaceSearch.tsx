@@ -75,7 +75,7 @@ const PlaceSearch: React.FC<{
   return (
     <>
       <LoadingSpinner size={10} isLoading={!isLoaded}/>
-      <ErrorShow error='지도를 불러오는데 실패했습니다.'/>
+      {loadError && <ErrorShow error='지도를 불러오는데 실패했습니다.'/>}
       <div className='flex flex-col gap-3'>
         <input
           ref={inputRef}

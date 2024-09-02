@@ -1,24 +1,24 @@
-import postComment from "@/api/postComment";
-import { Comment } from "@/types/comment";
-import { CustomError } from "@/types/error";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import updateComment from "@/api/updateComment";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UpdateComment } from "@/types/comment";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { CustomError } from "@/types/error";
 
-const usePostComment = (id: number) => {
+const useUpdateComment = (id: number) => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
   const mutation = useMutation({
-    mutationFn: (commentData: Comment)=> postComment(commentData),
+    mutationFn: (commentData: UpdateComment)=> updateComment(commentData),
     onSuccess: () => {
       Swal.fire({
         icon: 'success',
-        title: '댓글이 등록되었습니다',
+        title: '댓글 수정 성공',
         showConfirmButton: false,
         timer: 1000
       });
-      queryClient.invalidateQueries({ queryKey: ['comment', id] });
+      queryClient.invalidateQueries({queryKey: ['comment', id]});
     },
     onError: (error: CustomError) => {
       if(error?.response.status === 403) {
@@ -36,9 +36,9 @@ const usePostComment = (id: number) => {
         text: error.message
       })
     }
-  });
+  })
 
   return mutation;
-}
+};
 
-export default usePostComment;
+export default useUpdateComment;

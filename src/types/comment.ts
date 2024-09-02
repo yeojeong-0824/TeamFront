@@ -13,3 +13,9 @@ export type CommentResponse = {
     nickname: string
   }
 }
+
+export type UpdateComment = {
+  commentId: number;
+  score: number;
+  comment: string;
+}

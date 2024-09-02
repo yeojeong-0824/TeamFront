@@ -132,7 +132,7 @@ const Post = ({ params }: { params: ParamsId }) => {
                 별점 삭제
               </Button>
             )} */}
-            {data?.avgScore ? <p className="text-xl font-bold text-yellow-500">
+            {data?.avgScore ? <p className="text-xl font-semibold text-yellow-500">
               해당 게시글의 별점은 {data?.avgScore / 100}점입니다.
             </p> : null}
           </div>

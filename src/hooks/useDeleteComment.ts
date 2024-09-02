@@ -1,24 +1,25 @@
-import postComment from "@/api/postComment";
-import { Comment } from "@/types/comment";
+import deleteComment from "@/api/deleteComment";
 import { CustomError } from "@/types/error";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
-const usePostComment = (id: number) => {
+const useDelteMutation = (id: number) => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
   const mutation = useMutation({
-    mutationFn: (commentData: Comment)=> postComment(commentData),
+    mutationFn: (commetId:number)=> deleteComment(commetId),
     onSuccess: () => {
       Swal.fire({
         icon: 'success',
-        title: '댓글이 등록되었습니다',
+        title: '삭제 완료',
+        text: '댓글이 삭제되었습니다',
         showConfirmButton: false,
         timer: 1000
       });
-      queryClient.invalidateQueries({ queryKey: ['comment', id] });
+      queryClient.invalidateQueries({queryKey: ['comment', id]});
     },
     onError: (error: CustomError) => {
       if(error?.response.status === 403) {
@@ -39,6 +40,6 @@ const usePostComment = (id: number) => {
   });
 
   return mutation;
-}
+};
 
-export default usePostComment;
+export default useDelteMutation;

@@ -15,7 +15,9 @@ import LoadingSpinner from "@/app/components/Loading";
 import ErrorShow from "@/app/components/Error";
 import { IoEyeOutline } from "react-icons/io5";
 import { QueryClient } from "@tanstack/react-query";
-import { global } from "styled-jsx/css";
+import { BsThreeDots } from "react-icons/bs";
+import { PiNotePencilThin } from "react-icons/pi";
+import { CiTrash } from "react-icons/ci";
 
 const Post = ({ params }: { params: ParamsId }) => {
   const { id } = params;
@@ -28,6 +30,7 @@ const Post = ({ params }: { params: ParamsId }) => {
   const memberScoreInfo = data?.MemberScoreInfo;
   const token = localStorage.getItem('accessToken');
   const queryClient = new QueryClient();
+  const [postOptionVisible, setPostOptionVisible] = useState<boolean>(false);
 
   const handlePostDelete = () => deletePostMutate(id);
 
@@ -69,21 +72,38 @@ const Post = ({ params }: { params: ParamsId }) => {
 
   return (
     <div className="min-h-[1300px] p-2 my-12">
-      {isLoading && (
-        <LoadingSpinner size={15} mt={40} />
-      )}
+      <LoadingSpinner size={15} mt={400} isLoading={isLoading} />
       {isError && <ErrorShow error={error?.message} />}
       {isSuccess && (
         <div className="flex flex-col gap-3 justify-between max-w-[800px] mx-auto mt-24 p-3">
           <h1 className="text-4xl text-gray-900 leading-10">{data?.title}</h1>
-          <div className="flex justify-end px-3" >
-            <div className="flex gap-2 items-center text-gray-900 text-sm">
+          <div className="flex justify-end">
+            <div className="flex gap-3 items-center text-gray-900 text-sm">
               <h3 className="font-medium">{data?.memberNickname}user</h3>
               <h3>7시간 전</h3>
               <h3 className="text-sm">
                 <IoEyeOutline className="inline text-lg mr-[1.5px] mb-[1.5px]" />
                 {data?.view}
               </h3>
+              <div className="flex gap-1 justify-end text-sm relative">
+                <button
+                  onClick={() => setPostOptionVisible((option) => !option)}
+                  className="text-2xl" >
+                  <BsThreeDots />
+                </button>
+                {postOptionVisible && <div className="flex flex-col w-[120px] border gap-1 p-3 rounded-md shadow-md absolute top-6 z-10 bg-white">
+                  <button className="flex items-center gap-1 hover:text-blue-500 p-1"
+                    onClick={handleUpdate}>
+                    <PiNotePencilThin className="inline text-xl" />
+                    수정하기
+                  </button>
+                  <button className="flex items-center gap-1 hover:text-red-500 p-1"
+                    onClick={handlePostDelete}>
+                    <CiTrash className="inline text-xl" />
+                    삭제하기
+                  </button>
+                </div>}
+              </div>
             </div>
           </div>
           <div className="min-h-[600px] border-b-2">
@@ -92,25 +112,11 @@ const Post = ({ params }: { params: ParamsId }) => {
                 className="custom-html-content" />
             </h2>
           </div>
-          <div className='flex justify-between text-gray-700 mb-14'>
-            {data?.latitude !== '0' ? (
-              <div className="self-start">
-                <h2 className="text-xl font-semibold">위치 정보</h2>
-                <h3>{data?.formattedAddress}</h3>
-                <h3>{data?.locationName}</h3>
-              </div>
-            ) : (
-              <div className="flex-grow" />
-            )}
-            <div className="flex gap-3 self-start">
-              <button className="hover:text-blue-700" onClick={handleUpdate}>
-                글 수정
-              </button>
-              <button className="hover:text-red-500" onClick={handlePostDelete}>
-                글 삭제
-              </button>
-            </div>
-          </div>
+          {data?.formattedAddress && <div className='flex flex-col text-gray-700 py-8 border-b-1'>
+            <h2 className="text-xl font-semibold">위치 정보</h2>
+            <h3>{data?.formattedAddress}</h3>
+            <h3>{data?.locationName}</h3>
+          </div>}
           <div>
             {/* <p>
               <Rate onChange={handleRate} 
@@ -132,7 +138,7 @@ const Post = ({ params }: { params: ParamsId }) => {
           </div>
         </div>
       )}
-      {isSuccess && <Comment />}
+      {isSuccess && <Comment id={id} />}
     </div>
   );
 }

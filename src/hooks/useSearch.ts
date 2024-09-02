@@ -1,6 +1,6 @@
 'use strict';
 
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { searchPosts } from "@/api/searchPosts";
 
 const useSearch = (keyword: string, currentPage: number, sortKeyword: string) => {
@@ -9,7 +9,7 @@ const useSearch = (keyword: string, currentPage: number, sortKeyword: string) =>
   const searchQuery = useQuery({
     queryKey: ["searchPosts", keyword, validPage, sortKeyword],
     queryFn: () => searchPosts(keyword, validPage, sortKeyword),
-    placeholderData: (previousData, previousQuery)=> previousData,
+    placeholderData: keepPreviousData,
   });
 
   return searchQuery;

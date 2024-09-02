@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import LoadingSpinner from "@/app/components/Loading";
+import ErrorShow from "@/app/components/Error";
 
 const SearchPage = ({ params }: { params: ParmasKeyword }) => {
   const router = useRouter(); 
@@ -67,12 +68,13 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
   return (
     <>
       <div className="flex flex-col gap-3 max-w-[800px] min-h-[1100px] mx-auto mt-10 relative p-2">
+        {isLoading && <LoadingSpinner size={15} mt={400} />}
+        {isError && <ErrorShow error={error} />}
         <div className="flex flex-col gap-3 mt-10">
           <ControlBarMain sortOption={sortOption}
             setSortOption={setSortOption}
             setCurrentPage={setCurrentPage} />
           {renderNoPostsFound()}
-          {isLoading && <LoadingSpinner size={10} mt={40} />}
           {data?.content.map((post: Post) => (
             <CardPost key={post.id} post={post} />
           ))}

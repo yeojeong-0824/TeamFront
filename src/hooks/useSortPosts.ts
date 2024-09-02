@@ -1,6 +1,6 @@
 'use strict';
 
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { sortPosts } from "@/api/sortPosts";
 
 const useSortPosts = (currentPage: number, sortKeyword: string) => {
@@ -11,7 +11,7 @@ const useSortPosts = (currentPage: number, sortKeyword: string) => {
     queryFn: () => sortPosts(validPage, sortKeyword),
     staleTime: 1800000, // 30분 동안 캐싱
     gcTime: 1800000, // 30분 동안 캐싱
-    placeholderData: (previousData, previousQuery)=> previousData,
+    placeholderData: keepPreviousData,
   });
 
   return sortPostsQuery;

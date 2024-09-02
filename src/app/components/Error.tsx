@@ -1,6 +1,6 @@
 'use client';
 
-const ErrorShow = ({error}: {error: any}) => {
+const ErrorShow = ({error}: {error: string | undefined}) => {
   return (
     <div className="flex flex-col gap-3 items-center mt-32">
       <p className="text-red-500 text-2xl font-bold">

@@ -82,7 +82,8 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
       </form>
 
       <div>
-        <button className="p-2 rounded-lg border text-gray-900 text-sm" onClick={() => setSortOptionVisible(!sortOptionVisible)}>
+        <button className="p-2 rounded-lg border text-gray-900 text-sm" 
+        onClick={() => setSortOptionVisible((option)=> !option)}>
           {sortOption === 'latest' ? '최신순' : sortOption === 'score' ? '별점순' : '댓글순'}
         </button>
         {sortOptionVisible && (

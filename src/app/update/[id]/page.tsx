@@ -60,7 +60,7 @@ const Update = ({ params }: { params: ParamsId }) => {
       });
       return;
     }
-    const locationData = {
+    const postData = {
       title: data.title,
       body: html,
       locationName: location,
@@ -68,14 +68,15 @@ const Update = ({ params }: { params: ParamsId }) => {
       latitude,
       longitude,
     };
-    updateMutation.mutate(locationData);
+    updateMutation.mutate(postData);
   };
 
   const handleCancel = () => router.back();
 
   return (
-    <div className="p-2 mt-10 text-gray-900">
-        {isLoading || updateMutation?.isPending ? <LoadingSpinner size={15} mt={40} /> : null}
+    <div className="min-h-[1100px] p-2 mt-10 text-gray-900">
+        <LoadingSpinner size={15} mt={40} 
+        isLoading={isLoading || updateMutation.isPending} />
         {isError || updateMutation?.isError ? <ErrorShow error={updateMutation?.error?.message} />: null}
         {isLoading || updateMutation?.isPending || isError || updateMutation?.isError ? null : <form className="flex flex-col gap-8 max-w-[800px] mx-auto mt-24 p-3" onSubmit={handleSubmit(onSubmitForm)}>
           <div className="flex flex-col gap-2">

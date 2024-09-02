@@ -45,7 +45,7 @@ const Write = () => {
 
   return (
     <>
-      <div className="min-h-[1300px] p-2 my-12 text-gray-900">
+      <div className="min-h-[1100px] p-2 my-12 text-gray-900">
         {writeMutation.isPending && <LoadingSpinner size={15} mt={40} />}
         {writeMutation.isError && <ErrorShow error={writeMutation.error.message} />}
         <form className="flex flex-col gap-8 max-w-[800px] mx-auto mt-24 p-3" onSubmit={handleSubmit(onSubmitForm)}>
@@ -54,7 +54,7 @@ const Write = () => {
               당신의 <span className="text-[#3D6592]">여정</span>을 기록해보세요
             </h1>
             <p className="text-gray-400 ml-1">
-              <span className="text-[#3D6592]">여정</span>에서 다양한 사람들과 소중한 기록을 나눠보는건 어떨까요?
+              <span className="text-[#3D6592]">여정</span>과 함께 소중한 여행의 기록들을 나눠보는건 어떨까요?
             </p>
           </div>
 

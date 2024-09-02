@@ -62,14 +62,15 @@ const CardPosts = () => {
       )
     };
   };
+  console.log(isLoading);
 
   return (
-    <div className="flex flex-col gap-3 h-[1300px]">
+    <div className="flex flex-col gap-3 min-h-[1300px]">
       <ControlBarMain sortOption={sortOption}
         setSortOption={setSortOption}
         setCurrentPage={setCurrentPage} />
       {renderNoPostsFound()}
-      {isLoading && <LoadingSpinner size={15} mt={40} />}
+      <LoadingSpinner size={15} mt={400} isLoading={isLoading}/>
       {isError && <ErrorShow error={error?.message}/>}
       {data?.content.map((post: Post) => (
         <CardPost key={post.id} post={post} />

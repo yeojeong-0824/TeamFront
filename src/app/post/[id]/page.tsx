@@ -112,10 +112,10 @@ const Post = ({ params }: { params: ParamsId }) => {
                 className="custom-html-content" />
             </h2>
           </div>
-          {data?.formattedAddress && <div className='flex flex-col text-gray-700 py-8 border-b-1'>
+          {data?.formattedAddress && <div className='flex flex-col gap-1 text-gray-700 py-8 border-b-1'>
             <h2 className="text-xl font-semibold">위치 정보</h2>
             <h3>{data?.formattedAddress}</h3>
-            <h3>{data?.locationName}</h3>
+            <h3 className="text-sm text-gray-400">{data?.locationName}</h3>
           </div>}
           <div>
             {/* <p>

@@ -45,15 +45,15 @@ const Write = () => {
 
   return (
     <>
-      <div className="min-h-[1100px] p-2 my-12 text-gray-900">
+      <div className="min-h-[1100px] my-12 p-2 text-gray-900">
         <LoadingSpinner size={15} mt={40} isLoading={writeMutation.isPending} />
         {writeMutation.isError && <ErrorShow error={writeMutation.error.message} />}
-        <form className="flex flex-col gap-8 max-w-[800px] mx-auto mt-24 p-3" onSubmit={handleSubmit(onSubmitForm)}>
+        <form className="flex flex-col max-w-[800px] gap-8 mx-auto mt-24 p-3" onSubmit={handleSubmit(onSubmitForm)}>
           <div className="flex flex-col gap-2">
-            <h1 className="text-3xl leading-10 text-gray-700">
+            <h1 className="text-3xl text-gray-700 leading-10">
               당신의 <span className="text-[#3D6592]">여정</span>을 기록해보세요
             </h1>
-            <p className="text-gray-400 ml-1">
+            <p className="ml-1 text-gray-400">
               <span className="text-[#3D6592]">여정</span>과 함께 소중한 여행의 기록들을 나눠보는건 어떨까요?
             </p>
           </div>
@@ -76,10 +76,10 @@ const Write = () => {
             <QuillEditor html={html} setHtml={setHtml} />
           </div>
           <div className="flex justify-end gap-3">
-            <button className='px-6 p-2 rounded-lg text-gray-900 hover:bg-gray-100 border' type="button" onClick={handleCancel}>
+            <button className='p-2 px-6 border text-gray-900 hover:bg-gray-100 rounded-lg' type="button" onClick={handleCancel}>
               취소
             </button>
-            <button className='px-6 p-2 rounded-lg text-white bg-[#6EB4FB] hover:bg-blue-500'>
+            <button className='p-2 px-6 text-white bg-[#6EB4FB] hover:bg-blue-500 rounded-lg'>
               등록
             </button>
           </div>

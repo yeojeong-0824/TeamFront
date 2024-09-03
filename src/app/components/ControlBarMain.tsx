@@ -56,13 +56,13 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
   };
 
   return (
-    <div className="flex justify-between items-center pb-8 border-b-1 mt-[30px]">
-        <button onClick={handlePost} className="flex items-center gap-1 px-3 p-2 rounded-lg text-white bg-[#6EB4FB] hover:bg-blue-500 text-sm">
+    <div className="flex justify-between items-center mt-[30px] pb-8 border-b-1">
+        <button onClick={handlePost} className="flex items-center gap-1 p-2 px-3 text-sm bg-[#6EB4FB] text-white hover:bg-blue-500 rounded-lg">
         <PiNotePencilThin className="inline text-xl"/>
         작성하기
         </button>
 
-      <form className="flex gap-1 items-end" onSubmit={handleSubmit(onSubmit, onInvalid)}>
+      <form className="flex items-end gap-1" onSubmit={handleSubmit(onSubmit, onInvalid)}>
         <Input
           aria-label="검색"
           type="text"
@@ -77,17 +77,17 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
           isClearable
         />
         <button type="submit" className="h-[24px]">
-          <CiSearch className="text-gray-900 text-2xl" />
+          <CiSearch className="text-2xl text-gray-900" />
         </button>
       </form>
 
       <div>
-        <button className="p-2 rounded-lg border text-gray-900 text-sm" 
+        <button className="p-2 text-sm border text-gray-900 rounded-lg" 
         onClick={() => setSortOptionVisible((option)=> !option)}>
           {sortOption === 'latest' ? '최신순' : sortOption === 'score' ? '별점순' : '댓글순'}
         </button>
         {sortOptionVisible && (
-          <div className="flex flex-col w-[100px] gap-3 p-3 text-sm border shadow-sm rounded-md absolute bg-white mt-1">
+          <div className="flex flex-col absolute w-[100px] gap-3 mt-1 p-3 text-sm bg-white border rounded-md shadow-sm">
             {['latest', 'score', 'comment'].map((option) => (
               <p
                 key={option}

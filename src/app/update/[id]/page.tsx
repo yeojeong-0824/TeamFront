@@ -74,13 +74,13 @@ const Update = ({ params }: { params: ParamsId }) => {
   const handleCancel = () => router.back();
 
   return (
-    <div className="min-h-[1100px] p-2 mt-10 text-gray-900">
+    <div className="min-h-[1100px] mt-10 p-2 text-gray-900">
         <LoadingSpinner size={15} mt={40} 
         isLoading={isLoading || updateMutation.isPending} />
         {isError || updateMutation?.isError ? <ErrorShow error={updateMutation?.error?.message} />: null}
-        {isLoading || updateMutation?.isPending || isError || updateMutation?.isError ? null : <form className="flex flex-col gap-8 max-w-[800px] mx-auto mt-24 p-3" onSubmit={handleSubmit(onSubmitForm)}>
+        {isLoading || updateMutation?.isPending || isError || updateMutation?.isError ? null : <form className="flex flex-col max-w-[800px] gap-8 mx-auto mt-24 p-3" onSubmit={handleSubmit(onSubmitForm)}>
           <div className="flex flex-col gap-2">
-            <h1 className="text-3xl leading-10 text-gray-700">
+            <h1 className="text-3xl text-gray-700 leading-10">
               게시글 수정하기
             </h1>
           </div>
@@ -103,10 +103,10 @@ const Update = ({ params }: { params: ParamsId }) => {
             <QuillEditor html={html} setHtml={setHtml} defaultBody={data?.body} />
           </div>
           <div className="flex justify-end gap-3">
-            <button className='px-6 p-2 rounded-lg text-gray-900 hover:bg-gray-100 border' type="button" onClick={handleCancel}>
+            <button className='px-6 p-2 border text-gray-900 hover:bg-gray-100 rounded-lg' type="button" onClick={handleCancel}>
               취소
             </button>
-            <button className='px-6 p-2 rounded-lg text-white bg-[#6EB4FB] hover:bg-blue-500'>
+            <button className='px-6 p-2 text-white bg-[#6EB4FB] hover:bg-blue-500 rounded-lg'>
               등록
             </button>
           </div>

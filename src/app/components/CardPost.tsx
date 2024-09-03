@@ -19,22 +19,22 @@ const CardPost = ({ post }: CardPostProps): JSX.Element => {
   }
 
   return (
-    <div className="border-b p-3 text-gray-900">
+    <div className="p-3 border-b text-gray-900">
 
       <div className="flex justify-between mb-3">
 
-        <div className="flex gap-3 items-center">
-          <p className="text-sm">user1{post.memberNickname}</p>
-          <p className="text-sm">7시간 전</p>
+        <div className="flex items-center gap-3 text-sm">
+          <p>user1{post.memberNickname}</p>
+          <p>7시간 전</p>
         </div>
 
-        <div className="flex gap-3 items-center font-semibold">
-          <p className="text-sm flex items-center">
-            <FaRegCommentDots className="text-md mr-1" />
+        <div className="flex items-center gap-3 font-semibold text-sm">
+          <p className="flex items-center">
+            <FaRegCommentDots className="mr-1 text-md" />
             0
           </p>
-          <p className="text-sm flex items-center">
-            <IoEyeOutline className="text-lg mr-1" />
+          <p className="flex items-center">
+            <IoEyeOutline className="mr-1 text-lg" />
             {post.view}
           </p>
         </div>

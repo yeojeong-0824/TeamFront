@@ -55,17 +55,16 @@ const CardPosts = () => {
     if (data?.content.length === 0) {
       return (
         <div className="flex justify-center mt-32">
-          <p className="text-red-500 text-2xl font-bold">
+          <p className="font-bold text-2xl text-red-500">
             게시글이 존재하지 않습니다.
           </p>
         </div>
       )
     };
   };
-  console.log(isLoading);
 
   return (
-    <div className="flex flex-col gap-3 min-h-[1300px]">
+    <div className="flex flex-col min-h-[1300px] gap-3">
       <ControlBarMain sortOption={sortOption}
         setSortOption={setSortOption}
         setCurrentPage={setCurrentPage} />

@@ -2,14 +2,14 @@
 
 const ErrorShow = ({error}: {error: string | undefined}) => {
   return (
-    <div className="flex flex-col gap-3 items-center mt-32">
-      <p className="text-red-500 text-2xl font-bold">
+    <div className="flex flex-col items-center gap-3 mt-32">
+      <p className="text-2xl font-bold text-red-500">
         에러가 발생했습니다
       </p>
-      <p className="text-gray-500 text-lg">
+      <p className="text-lg text-gray-500">
         {error}
       </p>
-      <button className="ml-2 text-blue-500 font-bold hover:text-blue-600" 
+      <button className="ml-2 font-bold text-blue-500 hover:text-blue-600" 
         onClick={() => window.location.reload()}>
           새로고침
       </button>

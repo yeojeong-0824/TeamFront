@@ -83,7 +83,7 @@ const PlaceSearch: React.FC<{
           value={inputValue}
           onChange={handleInputChange}
           placeholder="지역을 입력해주세요."
-          className='border p-2 w-full rounded-md'
+          className='w-full p-2 border rounded-md'
           id='local-search'
         />
         {selectedPlace && (
@@ -92,7 +92,7 @@ const PlaceSearch: React.FC<{
             <p>이름: {selectedPlace.name || 'N/A'}</p>
             <p>주소: {selectedPlace.formatted_address || 'N/A'}</p>
             <div className='flex justify-end'>
-              <button className='px-6 p-2 rounded-lg text-gray-900 hover:bg-gray-100 border' onClick={handlePlaceCancel} type='button'>지역 선택 취소하기</button>
+              <button className='p-2 px-6 border text-gray-900 hover:bg-gray-100 rounded-lg' onClick={handlePlaceCancel} type='button'>지역 선택 취소하기</button>
             </div>
           </div>
         )}

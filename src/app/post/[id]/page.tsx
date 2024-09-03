@@ -71,33 +71,33 @@ const Post = ({ params }: { params: ParamsId }) => {
   }, []);
 
   return (
-    <div className="min-h-[1300px] p-2 my-12">
+    <div className="min-h-[1300px] my-12 p-2">
       <LoadingSpinner size={15} mt={400} isLoading={isLoading} />
       {isError && <ErrorShow error={error?.message} />}
       {isSuccess && (
-        <div className="flex flex-col gap-3 justify-between max-w-[800px] mx-auto mt-24 p-3">
-          <h1 className="text-4xl text-gray-900 leading-10">{data?.title}</h1>
+        <div className="flex flex-col justify-between max-w-[800px] gap-3 mx-auto mt-24 p-3 text-gray-900">
+          <h1 className="text-4xl leading-10">{data?.title}</h1>
           <div className="flex justify-end">
-            <div className="flex gap-3 items-center text-gray-900 text-sm">
+            <div className="flex items-center gap-3 text-sm">
               <h3 className="font-medium">{data?.memberNickname}user</h3>
               <h3>7시간 전</h3>
               <h3 className="text-sm">
-                <IoEyeOutline className="inline text-lg mr-[1.5px] mb-[1.5px]" />
+                <IoEyeOutline className="inline mr-[1.5px] mb-[1.5px] text-lg" />
                 {data?.view}
               </h3>
-              <div className="flex gap-1 justify-end text-sm relative">
+              <div className="flex justify-end relative gap-1 text-sm">
                 <button
                   onClick={() => setPostOptionVisible((option) => !option)}
                   className="text-2xl" >
                   <BsThreeDots />
                 </button>
-                {postOptionVisible && <div className="flex flex-col w-[120px] border gap-1 p-3 rounded-md shadow-md absolute top-6 z-10 bg-white">
-                  <button className="flex items-center gap-1 hover:text-blue-500 p-1"
+                {postOptionVisible && <div className="flex flex-col absolute w-[120px] gap-1 p-3 top-6 border bg-white z-10 rounded-md shadow-md">
+                  <button className="flex items-center gap-1 p-1 hover:text-blue-500"
                     onClick={handleUpdate}>
                     <PiNotePencilThin className="inline text-xl" />
                     수정하기
                   </button>
-                  <button className="flex items-center gap-1 hover:text-red-500 p-1"
+                  <button className="flex items-center gap-1 p-1 hover:text-red-500"
                     onClick={handlePostDelete}>
                     <CiTrash className="inline text-xl" />
                     삭제하기
@@ -107,12 +107,12 @@ const Post = ({ params }: { params: ParamsId }) => {
             </div>
           </div>
           <div className="min-h-[600px] border-b-2">
-            <h2 className="flex-grow py-3 mt-5 leading-relaxed">
+            <h2 className="flex-grow mt-5 py-3 leading-relaxed">
               <div dangerouslySetInnerHTML={{ __html: data?.body }}
                 className="custom-html-content" />
             </h2>
           </div>
-          {data?.formattedAddress && <div className='flex flex-col gap-1 text-gray-700 py-8 border-b-1'>
+          {data?.formattedAddress && <div className='flex flex-col gap-1 py-8 border-b-1 text-gray-700'>
             <h2 className="text-xl font-semibold">위치 정보</h2>
             <h3>{data?.formattedAddress}</h3>
             <h3 className="text-sm text-gray-400">{data?.locationName}</h3>

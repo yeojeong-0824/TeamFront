@@ -45,7 +45,7 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
   if (isError) {
     return (
       <div className="flex justify-center mt-32">
-        <p className="text-red-500 text-2xl font-bold">
+        <p className="text-2xl font-bold text-red-500">
           Error: {error?.message}
         </p>
       </div>
@@ -55,11 +55,11 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
   const renderNoPostsFound = () => {
     if (data?.content.length === 0) {
       return (
-        <div className="flex flex-col gap-6 items-center mt-32">
-          <p className="text-gray-900 text-2xl font-bold">
+        <div className="flex flex-col items-center gap-6 mt-32">
+          <p className="text-2xl font-bold text-gray-900">
             게시글이 존재하지 않습니다.
           </p>
-          <Link href={'/'} className="text-blue-500 text-xl font-bold hover:text-blue-600">돌아가기</Link>
+          <Link href={'/'} className="text-xl font-bold text-blue-500 hover:text-blue-600">돌아가기</Link>
         </div>
       )
     }
@@ -67,7 +67,7 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
 
   return (
     <>
-      <div className="flex flex-col gap-3 max-w-[800px] min-h-[1100px] mx-auto mt-10 relative p-2">
+      <div className="flex flex-col relative max-w-[800px] min-h-[1100px] gap-3 mx-auto mt-10 p-2">
         <LoadingSpinner size={15} mt={400} isLoading={isLoading}/>
         {isError && <ErrorShow error={error} />}
         <div className="flex flex-col gap-3 mt-10">

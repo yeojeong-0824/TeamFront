@@ -21,7 +21,7 @@ jobs:
         run: echo ${{secrets.ENV}} >> .env
         
       - name: Docker 이미지 빌드
-        run: docker build --progress=plain --cache-from ${{ secrets.DOCKERHUB_USERNAME }}/front -t ${{ secrets.DOCKERHUB_USERNAME }}/front .
+        run: docker build --no-cache -t ${{ secrets.DOCKERHUB_USERNAME }}/front .
 
       - name: Docker 로그인
         uses: docker/login-action@v3

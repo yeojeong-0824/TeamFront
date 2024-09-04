@@ -20,7 +20,8 @@ const Post = ({ params }: { params: ParamsId }) => {
   const { data, isLoading, isError, error, isSuccess } = usePost(id);
   const { mutate: deletePostMutate } = useDeletePost();
   const router = useRouter();
-  const token = localStorage.getItem('accessToken');
+  // const token = localStorage.getItem('accessToken');
+  const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
   const queryClient = new QueryClient();
   const [postOptionVisible, setPostOptionVisible] = useState<boolean>(false);
 

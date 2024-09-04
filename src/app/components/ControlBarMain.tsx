@@ -42,7 +42,8 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
   };
 
   const handlePost = () => {
-    const token = localStorage.getItem('accessToken');
+    // const token = localStorage.getItem('accessToken');
+    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
     if (!token) {
       Swal.fire({
         icon: 'error',

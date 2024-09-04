@@ -15,27 +15,27 @@ import LoadingSpinner from "@/app/components/Loading";
 import ErrorShow from "@/app/components/Error";
 
 const SearchPage = ({ params }: { params: ParmasKeyword }) => {
-  const router = useRouter(); 
-  const searchParams = useSearchParams(); 
-  const queryClient = useQueryClient(); 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
 
-  const initialPage = parseInt(searchParams.get('page') || '1', 10); 
-  const initialSortOption = searchParams.get('sort') || 'latest'; 
+  const initialPage = parseInt(searchParams.get('page') || '1', 10);
+  const initialSortOption = searchParams.get('sort') || 'latest';
 
   const keyword = decodeURIComponent(params.keyword);
-  const [currentPage, setCurrentPage] = useState<number>(initialPage); 
+  const [currentPage, setCurrentPage] = useState<number>(initialPage);
   const [sortOption, setSortOption] = useState<string>(initialSortOption);
 
   const { data, isLoading, isError, error } = useSearch(keyword, currentPage, sortOption);
 
   const totalPages = data?.totalPages;
 
-  useEffect(() => { 
-    router.push(`?page=${currentPage}&sort=${sortOption}`); 
+  useEffect(() => {
+    router.push(`?page=${currentPage}&sort=${sortOption}`);
     queryClient.invalidateQueries({ queryKey: ['sortPosts', currentPage, sortOption] });
   }, [currentPage, sortOption, queryClient, router]);
 
-  useEffect(()=> {
+  useEffect(() => {
     const page = parseInt(searchParams.get('page') || '1', 10);
     const sort = searchParams.get('sort') || 'latest';
     setCurrentPage(page);
@@ -68,19 +68,19 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
   return (
     <>
       <div className="flex flex-col relative max-w-[800px] min-h-[1100px] gap-3 mx-auto mt-10 p-2">
-        <LoadingSpinner size={15} mt={400} isLoading={isLoading}/>
-        {isError && <ErrorShow error={error} />}
         <div className="flex flex-col gap-3 mt-10">
           <ControlBarMain sortOption={sortOption}
             setSortOption={setSortOption}
             setCurrentPage={setCurrentPage} />
+          <LoadingSpinner size={15} mt={400} isLoading={isLoading} />
+          {isError && <ErrorShow error={error} />}
           {renderNoPostsFound()}
           {data?.content.map((post: Post) => (
             <CardPost key={post.id} post={post} />
           ))}
-          <NavigationNumberMain currentPage={currentPage} 
-          setCurrentPage={setCurrentPage} 
-          totalPage={totalPages}
+          <NavigationNumberMain currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalPage={totalPages}
           />
         </div>
       </div>

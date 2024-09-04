@@ -19,6 +19,7 @@ const useUpdateComment = (id: number) => {
         timer: 1000
       });
       queryClient.invalidateQueries({queryKey: ['comment', id]});
+      queryClient.invalidateQueries({queryKey: ['post', id]});
     },
     onError: (error: CustomError) => {
       if(error?.response.status === 403) {

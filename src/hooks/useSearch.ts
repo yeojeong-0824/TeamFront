@@ -1,4 +1,4 @@
-'use strict';
+'use client';
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { searchPosts } from "@/api/searchPosts";

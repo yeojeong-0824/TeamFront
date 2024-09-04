@@ -4,13 +4,9 @@ import { ParamsId } from "@/types/post";
 import usePost from "@/hooks/usePost";
 import useDeletePost from "@/hooks/useDeletePost";
 import Comment from "@/app/components/Comment";
-import { Button } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-// import useSetScore from "@/hooks/useSetScore";
-import useDeleteScore from "@/hooks/useDeleteScore";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { Rate } from "antd";
 import LoadingSpinner from "@/app/components/Loading";
 import ErrorShow from "@/app/components/Error";
 import { IoEyeOutline } from "react-icons/io5";
@@ -23,18 +19,12 @@ const Post = ({ params }: { params: ParamsId }) => {
   const { id } = params;
   const { data, isLoading, isError, error, isSuccess } = usePost(id);
   const { mutate: deletePostMutate } = useDeletePost();
-  // const { mutate: scoreMutate } = useSetScore(id);
-  const { mutate: deleteScoreMutate } = useDeleteScore(id);
-  const [score, setScore] = useState(0);
   const router = useRouter();
-  const memberScoreInfo = data?.MemberScoreInfo;
   const token = localStorage.getItem('accessToken');
   const queryClient = new QueryClient();
   const [postOptionVisible, setPostOptionVisible] = useState<boolean>(false);
 
   const handlePostDelete = () => deletePostMutate(id);
-
-  // const deleteScore = () => deleteScoreMutate(id);
 
   const handleUpdate = () => {
     if (!token) {
@@ -48,21 +38,6 @@ const Post = ({ params }: { params: ParamsId }) => {
     }
     router.push(`/update/${id}`);
   }
-
-  // const handleRate = (value: number) => {
-  //   if (!token) {
-  //     Swal.fire({
-  //       icon: 'error',
-  //       title: '로그인 필요',
-  //       text: '로그인이 필요한 서비스입니다'
-  //     });
-  //     router.push('/login-ui');
-  //     return;
-  //   }
-  //   if (value === 0) return;
-  //   scoreMutate(value); 
-  //   setScore(value);
-  // };
 
   useEffect(() => {
     queryClient.invalidateQueries({
@@ -118,20 +93,6 @@ const Post = ({ params }: { params: ParamsId }) => {
             <h3 className="text-sm text-gray-400">{data?.locationName}</h3>
           </div>}
           <div>
-            {/* <p>
-              <Rate onChange={handleRate} 
-                value={score}
-                defaultValue={memberScoreInfo ? memberScoreInfo : 0} />
-            </p> */}
-            {/* {memberScoreInfo && (
-              <Button
-                color="danger"
-                className="text-white font-bold"
-                onClick={deleteScore}
-              >
-                별점 삭제
-              </Button>
-            )} */}
             {data?.avgScore ? <p className="text-xl font-semibold text-yellow-500">
               해당 게시글의 별점은 {data?.avgScore / 100}점입니다.
             </p> : null}

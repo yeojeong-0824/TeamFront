@@ -91,7 +91,7 @@ const Comment = ({ id }: ParamsId) => {
 
   return (
     <div className="flex flex-col max-w-[800px] mx-auto p-3 text-gray-900">
-      {data?.content.length ? <h2 className="mb-10">{data?.content.length}개의 댓글</h2> : null}
+      {data?.content.length ? <h2 className="text-sm sm:text-medium mb-10">{data?.content.length}개의 댓글</h2> : null}
       <form className="flex flex-col gap-1 mb-10 p-5 border-2 rounded-md" onSubmit={handleCommentPost}>
         <Rate value={score} onChange={(value) => setScore(value)} />
         <Textarea
@@ -103,9 +103,10 @@ const Comment = ({ id }: ParamsId) => {
           maxRows={10}
           value={comment}
           onChange={(e) => setComment(e.target.value)}
+          className="text-sm sm:text-medium"
         />
         <div className="flex justify-end gap-1">
-          <button className="mt-2 p-2 px-6 bg-[#6EB4FB] text-white rounded-lg hover:bg-blue-500">댓글 쓰기</button>
+          <button className="mt-2 p-1 px-3 text-sm sm:p-2 sm:px-6 sm:text-medium bg-[#6EB4FB] text-white rounded-lg hover:bg-blue-500">댓글 쓰기</button>
         </div>
       </form>
 
@@ -114,7 +115,7 @@ const Comment = ({ id }: ParamsId) => {
           <div className="flex flex-col gap-1 p-5 border-b text-gray-900" key={comment.id}>
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-3">
-                <h3 className="font-semibold">{comment?.member.nickname}</h3>
+                <h3 className="text-sm sm:text-medium font-semibold">{comment?.member.nickname}</h3>
                 <p className="text-xs text-gray-500">7분전</p>
                 <Rate
                   value={comment?.score}
@@ -127,22 +128,22 @@ const Comment = ({ id }: ParamsId) => {
               </div>
               <div className={`flex relative justify-end gap-1 text-sm ${updateToggle[comment.id] ? 'hidden' : 'block'}`}>
                 <button onClick={() => toggleCommentOptions(comment.id)} className="text-xl">
-                  <BsThreeDots />
+                  <BsThreeDots className="text-sm sm:text-2xl" />
                 </button>
                 {commentOptionVisible === comment.id && ( // 현재 활성화된 ID와 비교
-                  <div className="flex flex-col absolute w-[120px] gap-1 top-5 p-3 border bg-white rounded-md z-10 shadow-md">
+                  <div className="flex flex-col absolute w-[90px] sm:w-[120px] gap-1 top-5 p-1 sm:p-3 border bg-white rounded-md z-10 shadow-md">
                     <button
-                      className="flex items-center gap-1 p-1 hover:text-blue-500"
+                      className="flex items-center gap-1 p-1 hover:text-blue-500 text-xs sm:text-medium"
                       onClick={() => handleUpdateComment(comment.id)}
                     >
-                      <PiNotePencilThin className="inline text-xl" />
+                      <PiNotePencilThin className="inline text-lg sm:text-xl" />
                       수정하기
                     </button>
                     <button
-                      className="flex items-center gap-1 p-1 hover:text-red-500"
+                      className="flex items-center gap-1 p-1 hover:text-red-500 text-xs sm:text-medium"
                       onClick={() => handleDeleteComment(comment.id)}
                     >
-                      <CiTrash className="inline text-xl" />
+                      <CiTrash className="inline text-lg sm:text-xl" />
                       삭제하기
                     </button>
                   </div>
@@ -167,16 +168,17 @@ const Comment = ({ id }: ParamsId) => {
                     }))
                   }
                   value={updateComment[comment.id] || ''}
+                  className="text-sm sm:text-medium"
                 />
                 <div className="flex justify-end gap-3">
                   <button
-                    className="mt-2 p-2 px-4 text-gray-900 border hover:bg-gray-100 rounded-lg"
+                    className="mt-2 p-1 px-2 sm:p-2 sm:px-4 text-gray-900 border hover:bg-gray-100 rounded-lg text-xs sm:text-medium"
                     onClick={() => handleCancelUpdate(comment.id)}
                   >
                     취소
                   </button>
                   <button
-                    className="mt-2 p-2 px-4 text-white bg-[#6EB4FB] hover:bg-blue-500 rounded-lg"
+                    className="mt-2 p-1 px-2 sm:p-2 sm:px-4 text-white bg-[#6EB4FB] hover:bg-blue-500 rounded-lg text-xs sm:text-medium"
                     onClick={() => handlePostUpdate(comment.id)}
                   >
                     수정하기

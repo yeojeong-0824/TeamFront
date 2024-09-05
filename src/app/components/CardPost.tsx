@@ -23,25 +23,25 @@ const CardPost = ({ post }: CardPostProps): JSX.Element => {
 
       <div className="flex justify-between mb-3">
 
-        <div className="flex items-center gap-3 text-sm">
+        <div className="flex items-center gap-3 text-xs sm:text-sm">
           <p>user1{post.memberNickname}</p>
           <p>7시간 전</p>
         </div>
 
-        <div className="flex items-center gap-3 font-semibold text-sm">
+        <div className="flex items-center gap-3 font-semibold text-xs sm:text-sm">
           <p className="flex items-center">
             <FaRegCommentDots className="mr-1 text-md" />
             0
           </p>
-          <p className="flex items-center">
-            <IoEyeOutline className="mr-1 text-lg" />
+          <p className="flex items-center text-xs sm:text-sm">
+            <IoEyeOutline className="mr-1 text-medium sm:text-lg" />
             {post.view}
           </p>
         </div>
 
       </div>
 
-      <Link href={`/post/${post.id}`} className="font-bold hover:text-blue-500">
+      <Link href={`/post/${post.id}`} className="font-bold text-sm md:text-medium hover:text-blue-500">
         {titleCut()}
       </Link>
 

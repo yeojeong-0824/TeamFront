@@ -47,14 +47,14 @@ const Post = ({ params }: { params: ParamsId }) => {
   }, []);
 
   return (
-    <div className="min-h-[1300px] my-12 p-2">
+    <div className="min-h-[1300px] sm:my-12 p-1 sm:p-2">
       <LoadingSpinner size={15} mt={400} isLoading={isLoading} />
       {isError && <ErrorShow error={error?.message} />}
       {isSuccess && (
         <div className="flex flex-col justify-between max-w-[800px] gap-3 mx-auto mt-24 p-3 text-gray-900">
-          <h1 className="text-4xl leading-10">{data?.title}</h1>
+          <h1 className="text-2xl sm:text-4xl leading-10">{data?.title}</h1>
           <div className="flex justify-end">
-            <div className="flex items-center gap-3 text-sm">
+            <div className="flex items-center gap-3 text-xs sm:text-sm">
               <h3 className="font-medium">{data?.member?.nickname}</h3>
               <h3>7시간 전</h3>
               <h3 className="text-sm">
@@ -65,17 +65,17 @@ const Post = ({ params }: { params: ParamsId }) => {
                 <button
                   onClick={() => setPostOptionVisible((option) => !option)}
                   className="text-2xl" >
-                  <BsThreeDots />
+                  <BsThreeDots className="text-sm sm:text-2xl"/>
                 </button>
-                {postOptionVisible && <div className="flex flex-col absolute w-[120px] gap-1 p-3 top-6 border bg-white z-10 rounded-md shadow-md">
-                  <button className="flex items-center gap-1 p-1 hover:text-blue-500"
+                {postOptionVisible && <div className="flex flex-col absolute w-[90px] sm:w-[120px] gap-1 p-1 sm:p-3 top-6 border bg-white z-10 rounded-md shadow-md">
+                  <button className="flex items-center gap-1 p-1 hover:text-blue-500 text-xs sm:text-medium"
                     onClick={handleUpdate}>
-                    <PiNotePencilThin className="inline text-xl" />
+                    <PiNotePencilThin className="inline text-lg sm:text-xl" />
                     수정하기
                   </button>
-                  <button className="flex items-center gap-1 p-1 hover:text-red-500"
+                  <button className="flex items-center gap-1 p-1 hover:text-red-500 text-xs sm:text-medium"
                     onClick={handlePostDelete}>
-                    <CiTrash className="inline text-xl" />
+                    <CiTrash className="inline text-lg sm:text-xl" />
                     삭제하기
                   </button>
                 </div>}
@@ -89,12 +89,12 @@ const Post = ({ params }: { params: ParamsId }) => {
             </h2>
           </div>
           {data?.formattedAddress && <div className='flex flex-col gap-1 py-8 border-b-1 text-gray-700'>
-            <h2 className="text-xl font-semibold">위치 정보</h2>
-            <h3>{data?.formattedAddress}</h3>
-            <h3 className="text-sm text-gray-400">{data?.locationName}</h3>
+            <h2 className="text-lg sm:text-xl font-semibold">위치 정보</h2>
+            <h3 className="text-sm sm:text-medium">{data?.formattedAddress}</h3>
+            <h3 className="text-xs sm:text-sm text-gray-400">{data?.locationName}</h3>
           </div>}
           <div>
-            {data?.avgScore ? <p className="text-xl font-semibold text-yellow-500">
+            {data?.avgScore ? <p className="text-lg sm:text-xl font-semibold text-yellow-500">
               해당 게시글의 별점은 {data?.avgScore / 100}점입니다.
             </p> : null}
           </div>

@@ -20,6 +20,17 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
   const router = useRouter();
 
   const onSubmit: SubmitHandler<FormData> = (formData) => {
+    if (!formData.keyword.trim()) {
+      setValue('keyword', '');
+      Swal.fire({
+        icon: 'error',
+        title: '검색 실패',
+        text: '검색어를 입력해주세요',
+        showConfirmButton: false,
+        timer: 800,
+      });
+      return;
+    }
     setSortOption('latest');
     setCurrentPage(1);
     router.push(`/search/${formData.keyword}`);
@@ -58,8 +69,8 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
 
   return (
     <div className="flex justify-between items-center mt-[30px] pb-8 border-b-1">
-        <button onClick={handlePost} className="flex items-center gap-1 p-2 px-3 text-sm bg-[#6EB4FB] text-white hover:bg-blue-500 rounded-lg">
-        <PiNotePencilThin className="inline text-xl"/>
+        <button onClick={handlePost} className="flex items-center gap-1 p-1.5 px-2 text-xs bg-[#6EB4FB] text-white hover:bg-blue-500 rounded-lg sm:p-2 sm:px-3 sm:text-sm">
+        <PiNotePencilThin className="inline text-sm sm:text-xl"/>
         작성하기
         </button>
 
@@ -76,6 +87,7 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
           })}
           onChange={(e) => setValue('keyword', e.target.value)}
           isClearable
+          className="w-[165px] sm:w-full"
         />
         <button type="submit" className="h-[24px]">
           <CiSearch className="text-2xl text-gray-900" />
@@ -83,12 +95,12 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
       </form>
 
       <div>
-        <button className="p-2 text-sm border text-gray-900 rounded-lg" 
+        <button className="p-1.5 sm:p-2 text-xs sm:text-sm border text-gray-900 rounded-lg" 
         onClick={() => setSortOptionVisible((option)=> !option)}>
           {sortOption === 'latest' ? '최신순' : sortOption === 'score' ? '별점순' : '댓글순'}
         </button>
         {sortOptionVisible && (
-          <div className="flex flex-col absolute w-[100px] gap-3 mt-1 p-3 text-sm bg-white border rounded-md shadow-sm">
+          <div className="flex flex-col absolute right-2 w-[60px] sm:w-[100px] gap-3 mt-1 p-2 sm:p-3 text-xs md:text-sm bg-white border rounded-md shadow-sm">
             {['latest', 'score', 'comment'].map((option) => (
               <p
                 key={option}

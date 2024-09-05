@@ -67,7 +67,7 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
 
   return (
     <>
-      <div className="flex flex-col relative max-w-[800px] min-h-[1100px] gap-3 mx-auto mt-10 p-2">
+      <div className="flex flex-col relative max-w-[800px] min-h-[1100px] gap-3 mx-auto sm:mt-10 p-2">
         <div className="flex flex-col gap-3 mt-10">
           <ControlBarMain sortOption={sortOption}
             setSortOption={setSortOption}

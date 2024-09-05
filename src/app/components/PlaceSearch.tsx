@@ -83,16 +83,16 @@ const PlaceSearch: React.FC<{
           value={inputValue}
           onChange={handleInputChange}
           placeholder="지역을 입력해주세요."
-          className='w-full p-2 border rounded-md'
+          className='w-full p-1.5 sm:p-2 border rounded-md text-sm sm:text-base'
           id='local-search'
         />
         {selectedPlace && (
           <div className='flex flex-col gap-1 p-2'>
             <h3>선택된 지역 정보</h3>
-            <p>이름: {selectedPlace.name || 'N/A'}</p>
-            <p>주소: {selectedPlace.formatted_address || 'N/A'}</p>
+            <p className='text-sm sm:text-medium'>이름: {selectedPlace.name || 'N/A'}</p>
+            <p className='text-sm sm:text-medium'>주소: {selectedPlace.formatted_address || 'N/A'}</p>
             <div className='flex justify-end'>
-              <button className='p-2 px-6 border text-gray-900 hover:bg-gray-100 rounded-lg' onClick={handlePlaceCancel} type='button'>지역 선택 취소하기</button>
+              <button className='p-1 px-3 sm:p-2 sm:px-6 border text-gray-900 hover:bg-gray-100 rounded-lg text-sm sm:text-medium' onClick={handlePlaceCancel} type='button'>지역 선택 취소하기</button>
             </div>
           </div>
         )}

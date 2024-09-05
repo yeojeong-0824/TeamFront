@@ -37,7 +37,7 @@ const NavigationNumberMain = ({ currentPage, setCurrentPage, totalPage }: Naviga
           page={currentPage}
           onChange={handlePage}
           showControls
-          className="flex gap-1"
+          size='sm'
           classNames={{
             cursor: 'bg-[#6EB4FB]',
           }}

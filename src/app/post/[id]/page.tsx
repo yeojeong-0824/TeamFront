@@ -14,6 +14,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { BsThreeDots } from "react-icons/bs";
 import { PiNotePencilThin } from "react-icons/pi";
 import { CiTrash } from "react-icons/ci";
+import KakaoShare from "@/app/components/KakaShare";
 
 const Post = ({ params }: { params: ParamsId }) => {
   const { id } = params;
@@ -61,6 +62,9 @@ const Post = ({ params }: { params: ParamsId }) => {
                 <IoEyeOutline className="inline mr-[1.5px] mb-[1.5px] text-lg" />
                 {data?.view}
               </h3>
+              <button className="text-xl sm:text-2xl">
+              <KakaoShare />
+              </button>
               <div className="flex justify-end relative gap-1 text-sm">
                 <button
                   onClick={() => setPostOptionVisible((option) => !option)}

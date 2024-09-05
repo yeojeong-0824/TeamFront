@@ -100,7 +100,7 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
           {sortOption === 'latest' ? '최신순' : sortOption === 'score' ? '별점순' : '댓글순'}
         </button>
         {sortOptionVisible && (
-          <div className="flex flex-col absolute right-2 w-[60px] sm:w-[100px] gap-3 mt-1 p-2 sm:p-3 text-xs md:text-sm bg-white border rounded-md shadow-sm">
+          <div className="flex flex-col absolute right-2 w-[60px] sm:w-[100px] gap-3 mt-1 p-2 sm:p-3 text-xs sm:text-sm bg-white border rounded-md shadow-sm">
             {['latest', 'score', 'comment'].map((option) => (
               <p
                 key={option}

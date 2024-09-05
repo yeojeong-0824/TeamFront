@@ -31,7 +31,7 @@ const NavigationNumberMain = ({ currentPage, setCurrentPage, totalPage }: Naviga
 
   return (
     <nav className="flex absolute transform left-1/2 bottom-32 -translate-x-1/2 mt-3">
-      <div className="flex justify-center w-[500px] gap-1">
+      <div className="flex justify-center max-w-[500px] gap-1">
         <Pagination
           total={totalPage}
           page={currentPage}

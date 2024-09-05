@@ -55,7 +55,7 @@ const Post = ({ params }: { params: ParamsId }) => {
           <h1 className="text-4xl leading-10">{data?.title}</h1>
           <div className="flex justify-end">
             <div className="flex items-center gap-3 text-sm">
-              <h3 className="font-medium">{data?.memberNickname}user</h3>
+              <h3 className="font-medium">{data?.member?.nickname}</h3>
               <h3>7시간 전</h3>
               <h3 className="text-sm">
                 <IoEyeOutline className="inline mr-[1.5px] mb-[1.5px] text-lg" />

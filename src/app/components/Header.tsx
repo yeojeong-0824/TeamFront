@@ -21,13 +21,11 @@ const Header = (): JSX.Element => {
   const logoutLoginStyle = 'p-2 px-4 text-sm border hover:bg-gray-100 rounded-full';
   const infoSignupStyle = 'p-2 px-4 text-sm bg-[#3D6691] text-white hover:bg-[#2f5072] rounded-full';
   return (
-    <header className="flex justify-between items-center fixed w-full top-0 p-2 bg-white border-b-2 z-50">
-      <div className="flex justify-center flex-1">
-        <Link href={'/'} className="ml-[180px]">
-          <Image src='/여정logo.png' alt="메인 로고" width={80} height={80} />
-        </Link>
-      </div>
-      <div className="flex items-center gap-10">
+    <header className="grid grid-cols-3 items-center fixed w-full top-0 p-2 bg-white border-b-2 z-50">
+      <Link href={'/'} className="col-start-2 justify-self-center">
+        <Image src='/여정logo.png' alt="메인 로고" width={80} height={80} />
+      </Link>
+      <div className="col-start-3 justify-self-end">
         {accessToken ? (
           <div className="flex gap-2">
             <button onClick={handleLogout} className={logoutLoginStyle}>로그아웃</button>
@@ -41,7 +39,6 @@ const Header = (): JSX.Element => {
         )}
       </div>
     </header>
-
   );
 };
 

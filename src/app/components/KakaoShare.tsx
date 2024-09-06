@@ -32,7 +32,10 @@ const KakaoShare = ({postTitle}: { postTitle: string }) => {
   };
 
   return (
-    <RiKakaoTalkFill onClick={handleShare} className="inline text-lg sm:text-xl" />
+    <button onClick={handleShare} className="flex items-center gap-1 p-1 text-xs sm:text-medium hover:text-yellow-300">
+      <RiKakaoTalkFill className="inline text-lg sm:text-xl" />
+      공유하기
+    </button>
   );
 };
 

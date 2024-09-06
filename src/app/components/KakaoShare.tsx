@@ -32,7 +32,7 @@ const KakaoShare = ({postTitle}: { postTitle: string }) => {
   };
 
   return (
-    <RiKakaoTalkFill onClick={handleShare} />
+    <RiKakaoTalkFill onClick={handleShare} className="inline text-lg sm:text-xl" />
   );
 };
 

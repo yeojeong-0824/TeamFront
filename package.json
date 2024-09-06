@@ -12,6 +12,7 @@
   "dependencies": {
     "@nextui-org/react": "^2.4.6",
     "@react-google-maps/api": "^2.19.3",
+    "@swc/helpers": "^0.5.12",
     "@tanstack/react-query": "^5.51.5",
     "@tiptap/extension-image": "^2.6.6",
     "@types/jwt-decode": "^3.1.0",

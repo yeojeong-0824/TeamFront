@@ -21,7 +21,7 @@ jobs:
         run: echo ${{secrets.ENV}} >> .env
         
       - name: Docker 이미지 빌드
-        run: docker build -t ${{secrets.DOCKERHUB_USERNAME}}/front .
+        run: docker build --progress=plain --cache-from ${{ secrets.DOCKERHUB_USERNAME }}/front -t ${{ secrets.DOCKERHUB_USERNAME }}/front .
 
       - name: Docker 로그인
         uses: docker/login-action@v3
@@ -53,5 +53,5 @@ jobs:
             sudo docker pull ${{secrets.DOCKERHUB_USERNAME}}/front
             sudo docker stop front
             sudo docker container rm front
-            sudo docker run -dit -p 80:3000 --name front ${{secrets.DOCKERHUB_USERNAME}}/front
+            sudo docker run -dit -p 80:3000 --name front --restart always ${{secrets.DOCKERHUB_USERNAME}}/front
             sudo docker image prune -f

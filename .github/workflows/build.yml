@@ -21,6 +21,7 @@ jobs:
         run: |
           echo ${{secrets.ENV_MAP}} > .env
           echo ${{secrets.ENV_HOST}} >> .env
+          echo ${{secrets.ENV_KAKAO}} >> .env
         
       - name: Docker 이미지 빌드
         run: docker build --no-cache -t ${{ secrets.DOCKERHUB_USERNAME }}/front .

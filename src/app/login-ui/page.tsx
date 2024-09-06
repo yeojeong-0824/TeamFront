@@ -71,7 +71,7 @@ export default function LoginUi() {
             <h3 className="text-3xl text-gray-800 font-semibold">로그인</h3>
             <form className="flex flex-col mt-5 px-5" onSubmit={handleSubmit}>
                 <input
-                  placeholder ="Email"
+                  placeholder ="ID"
                   className="bg-white focus:outline-none border-1 focus:border-opacity-50 focus:border-gray-300 mb-3 py-3 px-5 rounded-lg"
                   id="username"
                   name="username"
@@ -79,7 +79,7 @@ export default function LoginUi() {
                   onChange={handleChange}
                   required/>
                 <input
-                  placeholder ="passworld"
+                  placeholder ="PASSWORD"
                   type="password"
                   className="bg-white focus:outline-none border-1 focus:border-opacity-50 focus:border-gray-300 py-3 px-5 rounded-lg"
                   id="password"
@@ -92,7 +92,8 @@ export default function LoginUi() {
 
                 <div className="my-6">
                   <Link href={'/email-check'} className='inline-block'><p className='m-2'>회원가입</p></Link>
-                  <Link href={'/find-account'} className='inline-block'><p className='m-2'>아이디/비밀번호 찾기</p></Link>
+                  <Link href={'/find-username'} className='inline-block'><p className='m-2'>아이디 찾기</p></Link>
+                  <Link href={'/find-password'} className='inline-block'><p className='m-2'>비밀번호 찾기</p></Link>
                 </div>
             </form>
         </div>

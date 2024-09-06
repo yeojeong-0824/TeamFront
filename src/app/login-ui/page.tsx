@@ -66,35 +66,36 @@ export default function LoginUi() {
   };
 
   return (
-    <div className='mt-32'>
-      <h1>로그인</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">아이디:</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
+    <div className = "h-screen flex items-center justify-center">
+        <div className="bg-white w-full max-w-lg py-20 px-4 rounded-lg text-center border-1 border-gray-300">
+            <h3 className="text-3xl text-gray-800 font-semibold">로그인</h3>
+            <form className="flex flex-col mt-5 px-5" onSubmit={handleSubmit}>
+                <input
+                  placeholder ="Email"
+                  className="bg-white focus:outline-none border-1 focus:border-opacity-50 focus:border-gray-300 mb-3 py-3 px-5 rounded-lg"
+                  id="username"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  required/>
+                <input
+                  placeholder ="passworld"
+                  type="password"
+                  className="bg-white focus:outline-none border-1 focus:border-opacity-50 focus:border-gray-300 py-3 px-5 rounded-lg"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required/>
+                
+                <input type="submit" className='py-3 px-5 text-white bg-[#6EB4FB] mt-3 text-lg rounded-lg focus:outline-none hover:opacity-90' value="로그인" />
+
+                <div className="my-6">
+                  <Link href={'/email-check'} className='inline-block'><p className='m-2'>회원가입</p></Link>
+                  <Link href={'/find-account'} className='inline-block'><p className='m-2'>아이디/비밀번호 찾기</p></Link>
+                </div>
+            </form>
         </div>
-        <div>
-          <label htmlFor="password">암호:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <input type="submit" value="로그인" />
-      </form>
-      <Link href={'/email-check'}>회원가입</Link>
-      <Link href={'/find-account'}>계정찾기</Link>
     </div>
   );
 }

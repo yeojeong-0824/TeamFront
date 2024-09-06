@@ -14,7 +14,8 @@ import { QueryClient } from "@tanstack/react-query";
 import { BsThreeDots } from "react-icons/bs";
 import { PiNotePencilThin } from "react-icons/pi";
 import { CiTrash } from "react-icons/ci";
-import KakaoShare from "@/app/components/KakaShare";
+import KakaoShare from "@/app/components/KakaoShare";
+import { CiLink } from "react-icons/ci";
 
 const Post = ({ params }: { params: ParamsId }) => {
   const { id } = params;
@@ -41,6 +42,15 @@ const Post = ({ params }: { params: ParamsId }) => {
     router.push(`/update/${id}`);
   }
 
+  const handleShareLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    Swal.fire({
+      text: '링크가 클립보드에 복사되었습니다',
+      showConfirmButton: false,
+      timer: 1000,
+    });
+  }
+
   useEffect(() => {
     queryClient.invalidateQueries({
       queryKey: ['post', id]
@@ -63,7 +73,10 @@ const Post = ({ params }: { params: ParamsId }) => {
                 {data?.view}
               </h3>
               <button className="text-xl sm:text-2xl">
-              <KakaoShare />
+                <CiLink onClick={handleShareLink} />
+              </button>
+              <button className="text-xl sm:text-2xl">
+              <KakaoShare postTitle={data?.title}/>
               </button>
               <div className="flex justify-end relative gap-1 text-sm">
                 <button

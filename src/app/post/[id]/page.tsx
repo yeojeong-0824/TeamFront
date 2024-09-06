@@ -14,7 +14,8 @@ import { QueryClient } from "@tanstack/react-query";
 import { BsThreeDots } from "react-icons/bs";
 import { PiNotePencilThin } from "react-icons/pi";
 import { CiTrash } from "react-icons/ci";
-import KakaoShare from "@/app/components/KakaShare";
+import KakaoShare from "@/app/components/KakaoShare";
+import { CiLink } from "react-icons/ci";
 
 const Post = ({ params }: { params: ParamsId }) => {
   const { id } = params;
@@ -41,6 +42,15 @@ const Post = ({ params }: { params: ParamsId }) => {
     router.push(`/update/${id}`);
   }
 
+  const handleShareLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    Swal.fire({
+      text: '링크가 클립보드에 복사되었습니다',
+      showConfirmButton: false,
+      timer: 1000,
+    });
+  }
+
   useEffect(() => {
     queryClient.invalidateQueries({
       queryKey: ['post', id]
@@ -62,25 +72,30 @@ const Post = ({ params }: { params: ParamsId }) => {
                 <IoEyeOutline className="inline mr-[1.5px] mb-[1.5px] text-lg" />
                 {data?.view}
               </h3>
-              <button className="text-xl sm:text-2xl">
-              <KakaoShare />
-              </button>
               <div className="flex justify-end relative gap-1 text-sm">
                 <button
                   onClick={() => setPostOptionVisible((option) => !option)}
                   className="text-2xl" >
-                  <BsThreeDots className="text-sm sm:text-2xl"/>
+                  <BsThreeDots className="text-sm sm:text-2xl" />
                 </button>
                 {postOptionVisible && <div className="flex flex-col absolute w-[90px] sm:w-[120px] gap-1 p-1 sm:p-3 top-6 border bg-white z-10 rounded-md shadow-md">
-                  <button className="flex items-center gap-1 p-1 hover:text-blue-500 text-xs sm:text-medium"
+                  <button className="flex items-center gap-1 p-1 hover:text-blue-300 text-xs sm:text-medium"
                     onClick={handleUpdate}>
                     <PiNotePencilThin className="inline text-lg sm:text-xl" />
                     수정하기
                   </button>
-                  <button className="flex items-center gap-1 p-1 hover:text-red-500 text-xs sm:text-medium"
+                  <button className="flex items-center gap-1 p-1 hover:text-red-300 text-xs sm:text-medium"
                     onClick={handlePostDelete}>
                     <CiTrash className="inline text-lg sm:text-xl" />
                     삭제하기
+                  </button>
+                  <button className="flex items-center gap-1 p-1 text-xs sm:text-medium hover:text-gray-400">
+                    <CiLink onClick={handleShareLink} className="inline text-lg sm:text-xl" />
+                    링크복사
+                  </button>
+                  <button className="flex items-center gap-1 p-1 text-xs sm:text-medium hover:text-yellow-300">
+                    <KakaoShare postTitle={data?.title} />
+                    공유하기
                   </button>
                 </div>}
               </div>

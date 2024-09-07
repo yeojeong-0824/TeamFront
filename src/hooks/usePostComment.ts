@@ -31,11 +31,13 @@ const usePostComment = (id: number) => {
         router.push(`/login-ui`);
         return;
       }
-      Swal.fire({
-        icon: 'error',
-        title: '글 삭제 실패',
-        text: error.message
-      })
+      if(error?.response.status === 400) {
+        Swal.fire({
+          icon: 'error',
+          title: '글 작성 실패',
+          text: "255자 이내로 작성해주세요"
+        })
+      }
     }
   });
 

@@ -2,7 +2,7 @@
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import Swal from "sweetalert2";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ControlBarMainProps } from "@/types/controlbar";
 import { Input } from "@nextui-org/react";
@@ -18,6 +18,27 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
   const pointer = 'cursor-pointer';
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>();
   const router = useRouter();
+  const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      menuRef.current &&
+      !menuRef.current.contains(event.target as Node) &&
+      buttonRef.current &&
+      !buttonRef.current.contains(event.target as Node)
+    ) {
+      setSortOptionVisible(false);
+    }
+  };
+
+  useEffect(()=> {
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const onSubmit: SubmitHandler<FormData> = (formData) => {
     if (!formData.keyword.trim()) {
@@ -95,12 +116,12 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
       </form>
 
       <div>
-        <button className="p-1.5 sm:p-2 text-xs sm:text-sm border text-gray-900 rounded-lg" 
+        <button ref={buttonRef} className="p-1.5 sm:p-2 text-xs sm:text-sm border text-gray-900 rounded-lg" 
         onClick={() => setSortOptionVisible((option)=> !option)}>
           {sortOption === 'latest' ? '최신순' : sortOption === 'score' ? '별점순' : '댓글순'}
         </button>
         {sortOptionVisible && (
-          <div className="flex flex-col absolute right-2 w-[60px] sm:w-[100px] gap-3 mt-1 p-2 sm:p-3 text-xs sm:text-sm bg-white border rounded-md shadow-sm">
+          <div ref={menuRef} className="flex flex-col absolute right-2 w-[60px] sm:w-[100px] gap-3 mt-1 p-2 sm:p-3 text-xs sm:text-sm bg-white border rounded-md shadow-sm">
             {['latest', 'score', 'comment'].map((option) => (
               <p
                 key={option}

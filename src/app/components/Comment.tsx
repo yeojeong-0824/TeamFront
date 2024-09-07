@@ -2,7 +2,7 @@
 
 import { ParamsId } from "@/types/post";
 import { Textarea } from "@nextui-org/input";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { PiNotePencilThin } from "react-icons/pi";
 import { CiTrash } from "react-icons/ci";
@@ -24,6 +24,25 @@ const Comment = ({ id }: ParamsId) => {
   const { mutate: updateCommentMutate } = useUpdateComment(id);
   const [score, setScore] = useState<number>(0);
   const [updateScore, setUpdateScore] = useState<number>(0);
+  const menuRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (commentOptionVisible !== null) {
+        const menuElement = menuRefs.current[commentOptionVisible];
+        const buttonElement = buttonRefs.current[commentOptionVisible];
+        if (menuElement && !menuElement.contains(event.target as Node) && buttonElement && !buttonElement.contains(event.target as Node)) {
+          setCommentOptionVisible(null);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [commentOptionVisible]);
 
   const handleCommentPost = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,7 +56,7 @@ const Comment = ({ id }: ParamsId) => {
   };
 
   const toggleCommentOptions = (commentId: number) => {
-    setCommentOptionVisible((prev) => (prev === commentId ? null : commentId)); // 동일 ID 클릭 시 닫힘
+    setCommentOptionVisible((prev) => (prev === commentId ? null : commentId));
   };
 
   const handleDeleteComment = (commentId: number) => deleteCommentMutate(commentId);
@@ -97,7 +116,7 @@ const Comment = ({ id }: ParamsId) => {
         <Textarea
           variant="underlined"
           labelPlacement="outside"
-          placeholder="여러분들의 의견을 댓글로 작성해주세요."
+          placeholder="여러분들의 의견을 댓글로 작성해주세요. 최대 255자 까지 작성 가능합니다."
           isRequired
           minRows={1}
           maxRows={10}
@@ -127,11 +146,12 @@ const Comment = ({ id }: ParamsId) => {
                 />
               </div>
               <div className={`flex relative justify-end gap-1 text-sm ${updateToggle[comment.id] ? 'hidden' : 'block'}`}>
-                <button onClick={() => toggleCommentOptions(comment.id)} className="text-xl">
+                <button ref={(el) => { buttonRefs.current[comment.id] = el; }} onClick={() => toggleCommentOptions(comment.id)} className={`text-xl ${Object.values(updateToggle).includes(true) ? 'hidden' : 'block'}`}>
                   <BsThreeDots className="text-sm sm:text-2xl" />
                 </button>
                 {commentOptionVisible === comment.id && ( // 현재 활성화된 ID와 비교
-                  <div className="flex flex-col absolute w-[90px] sm:w-[120px] gap-1 top-5 p-1 sm:p-3 border bg-white rounded-md z-10 shadow-md">
+                  <div className="flex flex-col absolute w-[90px] sm:w-[120px] gap-1 top-5 p-1 sm:p-3 border bg-white rounded-md z-10 shadow-md"
+                  ref={(el) => { menuRefs.current[comment.id] = el; }}>
                     <button
                       className="flex items-center gap-1 p-1 hover:text-blue-500 text-xs sm:text-medium"
                       onClick={() => handleUpdateComment(comment.id)}

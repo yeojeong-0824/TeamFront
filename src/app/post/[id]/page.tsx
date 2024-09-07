@@ -4,7 +4,7 @@ import { ParamsId } from "@/types/post";
 import usePost from "@/hooks/usePost";
 import useDeletePost from "@/hooks/useDeletePost";
 import Comment from "@/app/components/Comment";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/app/components/Loading";
@@ -26,8 +26,33 @@ const Post = ({ params }: { params: ParamsId }) => {
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
   const queryClient = new QueryClient();
   const [postOptionVisible, setPostOptionVisible] = useState<boolean>(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const handlePostDelete = () => deletePostMutate(id);
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      menuRef.current &&
+      !menuRef.current.contains(event.target as Node) &&
+      buttonRef.current &&
+      !buttonRef.current.contains(event.target as Node)
+    ) {
+      setPostOptionVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: ['post', id]
+    });
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleThreeDots = () => setPostOptionVisible((prev) => !prev);
 
   const handleUpdate = () => {
     if (!token) {
@@ -42,6 +67,8 @@ const Post = ({ params }: { params: ParamsId }) => {
     router.push(`/update/${id}`);
   }
 
+  const handlePostDelete = () => deletePostMutate(id);
+
   const handleShareLink = () => {
     navigator.clipboard.writeText(window.location.href);
     Swal.fire({
@@ -50,12 +77,6 @@ const Post = ({ params }: { params: ParamsId }) => {
       timer: 1000,
     });
   }
-
-  useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: ['post', id]
-    });
-  }, []);
 
   return (
     <div className="min-h-[1300px] sm:my-12 p-1 sm:p-2">
@@ -74,11 +95,14 @@ const Post = ({ params }: { params: ParamsId }) => {
               </h3>
               <div className="flex justify-end relative gap-1 text-sm">
                 <button
-                  onClick={() => setPostOptionVisible((option) => !option)}
+                  ref={buttonRef}
+                  onClick={handleThreeDots}
                   className="text-2xl" >
                   <BsThreeDots className="text-sm sm:text-2xl" />
                 </button>
-                {postOptionVisible && <div className="flex flex-col absolute w-[90px] sm:w-[120px] gap-1 p-1 sm:p-3 top-6 border bg-white z-10 rounded-md shadow-md">
+                {postOptionVisible && <div className="flex flex-col absolute w-[90px] sm:w-[120px] gap-1 p-1 sm:p-3 top-6 border bg-white z-10 rounded-md shadow-md"
+                id="post-option-menu"
+                ref={menuRef}>
                   <button className="flex items-center gap-1 p-1 hover:text-blue-300 text-xs sm:text-medium"
                     onClick={handleUpdate}>
                     <PiNotePencilThin className="inline text-lg sm:text-xl" />
@@ -89,14 +113,12 @@ const Post = ({ params }: { params: ParamsId }) => {
                     <CiTrash className="inline text-lg sm:text-xl" />
                     삭제하기
                   </button>
-                  <button className="flex items-center gap-1 p-1 text-xs sm:text-medium hover:text-gray-400">
-                    <CiLink onClick={handleShareLink} className="inline text-lg sm:text-xl" />
+                  <button className="flex items-center gap-1 p-1 text-xs sm:text-medium hover:text-gray-400"
+                  onClick={handleShareLink}>
+                    <CiLink className="inline text-lg sm:text-xl" />
                     링크복사
                   </button>
-                  <button className="flex items-center gap-1 p-1 text-xs sm:text-medium hover:text-yellow-300">
-                    <KakaoShare postTitle={data?.title} />
-                    공유하기
-                  </button>
+                  <KakaoShare postTitle={data?.title} />
                 </div>}
               </div>
             </div>

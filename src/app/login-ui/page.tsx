@@ -66,8 +66,8 @@ export default function LoginUi() {
   };
 
   return (
-    <div className = "h-screen flex items-center justify-center">
-        <div className="bg-white w-full max-w-lg py-20 px-4 rounded-lg text-center border-1 border-gray-300">
+    <div className = "h-screen flex items-center justify-center bg-gray-100">
+        <div className="bg-white w-full py-20 px-4 text-center border-1 border-gray-300 max-w-md shadow-md rounded-lg overflow-hidden">
             <h3 className="text-3xl text-gray-800 font-semibold">로그인</h3>
             <form className="flex flex-col mt-5 px-5" onSubmit={handleSubmit}>
                 <input
@@ -88,7 +88,7 @@ export default function LoginUi() {
                   onChange={handleChange}
                   required/>
                 
-                <input type="submit" className='py-3 px-5 text-white bg-[#6EB4FB] mt-3 text-lg rounded-lg focus:outline-none hover:opacity-90' value="로그인" />
+                <input type="submit" className='py-3 px-5 text-white bg-[#6EB4FB] mt-3 text-lg rounded-lg focus:outline-none hover:opacity-90 hover:bg-blue-500' value="로그인" />
 
                 <div className="my-6">
                   <Link href={'/email-check'} className='inline-block'><p className='m-2'>회원가입</p></Link>

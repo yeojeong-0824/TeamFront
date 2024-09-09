@@ -25,8 +25,8 @@ export default function FindUsername() {
     }
 
     return(
-        <div className = "h-screen flex items-center justify-center">
-            <div className="bg-white w-full max-w-lg py-20 px-4 rounded-lg text-center border-1 border-gray-300">
+        <div className = "h-screen flex items-center justify-center bg-gray-100">
+            <div className="bg-white w-full py-20 px-4 text-center border-1 border-gray-300 max-w-md shadow-md rounded-lg overflow-hidden">
                 <h3 className="text-3xl text-gray-800 font-semibold">아이디 찾기</h3>
                 <div className="flex flex-col mt-5 px-5">
                     <input
@@ -40,7 +40,7 @@ export default function FindUsername() {
                         }}
                         required/>
                     
-                    <input type="submit" className='py-3 px-5 text-white bg-[#6EB4FB] mt-3 text-lg rounded-lg focus:outline-none hover:opacity-90' value="이메일 전송" onClick={find_id}/>
+                    <input type="submit" className='py-3 px-5 text-white bg-[#6EB4FB] mt-3 text-lg rounded-lg focus:outline-none hover:opacity-90 hover:bg-blue-500' value="이메일 전송" onClick={find_id}/>
 
                     <div className="my-6">
                         <Link href={'/login-ui'} className='inline-block'><p className='m-2'>로그인으로 돌아가기</p></Link>

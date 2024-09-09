@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from "next/link";
 import useAuthStore from '../store';
 import { useRouter } from 'next/navigation';
 
 import { url } from '../store';
+import { Link } from '@nextui-org/react';
 
 export default function CheckMyInfo() {
   const router = useRouter();
@@ -23,6 +23,9 @@ export default function CheckMyInfo() {
     getMyInfo();
   }, []);
 
+
+  // 값을 받아오는 api 호출에서 중복된 코드가 보임
+  // Jwt 토큰을 이용해 데이터를 받아오는 부분
   const getMyInfo = async () => {
     try {
       const response = await fetch(`${url}/member/authed`, {
@@ -52,6 +55,8 @@ export default function CheckMyInfo() {
     }
   };
 
+  
+  // Jwt 토큰이 만료되었다면 Refresh 토큰 이용해 데이터를 받아오는 부분
   const handleTokenRefresh = async () => {
     try {
       const response = await fetch(`${url}/member/authed`, {
@@ -87,40 +92,31 @@ export default function CheckMyInfo() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <table>
-        <thead>
-          <tr>
-            <th colSpan={2}>내 정보</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>아이디</td>
-            <td>{userInfo.username}</td>
-          </tr>
-          <tr>
-            <td>암호</td>
-            <td><Link href={'/change-pw'}>변경</Link></td>
-          </tr>
-          <tr>
-            <td>닉네임</td>
-            <td>{userInfo.nickname} <Link href={'/change-nickname'}>변경</Link></td>
-          </tr>
-          <tr>
-            <td>email</td>
-            <td>{userInfo.email}</td>
-          </tr>
-          <tr>
-            <td>이름</td>
-            <td>{userInfo.real_name}</td>
-          </tr>
-          <tr>
-            <td>생년</td>
-            <td>{userInfo.age}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <>
+      <div className="bg-gray-100 flex items-center justify-center min-h-screen">
+          <div className="max-w-md w-full bg-white shadow-md rounded-lg overflow-hidden">
+              <div className="bg-gray-200 p-4 text-center">
+                  <img 
+                      src="https://via.placeholder.com/100" 
+                      alt="Profile Picture" 
+                      className="w-24 h-24 rounded-full mx-auto border-4 border-[#6EB4FB]" 
+                  />
+              </div>
+              <div className="p-6">
+                  <h2 className="text-2xl font-semibold text-gray-800">{userInfo.nickname}</h2>
+                  <p className="text-gray-600 mt-1">{userInfo.email}</p>
+                  <p className="text-gray-500 mt-2">가입일: 2024년 1월 15일</p>
+                  <div className="mt-4 flex justify-center">
+                      <Link href={'/update-my-password'} className="bg-[#6EB4FB] mx-2 text-white py-2 px-4 rounded-lg hover:bg-blue-500">
+                          비밀번호 수정
+                      </Link>
+                      <Link href={'/update-my-info'} className="bg-[#6EB4FB] mx-2 text-white py-2 px-4 rounded-lg hover:bg-blue-500">
+                          프로필 수정
+                      </Link>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </>
   );
 }

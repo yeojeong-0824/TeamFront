@@ -13,14 +13,21 @@ import LoadingSpinner from "@/app/components/Loading";
 import ErrorShow from "@/app/components/Error";
 import QuillEditor from "@/app/components/Quill";
 
+type SetLocalData = {
+  setLocation: React.Dispatch<React.SetStateAction<string>>;
+  setFormattedAddress: React.Dispatch<React.SetStateAction<string>>;
+  setLatitude: React.Dispatch<React.SetStateAction<number>>;
+  setLongitude: React.Dispatch<React.SetStateAction<number>>;
+};
+
 const Update = ({ params }: { params: ParamsId }) => {
   const router = useRouter();
   const { id } = params;
   const { data, isLoading, isError, error } = usePost(id);
-  const [location, setLocation] = useState<string>("");
-  const [formattedAddress, setFormattedAddress] = useState<string>("");
-  const [latitude, setLatitude] = useState<number>(0);
-  const [longitude, setLongitude] = useState<number>(0);
+  const [location, setLocation] = useState<string>(data?.locationName || "");
+  const [formattedAddress, setFormattedAddress] = useState<string>(data?.formattedAddress || "");
+  const [latitude, setLatitude] = useState<number>(data?.latitude || 0);
+  const [longitude, setLongitude] = useState<number>(data?.longitude || 0);
   const updateMutation = useUpdatePost(id);
   const [html, setHtml] = useState<string>(data?.body || "");
 
@@ -47,10 +54,18 @@ const Update = ({ params }: { params: ParamsId }) => {
     });
   }, [data, reset]); 
 
-  const onSubmitForm = (data: WriteUpdateType) => {
+  const setLocalData: SetLocalData = {
+    setLocation,
+    setFormattedAddress,
+    setLatitude,
+    setLongitude,
+  };
+
+  const onSubmitForm = (formData: WriteUpdateType) => {
     if (
-      data.title === defaultValues?.title &&
-      html === defaultValues?.body  
+      formData.title === defaultValues?.title &&
+      html === defaultValues?.body && 
+      data.locationName === location
     ) {
       Swal.fire({
       icon: "warning",
@@ -61,7 +76,7 @@ const Update = ({ params }: { params: ParamsId }) => {
       return;
     }
     const postData = {
-      title: data.title,
+      title: formData.title,
       body: html,
       locationName: location,
       formattedAddress,
@@ -88,10 +103,10 @@ const Update = ({ params }: { params: ParamsId }) => {
           <div className="flex flex-col gap-2">
             <label htmlFor="local-search"
             className="text-sm sm:text-medium">지역</label>
-            <PlaceSearch setLocation={setLocation}
-              setFormattedAddress={setFormattedAddress}
-              setLatitude={setLatitude}
-              setLongitude={setLongitude} />
+            <PlaceSearch 
+              setLocalData={setLocalData}
+              updateData={data} 
+            />
           </div>
 
           <div className="flex flex-col gap-2">

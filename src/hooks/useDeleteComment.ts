@@ -34,7 +34,7 @@ const useDelteMutation = (id: number) => {
       }
       Swal.fire({
         icon: 'error',
-        title: '글 삭제 실패',
+        title: '댓글 삭제 실패',
         text: error.message
       })
     }

@@ -76,6 +76,7 @@ const Post = ({ params }: { params: ParamsId }) => {
       showConfirmButton: false,
       timer: 1000,
     });
+    setPostOptionVisible(false);
   }
 
   return (
@@ -118,7 +119,8 @@ const Post = ({ params }: { params: ParamsId }) => {
                     <CiLink className="inline text-lg sm:text-xl" />
                     링크복사
                   </button>
-                  <KakaoShare postTitle={data?.title} />
+                  <KakaoShare postTitle={data?.title} 
+                  setPostOptionVisible={setPostOptionVisible} />
                 </div>}
               </div>
             </div>

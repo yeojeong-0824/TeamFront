@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { RiKakaoTalkFill } from "react-icons/ri";
 
-const KakaoShare = ({postTitle}: { postTitle: string }) => {
+const KakaoShare = ({ postTitle, setPostOptionVisible }: 
+  { postTitle: string, setPostOptionVisible: React.Dispatch<React.SetStateAction<boolean>> }) => {
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
   useEffect(() => {
@@ -29,6 +30,7 @@ const KakaoShare = ({postTitle}: { postTitle: string }) => {
         },
       }
     });
+    setPostOptionVisible(false);
   };
 
   return (

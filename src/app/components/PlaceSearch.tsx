@@ -4,40 +4,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLoadScript } from '@react-google-maps/api';
 import LoadingSpinner from './Loading';
 import ErrorShow from './Error';
+import { PlaceSearchType, PlaceResult } from '@/types/placeSearch';
 
 const libraries: ["places"] = ["places"];
 
-interface PlaceResult {
-  name?: string;
-  formatted_address?: string;
-  geometry?: {
-    location?: {
-      lat: () => number;
-      lng: () => number;
-    };
-  };
-}
-
-const PlaceSearch: React.FC<{
-  setLocalData: {
-    setLocation: React.Dispatch<React.SetStateAction<string>>;
-    setFormattedAddress: React.Dispatch<React.SetStateAction<string>>;
-    setLatitude: React.Dispatch<React.SetStateAction<number>>;
-    setLongitude: React.Dispatch<React.SetStateAction<number>>;
-  }
-  updateData: {
-    avgScore: number;
-    body: string;
-    commentCount: number;
-    formattedAddress: string;
-    id: number;
-    latitude: number;
-    locationName: string;
-    longitude: number;
-    title: string;
-    view: number;
-  };
-}> = ({ setLocalData, updateData }) => {
+const PlaceSearch: PlaceSearchType = ({ setLocalData = { setLocation: () => { }, setFormattedAddress: () => { }, setLatitude: () => { }, setLongitude: () => { } }, updateData }) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string,
     libraries,
@@ -82,7 +53,7 @@ const PlaceSearch: React.FC<{
   const handlePlaceCancel = () => {
     setSelectedPlace(null);
 
-    if(updateData.formattedAddress !== '') {
+    if (updateData.formattedAddress !== '') {
       setInputValue(updateData.formattedAddress);
       setLocation(updateData.locationName);
       setFormattedAddress(updateData.formattedAddress);
@@ -131,7 +102,7 @@ const PlaceSearch: React.FC<{
             </div>
           </div>
         ) : (
-          <div className={`flex flex-col gap-1 p-2 ${!updateData.formattedAddress || placeClear ? 'hidden' : 'block'}`}>
+          <div className={`flex flex-col gap-1 p-2 ${!updateData?.formattedAddress || placeClear ? 'hidden' : 'block'}`}>
             <h3>기존 게시글 지역 정보</h3>
             <p className='text-sm sm:text-medium'>이름: {updateData?.locationName || 'N/A'}</p>
             <p className='text-sm sm:text-medium'>주소: {updateData?.formattedAddress || 'N/A'}</p>

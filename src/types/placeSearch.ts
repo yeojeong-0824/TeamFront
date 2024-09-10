@@ -4,8 +4,8 @@ export type PlaceSearchType = React.FC<{
     setFormattedAddress: React.Dispatch<React.SetStateAction<string>>;
     setLatitude: React.Dispatch<React.SetStateAction<number>>;
     setLongitude: React.Dispatch<React.SetStateAction<number>>;
-  }
-  updateData: {
+  };
+  updateData?: {
     avgScore: number;
     body: string;
     commentCount: number;

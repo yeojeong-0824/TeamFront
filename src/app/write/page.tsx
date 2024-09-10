@@ -3,7 +3,7 @@
 import useWritePost from "@/hooks/useWritePost";
 import { WriteUpdateType } from "@/types/board";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import PlaceSearch from "../components/PlaceSearch";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "../components/Loading";
@@ -11,6 +11,13 @@ import ErrorShow from "../components/Error";
 import 'react-quill/dist/quill.snow.css';
 import QuillEditor from "../components/Quill";
 import Swal from "sweetalert2";
+
+type SetLocalData = {
+  setLocation: React.Dispatch<React.SetStateAction<string>>;
+  setFormattedAddress: React.Dispatch<React.SetStateAction<string>>;
+  setLatitude: React.Dispatch<React.SetStateAction<number>>;
+  setLongitude: React.Dispatch<React.SetStateAction<number>>;
+};
 
 const Write = () => {
   const { register, handleSubmit } = useForm<WriteUpdateType>();
@@ -21,6 +28,13 @@ const Write = () => {
   const [longitude, setLongitude] = useState<number>(0);
   const [html, setHtml] = useState<string>('');
   const router = useRouter();
+
+  const setLocalData: SetLocalData = {
+    setLocation,
+    setFormattedAddress,
+    setLatitude,
+    setLongitude,
+  };
 
   const onSubmitForm = (title: WriteUpdateType) => {
     if (title.title === '' || html === '') {
@@ -61,10 +75,7 @@ const Write = () => {
           <div className="flex flex-col gap-2">
             <label htmlFor="local-search"
             className="text-sm sm:text-medium">지역</label>
-            <PlaceSearch setLocation={setLocation}
-              setFormattedAddress={setFormattedAddress}
-              setLatitude={setLatitude}
-              setLongitude={setLongitude} />
+            <PlaceSearch setLocalData={setLocalData} />
           </div>
 
           <div className="flex flex-col gap-2">

@@ -53,7 +53,7 @@ const PlaceSearch: PlaceSearchType = ({ setLocalData = { setLocation: () => { },
   const handlePlaceCancel = () => {
     setSelectedPlace(null);
 
-    if (updateData.formattedAddress !== '') {
+    if (updateData && updateData.formattedAddress !== '') {
       setInputValue(updateData.formattedAddress);
       setLocation(updateData.locationName);
       setFormattedAddress(updateData.formattedAddress);

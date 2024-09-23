@@ -38,7 +38,7 @@ const Header = (): JSX.Element => {
         ) : (
           <div className="flex gap-2">
             <Link href={'/login-ui'} className={logoutLoginStyle}>로그인</Link>
-            <Link href={'/email-check'} className={infoSignupStyle}>회원가입</Link>
+            <Link href={'/sign-up'} className={infoSignupStyle}>회원가입</Link>
           </div>
         )}
       </div>

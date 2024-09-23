@@ -28,7 +28,7 @@ export default function LoginUi() {
     const encodedData = new URLSearchParams(formData);
 
     try {
-      const response = await fetch(`${url}/login`, {
+      const response = await fetch(`${url}login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

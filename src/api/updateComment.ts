@@ -4,7 +4,7 @@ import { UpdateComment } from "@/types/comment";
 const updateComment = async (commentData: UpdateComment) => {
   const { commentId, score, comment } = commentData;
 
-  const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/board/comment/authed/${commentId}`, { 
+  const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}boards/comments/authed/${commentId}`, { 
     score, comment
    }, {
     headers: {

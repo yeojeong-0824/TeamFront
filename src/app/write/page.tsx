@@ -3,7 +3,7 @@
 import useWritePost from "@/hooks/useWritePost";
 import { WriteUpdateType } from "@/types/board";
 import { useState } from "react";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import PlaceSearch from "../components/PlaceSearch";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "../components/Loading";
@@ -11,13 +11,7 @@ import ErrorShow from "../components/Error";
 import 'react-quill/dist/quill.snow.css';
 import QuillEditor from "../components/Quill";
 import Swal from "sweetalert2";
-
-type SetLocalData = {
-  setLocation: React.Dispatch<React.SetStateAction<string>>;
-  setFormattedAddress: React.Dispatch<React.SetStateAction<string>>;
-  setLatitude: React.Dispatch<React.SetStateAction<number>>;
-  setLongitude: React.Dispatch<React.SetStateAction<number>>;
-};
+import { SetLocalData } from "@/types/write";
 
 const Write = () => {
   const { register, handleSubmit } = useForm<WriteUpdateType>();

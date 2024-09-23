@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const sortPosts = async (currentPage: number, sortKeyword: string) => {
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/board?page=${currentPage}`, {
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}boards?page=${currentPage}`, {
     params: {
       keyword: '',
       searchKeyword: '',

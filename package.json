@@ -10,6 +10,7 @@
     "test": "jest --passWithNoTests"
   },
   "dependencies": {
+    "@hookform/error-message": "^2.0.1",
     "@nextui-org/react": "^2.4.6",
     "@react-google-maps/api": "^2.19.3",
     "@tanstack/react-query": "^5.51.5",

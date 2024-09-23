@@ -4,7 +4,7 @@ import { Comment } from "@/types/comment";
 const postComment = async (commentData: Comment) => {
   const { id, score, comment } = commentData;
 
-  const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/board/comment/authed/${id}`, {
+  const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}boards/comments/authed/${id}`, {
     score,
     comment
   },{

@@ -54,5 +54,5 @@ jobs:
             sudo docker pull ${{secrets.DOCKERHUB_USERNAME}}/front
             sudo docker stop front
             sudo docker container rm front
-            sudo docker run -dit -p 80:3000 --name front --link back:back --restart always ${{secrets.DOCKERHUB_USERNAME}}/front
+            sudo docker run -dit -p 80:3000 --name front --restart always ${{secrets.DOCKERHUB_USERNAME}}/front
             sudo docker image prune -f

@@ -16,7 +16,6 @@ export const useUserJwtInfo = create<UserJwtInfo>((set) => ({
   set_age: (age: number) => set({ age }),
 }));
 
-
 interface User_signup_info {
     username: string;
     nickname: string;
@@ -48,8 +47,6 @@ interface User_signup_info {
   }));
   
  export const url = process.env.NEXT_PUBLIC_API_URL
-
-
 
  // 인증토큰 상태값으로 불러오기
  interface AuthState {
@@ -83,7 +80,6 @@ export const useAuthInitializer = () => {
 };
 
 export default useAuthStore;
-
 
 // 로그인 함수 예시
 const handleLogin = () => {

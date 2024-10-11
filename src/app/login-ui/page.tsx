@@ -1,102 +1,86 @@
 'use client';
-import { useState } from 'react';
+
 import { useRouter } from 'next/navigation';
-import useAuthStore from '../store'; // Zustand 스토어 가져오기
 import Link from 'next/link';
-import { url } from '../store'
 import Swal from 'sweetalert2';
+import { useForm } from 'react-hook-form';
+import useLogin from '@/hooks/userHooks/useLogin';
+import { Input, Button } from '@nextui-org/react';
 
 export default function LoginUi() {
-  const [formData, setFormData] = useState({
-    username: '',
-    password: ''
-  });
-
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const { register, handleSubmit } = useForm<{ username: string; password: string }>();
   const router = useRouter();
+  const {mutate: login} = useLogin();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const encodedData = new URLSearchParams(formData);
-
-    try {
-      const response = await fetch(`${url}login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: encodedData.toString(),
-      });
-
-      if (response.status === 200) {
-        const token = response.headers.get('Authorization');
-        const refresh = response.headers.get('Refresh');
-
-        if (typeof token === 'string' && typeof refresh === 'string') {
-          localStorage.setItem('accessToken', token);
-          localStorage.setItem('refreshToken', refresh);
-          setAccessToken(token);
-          Swal.fire({
-            icon: 'success',
-            title: '로그인 성공',
-            text: '로그인 되었습니다',
-            timer: 1000,
-            showConfirmButton: false
-          });
-          router.push('/'); // 로그인 후 메인 페이지로 리다이렉트
-        } else {
-          alert('인증토큰을 불러오지 못했습니다. 다시 로그인해보세요.');
-        }
-      } else {
-        console.error('Error submitting form');
-        alert('로그인에 실패하였습니다. 다시 시도해 주세요.');
+  const onSubmit = (data: { username: string; password: string }) => {
+    login(data, {
+      onSuccess: () => {
+        Swal.fire({
+          icon: 'success',
+          title: '로그인 성공',
+          showConfirmButton: false,
+          timer: 1500
+        });
+        router.push('/');
+      },
+      onError: (error) => {
+        Swal.fire({
+          icon: 'error',
+          title: '로그인 실패',
+          text: '아이디와 비밀번호를 확인해주세요.',
+          showConfirmButton: false,
+          timer: 1500
+        });
       }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('오류가 발생했습니다. 나중에 다시 시도해 주세요.');
-    }
+    })
   };
+
+  const loginMenuStyle = 'hover:text-blue-500';
 
   return (
-    <div className = "h-screen flex items-center justify-center bg-gray-100">
-        <div className="bg-white w-full py-20 px-4 text-center border-1 border-gray-300 max-w-md shadow-md rounded-lg overflow-hidden">
-            <h3 className="text-3xl text-gray-800 font-semibold">로그인</h3>
-            <form className="flex flex-col mt-5 px-5" onSubmit={handleSubmit}>
-                <input
-                  placeholder ="ID"
-                  className="bg-white focus:outline-none border-1 focus:border-opacity-50 focus:border-gray-300 mb-3 py-3 px-5 rounded-lg"
-                  id="username"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  required/>
-                <input
-                  placeholder ="PASSWORD"
-                  type="password"
-                  className="bg-white focus:outline-none border-1 focus:border-opacity-50 focus:border-gray-300 py-3 px-5 rounded-lg"
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required/>
-                
-                <input type="submit" className='py-3 px-5 text-white bg-[#6EB4FB] mt-3 text-lg rounded-lg focus:outline-none hover:opacity-90 hover:bg-blue-500' value="로그인" />
+    <div className="h-screen flex items-center justify-center bg-gray-100 p-1">
+      <div className="px-12 py-28 sm:px-14 sm:py-36 bg-white text-center shadow-md rounded-lg">
+        <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">로그인</h3>
+        <form 
+          className="flex flex-col mx-auto gap-3" 
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <Input
+            placeholder="ID"
+            {...register('username')}
+            required 
+          />
+          <Input
+            placeholder="PASSWORD"
+            type="password"
+            {...register('password')}
+            required 
+          />
 
-                <div className="my-6">
-                  <Link href={'/email-check'} className='inline-block'><p className='m-2'>회원가입</p></Link>
-                  <Link href={'/find-username'} className='inline-block'><p className='m-2'>아이디 찾기</p></Link>
-                  <Link href={'/find-password'} className='inline-block'><p className='m-2'>비밀번호 찾기</p></Link>
-                </div>
-            </form>
-        </div>
+          <Button type='submit' color='primary' className='mt-5'>로그인</Button>
+
+          <div className='flex justify-center gap-3 text-xs sm:text-sm text-gray-900'>
+            <Link 
+              href={'/email-check'}
+              className={loginMenuStyle}
+            >
+              <p>회원가입</p>
+            </Link>
+            <Link 
+              href={'/find-username'}
+              className={loginMenuStyle}
+            >
+              <p>아이디 찾기</p>
+            </Link>
+            <Link 
+              href={'/find-password'}
+              className={loginMenuStyle}
+            >
+              <p>비밀번호 찾기</p>
+            </Link>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

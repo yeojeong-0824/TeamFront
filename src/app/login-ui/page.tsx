@@ -10,7 +10,7 @@ import { Input, Button } from '@nextui-org/react';
 export default function LoginUi() {
   const { register, handleSubmit } = useForm<{ username: string; password: string }>();
   const router = useRouter();
-  const {mutate: login} = useLogin();
+  const {mutate: login, isPending:loginPending} = useLogin();
 
   const onSubmit = (data: { username: string; password: string }) => {
     login(data, {
@@ -57,7 +57,14 @@ export default function LoginUi() {
             required 
           />
 
-          <Button type='submit' color='primary' className='mt-5'>로그인</Button>
+          <Button 
+            type='submit' 
+            color='primary' 
+            className='mt-5'
+            isLoading={loginPending}
+          >
+            로그인
+          </Button>
 
           <div className='flex justify-center gap-3 text-xs sm:text-sm text-gray-900'>
             <Link 

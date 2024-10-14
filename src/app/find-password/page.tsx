@@ -1,84 +1,94 @@
 'use client';
-import { useState } from 'react';
-import { url } from '../store';
+
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import { usernameV, emailV } from '../validationRules';
+import { ErrorMessage } from '@hookform/error-message';
+import { Input, Button } from '@nextui-org/react';
+import useFindPassword from '@/hooks/userHooks/useFindPassword';
+import Swal from 'sweetalert2';
+
+type FindPassword = {
+    username: string;
+    email: string;
+}
 
 export default function FindPassword() {
     const router = useRouter();
+    const { mutate, isPending } = useFindPassword();
 
-    const [formData, setFormData] = useState({
-        username: '',
-        email: ''
+    const { register, handleSubmit, formState: { errors } } = useForm<FindPassword>({
+        mode: 'onChange', // 입력 값이 변경될 때마다 유효성 검사
+        reValidateMode: 'onChange', // 입력 값이 변경될 때마다 유효성 검사
     });
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
+
+    const onSubmit = (data: FindPassword) => {
+        if(!data.username || !data.email) return;
+        mutate(data, {
+            onSuccess: () => {
+                Swal.fire({
+                    icon: 'success',
+                    title: '비밀번호 전송 성공',
+                    text: '이메일을 확인하여 새로운 비밀번호로 로그인 후 비밀번호를 변경해주세요',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                router.push('/login-ui');
+            },
+            onError: () => {
+                Swal.fire({
+                    icon: 'error',
+                    title: '비밀번호 전송 실패',
+                    text: '아이디와 이메일 주소를 확인해주세요',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+        })
     };
 
-    async function find_id() {
-        try {
-            const response = await fetch(`${url}/member/findMember/password`, {
-                method: "PATCH",
-                headers: {
-                    'Content-Type': 'application/json' // 데이터 형식 설정
-                },
-                body: JSON.stringify(formData)
-            })
-            if (response.status === 200) {
-                alert("비밀번호를 이메일로 전송하였습니다")
-                router.push('/login-ui'); // 로그인 페이지로 리다이렉트
-            }
-            else if (response.status === 400) {
-                alert("이메일 주소를 바르게 입력해주세요");
-            }
-        } catch (error) {
-            alert(error);
-        }
-    }
-
     return (
-      <div className="h-screen flex items-center justify-center bg-gray-100">
-        <div className="bg-white w-full py-20 px-4 text-center border-1 border-gray-300 max-w-md shadow-md rounded-lg overflow-hidden">
-          <h3 className="text-3xl text-gray-800 font-semibold">비밀번호 찾기</h3>
-          <div className="flex flex-col mt-5 px-5">
-            <input
-              placeholder="ID"
-              className="bg-white focus:outline-none border-1 focus:border-opacity-50 focus:border-gray-300 mb-3 py-3 px-5 rounded-lg"
-              id="username"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              required 
-              />
-              <input
-                placeholder="EMAIL"
-                className="bg-white focus:outline-none border-1 focus:border-opacity-50 focus:border-gray-300 py-3 px-5 rounded-lg"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required 
-              />
-             <input type="submit" 
-              className='py-3 px-5 text-white bg-[#6EB4FB] mt-3 text-lg rounded-lg focus:outline-none hover:opacity-90 hover:bg-blue-500' 
-              value="이메일 전송" 
-              onClick={find_id} 
-             />
-             <div className="my-6">
-             <Link 
-               href={'/login-ui'} 
-               className='inline-block'>
-               <p className='m-2'>
-               로그인으로 돌아가기
-             </p>
-            </Link>
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 p-1">
+            <div className="p-10 sm:p-20 bg-white text-center shadow-md rounded-lg">
+                <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">비밀번호 찾기</h3>
+                <form className="flex flex-col mx-auto gap-5" onSubmit={handleSubmit(onSubmit)}>
+                    <Input
+                        placeholder="아이디"
+                        {...register('username', usernameV)}
+                    />
+                    <ErrorMessage
+                        errors={errors}
+                        name="username"
+                        render={({ message }) => <p className='text-sm text-red-500 font-semibold'>{message}</p>}
+                    />
+                    <Input
+                        placeholder="이메일"
+                        {...register('email', emailV)}
+                    />
+                    <ErrorMessage
+                        errors={errors}
+                        name="email"
+                        render={({ message }) => <p className='text-sm text-red-500 font-semibold'>{message}</p>}
+                    />
+                    <Button
+                        color="primary"
+                        type='submit'
+                        className='mt-5'
+                        isLoading={isPending}
+                    >
+                        비밀번호 찾기
+                    </Button>
+                    <Link
+                        href={'/login-ui'}
+                        className='text-xs sm:text-sm hover:text-blue-500 mt-3'
+                    >
+                        <p>
+                            로그인으로 돌아가기
+                        </p>
+                    </Link>
+                </form>
             </div>
-            </div>
-        </div>
         </div>
     )
 }

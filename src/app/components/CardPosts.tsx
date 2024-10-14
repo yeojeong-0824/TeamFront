@@ -55,7 +55,7 @@ const CardPosts = () => {
     if (data?.content.length === 0) {
       return (
         <div className="flex justify-center mt-32">
-          <p className="font-bold text-2xl text-red-500">
+          <p className="font-bold text-2xl text-gray-800">
             게시글이 존재하지 않습니다.
           </p>
         </div>

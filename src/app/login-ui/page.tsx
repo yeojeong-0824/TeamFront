@@ -1,5 +1,5 @@
 'use client';
-
+// 현재 브랜치 YJ-12--회원가입로그인반응형 진행 중 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@!!!!!!!!
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Swal from 'sweetalert2';
@@ -38,20 +38,20 @@ export default function LoginUi() {
   const loginMenuStyle = 'hover:text-blue-500';
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-100 p-1">
-      <div className="px-12 py-28 sm:px-14 sm:py-36 bg-white text-center shadow-md rounded-lg">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-1">
+      <div className="p-10 sm:p-20 bg-white text-center shadow-md rounded-lg">
         <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">로그인</h3>
         <form 
-          className="flex flex-col mx-auto gap-3" 
+          className="flex flex-col mx-auto gap-5" 
           onSubmit={handleSubmit(onSubmit)}
         >
           <Input
-            placeholder="ID"
+            placeholder="아이디"
             {...register('username')}
             required 
           />
           <Input
-            placeholder="PASSWORD"
+            placeholder="비밀번호"
             type="password"
             {...register('password')}
             required 
@@ -68,7 +68,7 @@ export default function LoginUi() {
 
           <div className='flex justify-center gap-3 text-xs sm:text-sm text-gray-900'>
             <Link 
-              href={'/email-check'}
+              href={'/sign-up'}
               className={loginMenuStyle}
             >
               <p>회원가입</p>

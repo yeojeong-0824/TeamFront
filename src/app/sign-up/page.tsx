@@ -129,22 +129,22 @@ export default function SignupDemo() {
     });
   };
 
-  const errorStyle = 'text-sm text-red-500';
+  const errorStyle = 'text-sm text-red-500 font-semibold';
   return (
-    <div className="min-h-[1300px] flex items-center justify-center bg-gray-100">
-      <div className="bg-white w-full py-20 px-4 text-center border-1 border-gray-300 max-w-md shadow-md rounded-lg overflow-hidden">
-        <h3 className="text-3xl text-gray-800 font-semibold">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-1">
+      <div className="p-10 mt-10 sm:p-20 bg-white text-center shadow-md rounded-lg">
+        <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
           회원가입
         </h3>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col gap-5 mt-5 px-5">
+          className="flex flex-col gap-5 mt-5">
           {/* 이메일 입력&전송&에러메세지 */}
           <div className="flex items-end gap-1">
             <Input
               type="email"
               variant='underlined'
-              label="Email"
+              label="이메일"
               isDisabled={emailConfirmM.isSuccess}
               {...register('email', emailV)}
             />
@@ -168,7 +168,7 @@ export default function SignupDemo() {
             <Input
               type="text"
               variant="underlined"
-              label="Email Check"
+              label="이메일 확인 코드"
               isDisabled={emailConfirmM.isSuccess}
               {...register('emailConfirm', emailConfirmV)}
             />
@@ -198,7 +198,7 @@ export default function SignupDemo() {
             <Input
               type="text"
               variant="underlined"
-              label="ID"
+              label="아이디"
               isDisabled={checkUsername.isSuccess}
               {...register('username', usernameV)}
             />
@@ -222,7 +222,7 @@ export default function SignupDemo() {
             <Input
               type="text"
               variant="underlined"
-              label="Nickname"
+              label="닉네임"
               isDisabled={checkNickname.isSuccess}
               {...register('nickname', nicknameV)}
             />
@@ -244,7 +244,7 @@ export default function SignupDemo() {
           <Input
             type="number"
             variant="underlined"
-            label="Your age"
+            label="나이"
             {...register('age', ageV)}
           />
           <ErrorMessage
@@ -256,7 +256,7 @@ export default function SignupDemo() {
           <Input
             type="password"
             variant="underlined"
-            label="Password"
+            label="비밀번호"
             {...register('password', passwordV)}
           />
           <ErrorMessage
@@ -268,7 +268,7 @@ export default function SignupDemo() {
           <Input
             type="password"
             variant="underlined"
-            label="Password Check"
+            label="비밀번호 확인"
             {...register('passwordConfirm', passwordConfirmV)}
           />
           <ErrorMessage

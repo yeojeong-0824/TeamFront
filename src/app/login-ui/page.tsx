@@ -1,5 +1,5 @@
 'use client';
-// 현재 브랜치 YJ-12--회원가입로그인반응형 진행 중 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@!!!!!!!!
+
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Swal from 'sweetalert2';

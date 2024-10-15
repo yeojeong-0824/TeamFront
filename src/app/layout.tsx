@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 declare global {
   interface Window {
     Kakao: any;
-  } 
+  }
 }
 
 export default function RootLayout({
@@ -27,18 +27,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-        <Script
-          src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
-          integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
+      <Script
+        src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+        integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
       <body className={inter.className}>
         <QueryProvider>
           <NextUIProvider>
-            <Header />
-            {children}
-            <Footer />
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <div className="flex-grow">{children}</div>
+              <Footer />
+            </div>
           </NextUIProvider>
         </QueryProvider>
       </body>

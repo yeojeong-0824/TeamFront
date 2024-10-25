@@ -8,6 +8,7 @@ import { ControlBarMainProps } from "@/types/controlbar";
 import { Input } from "@nextui-org/react";
 import { CiSearch } from "react-icons/ci";
 import { PiNotePencilThin } from "react-icons/pi";
+import { useQueryClient } from "@tanstack/react-query";
 
 type FormData = {
   keyword: string;
@@ -20,6 +21,7 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const queryClient = useQueryClient();
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -74,9 +76,9 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
   };
 
   const handlePost = () => {
-    // const token = localStorage.getItem('accessToken');
-    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-    if (!token) {
+    queryClient.invalidateQueries({ queryKey: ['accessCheck'] });
+    const cacheData = queryClient.getQueryData(['accessCheck']);
+    if (!cacheData) {
       Swal.fire({
         icon: 'error',
         title: '로그인 필요',

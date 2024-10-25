@@ -6,21 +6,29 @@ import Swal from 'sweetalert2';
 import { useForm } from 'react-hook-form';
 import useLogin from '@/hooks/userHooks/useLogin';
 import { Input, Button } from '@nextui-org/react';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function LoginUi() {
   const { register, handleSubmit } = useForm<{ username: string; password: string }>();
   const router = useRouter();
   const {mutate: login, isPending:loginPending} = useLogin();
+  const queryClient = useQueryClient();
 
   const onSubmit = (data: { username: string; password: string }) => {
     login(data, {
-      onSuccess: () => {
+      onSuccess: (res) => {
         Swal.fire({
           icon: 'success',
           title: '로그인 성공',
           showConfirmButton: false,
           timer: 1500
         });
+        const tokenWithBearer = res.headers['authorization'];
+        if(tokenWithBearer) {
+          const accessToken = tokenWithBearer.split(' ')[1];
+          localStorage.setItem('accessToken', accessToken);
+        }
+        queryClient.invalidateQueries({ queryKey: ['accessCheck'] });
         router.push('/');
       },
       onError: (error) => {

@@ -5,4 +5,4 @@ export default function useLogin() {
   return useMutation({
     mutationFn: (loginData: {username: string, password: string})=> login(loginData),
   });
-}
+};

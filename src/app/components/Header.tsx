@@ -1,22 +1,25 @@
 'use client';
 
 import Link from "next/link";
-import useAuthStore, { useAuthInitializer } from '../store';
 import Swal from "sweetalert2";
 import Image from "next/image";
+// import useGetIp from "@/api/getIp";
+import useAccessCheck from "@/hooks/TokenHooks/useAccessCheck";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Header = (): JSX.Element => {
-  useAuthInitializer(); // 상태 초기화 훅 호출
-
-  const { accessToken, clearTokens } = useAuthStore();
+  // const { data: ipData, isLoading: isIpLoading } = useGetIp();
+  const { data: accessCheckData, isLoading: accessIsLoading } = useAccessCheck();
+  const queryClient = useQueryClient();
 
   const handleLogout = () => {
-    clearTokens(); // 액세스 토큰과 리프레쉬 토큰 삭제
+    localStorage.removeItem('accessToken');
     Swal.fire({
       icon: 'success',
       title: '로그아웃 성공',
       text: '로그아웃 되었습니다',
     });
+    queryClient.resetQueries({ queryKey: ['accessCheck'] });
   };
 
   const commonStyle = 'p-1 px-2.5 text-xs sm:p-2 sm:px-4 sm:text-sm';
@@ -30,7 +33,7 @@ const Header = (): JSX.Element => {
         <Image src='/여정logo.png' alt="메인 로고" width={80} height={80} />
       </Link>
       <div className="col-start-3 justify-self-end">
-        {accessToken ? (
+        {accessCheckData?.data ? (
           <div className="flex gap-2">
             <button onClick={handleLogout} className={logoutLoginStyle}>로그아웃</button>
             <Link href={'/check-my-info'} className={infoSignupStyle}>회원정보</Link>
@@ -42,6 +45,8 @@ const Header = (): JSX.Element => {
           </div>
         )}
       </div>
+      {/* {isIpLoading && <p>사용자의 ip 가져오는 중...</p>}
+      {ipData && <p>{ipData?.IPv4}</p>} */}
     </header>
   );
 };

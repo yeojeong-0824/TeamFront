@@ -4,7 +4,7 @@ export default async function login(loginData: { username: string; password: str
   const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}login`, loginData, {
     withCredentials: true,
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/x-www-form-urlencoded',
     }
   });
   return response;

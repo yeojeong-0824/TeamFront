@@ -24,10 +24,7 @@ export default function LoginUi() {
           timer: 1500
         });
         const tokenWithBearer = res.headers['authorization'];
-        if(tokenWithBearer) {
-          const accessToken = tokenWithBearer.split(' ')[1];
-          localStorage.setItem('accessToken', accessToken);
-        }
+        localStorage.setItem('accessToken', tokenWithBearer);
         queryClient.invalidateQueries({ queryKey: ['accessCheck'] });
         router.push('/');
       },

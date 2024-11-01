@@ -6,11 +6,34 @@ import Image from "next/image";
 // import useGetIp from "@/api/getIp";
 import useAccessCheck from "@/hooks/TokenHooks/useAccessCheck";
 import { useQueryClient } from "@tanstack/react-query";
+import useRefreshReissue from "@/hooks/TokenHooks/useRefreshReissue";
+import { useEffect } from "react";
 
 const Header = (): JSX.Element => {
   // const { data: ipData, isLoading: isIpLoading } = useGetIp();
-  const { data: accessCheckData, isLoading: accessIsLoading } = useAccessCheck();
+  const { data: accessCheckData, isLoading: accessIsLoading, isError } = useAccessCheck();
   const queryClient = useQueryClient();
+  const { mutate: refreshReissue } = useRefreshReissue();
+
+  useEffect(() => {
+    if (isError) {
+      localStorage.removeItem('accessToken');
+      refreshReissue(undefined, {
+        onSuccess: (data) => {
+          const tokenWithBearer = data.headers['authorization'];
+          localStorage.setItem('accessToken', tokenWithBearer);
+          queryClient.invalidateQueries({ queryKey: ['accessCheck'] });
+        },
+        onError: () => {
+          Swal.fire({
+            icon: 'error',
+            title: '토큰 갱신 실패',
+            text: '다시 로그인 해주세요.',
+          });
+        },
+      });
+    }
+  }, [accessCheckData, isError]);
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
@@ -33,7 +56,7 @@ const Header = (): JSX.Element => {
         <Image src='/여정logo.png' alt="메인 로고" width={80} height={80} />
       </Link>
       <div className="col-start-3 justify-self-end">
-        {accessCheckData?.data ? (
+        {accessCheckData?.status ? (
           <div className="flex gap-2">
             <button onClick={handleLogout} className={logoutLoginStyle}>로그아웃</button>
             <Link href={'/check-my-info'} className={infoSignupStyle}>회원정보</Link>

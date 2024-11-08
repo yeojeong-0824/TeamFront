@@ -172,23 +172,24 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
         {data?.content.map((comment: CommentResponse) => (
           <div className="flex flex-col gap-1 p-5 border-b text-gray-900" key={comment.id}>
             <div className="flex justify-between items-center">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <h3 className="text-sm sm:text-medium font-semibold">{comment?.member.nickname}</h3>
-                <p className="text-xs text-gray-500">7분전</p>
-                <Rate
-                  value={comment?.score}
-                  disabled
-                  style={{
-                    fontSize: '13px',
-                    display: updateToggle[comment.id] ? 'none' : 'block',
-                  }}
-                />
+                <p className="text-xs text-gray-400">{loginNickname === comment?.member?.nickname && '내 댓글'}</p>
+                {comment?.score ? (
+                  <Rate
+                    value={comment?.score}
+                    disabled
+                    style={{
+                      fontSize: '13px',
+                      display: updateToggle[comment.id] ? 'none' : 'block',
+                    }}
+                  />) : null}
               </div>
               <div className={`flex relative justify-end gap-1 text-sm ${updateToggle[comment.id] ? 'hidden' : 'block'}`}>
                 <button ref={(el) => { buttonRefs.current[comment.id] = el; }} onClick={() => toggleCommentOptions(comment.id)} className={`text-xl ${Object.values(updateToggle).includes(true) || !cacheData || loginNickname !== comment?.member?.nickname ? 'hidden' : 'block'}`}>
                   <BsThreeDots className="text-sm sm:text-2xl" />
                 </button>
-                {commentOptionVisible === comment.id && ( // 현재 활성화된 ID와 비교
+                {commentOptionVisible === comment.id && (
                   <div className="flex flex-col absolute w-[90px] sm:w-[120px] gap-1 top-5 p-1 sm:p-3 border bg-white rounded-md z-10 shadow-md"
                   ref={(el) => { menuRefs.current[comment.id] = el; }}>
                     <button

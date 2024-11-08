@@ -41,10 +41,8 @@ const Header = (): JSX.Element => {
   };
 
   const commonStyle = 'p-1 px-2.5 text-xs sm:p-2 sm:px-4 sm:text-sm';
-
   const logoutLoginStyle = `${commonStyle} border hover:bg-gray-100 rounded-full`;
   const infoSignupStyle = `${commonStyle} bg-[#3D6691] text-white hover:bg-[#2f5072] rounded-full`;
-
   return (
     <header className="grid grid-cols-2 sm:grid-cols-3 items-center fixed w-full top-0 p-2 bg-white border-b-2 z-50">
       <Link href={'/'} className="w-[50px] sm:col-start-2 sm:justify-self-center sm:w-[80px]">

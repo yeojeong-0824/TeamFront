@@ -103,6 +103,9 @@ const Post = ({ params }: { params: ParamsId }) => {
           <h1 className="text-2xl sm:text-4xl leading-10">{data?.title}</h1>
           <div className="flex justify-end">
             <div className="flex items-center gap-3 text-xs sm:text-sm">
+              <p className="text-sm text-gray-400">
+                {userInfoData?.nickname === data?.member?.nickname && '내가 작성한 글'}
+              </p>
               <h3 className="font-medium">{data?.member?.nickname}</h3>
               <h3>7시간 전</h3>
               <h3 className="text-sm">

@@ -125,6 +125,7 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
           label="검색"
           variant="underlined"
           placeholder="게시글을 검색해보세요"
+          required
           {...register('keyword', {
             required: '검색어를 입력해주세요',
             maxLength: { value: 15, message: '검색어는 15자 이하로 입력하세요' }

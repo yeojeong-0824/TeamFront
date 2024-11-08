@@ -24,24 +24,19 @@ const Header = (): JSX.Element => {
           localStorage.setItem('accessToken', tokenWithBearer);
           queryClient.invalidateQueries({ queryKey: ['accessCheck'] });
         },
-        onError: () => {
-          Swal.fire({
-            icon: 'error',
-            title: '토큰 갱신 실패',
-            text: '다시 로그인 해주세요.',
-          });
-        },
+        // onError: () => {
+        //   Swal.fire({
+        //     icon: 'error',
+        //     title: '토큰 갱신 실패',
+        //     text: '다시 로그인 해주세요.',
+        //   });
+        // },
       });
     }
-  }, [accessCheckData, isError]);
+  }, [isError]);
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
-    Swal.fire({
-      icon: 'success',
-      title: '로그아웃 성공',
-      text: '로그아웃 되었습니다',
-    });
     queryClient.resetQueries({ queryKey: ['accessCheck'] });
   };
 

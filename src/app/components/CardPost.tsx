@@ -16,7 +16,7 @@ const CardPost = ({ post }: CardPostProps): JSX.Element => {
       title = `${truncated}...`;
     }
     return title;
-  }
+  };
 
   return (
     <div className="p-3 border-b text-gray-900">
@@ -24,7 +24,7 @@ const CardPost = ({ post }: CardPostProps): JSX.Element => {
       <div className="flex justify-between mb-3">
 
         <div className="flex items-center gap-3 text-xs sm:text-sm">
-          <p>user1{post.memberNickname}</p>
+          <p>{post?.member?.nickname}</p>
           <p>7시간 전</p>
         </div>
 

@@ -17,12 +17,6 @@ export default function LoginUi() {
   const onSubmit = (data: { username: string; password: string }) => {
     login(data, {
       onSuccess: (res) => {
-        Swal.fire({
-          icon: 'success',
-          title: '로그인 성공',
-          showConfirmButton: false,
-          timer: 1500
-        });
         const tokenWithBearer = res.headers['authorization'];
         localStorage.setItem('accessToken', tokenWithBearer);
         queryClient.invalidateQueries({ queryKey: ['accessCheck'] });

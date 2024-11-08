@@ -12,8 +12,15 @@ import { CommentResponse } from "@/types/comment";
 import useDelteMutation from "@/hooks/useDeleteComment";
 import useUpdateComment from "@/hooks/useUpdateComment";
 import { Rate } from "antd";
+import { useQueryClient } from "@tanstack/react-query";
+import Swal from "sweetalert2";
 
-const Comment = ({ id }: ParamsId) => {
+type CommentProps = {
+  id: number;
+  loginNickname: string;
+};
+
+const Comment = ({ id, loginNickname }: CommentProps) => {
   const [commentOptionVisible, setCommentOptionVisible] = useState<number | null>(null); // 단일 ID로 변경
   const [comment, setComment] = useState<string>('');
   const [updateToggle, setUpdateToggle] = useState<{ [key: number]: boolean }>({});
@@ -26,6 +33,10 @@ const Comment = ({ id }: ParamsId) => {
   const [updateScore, setUpdateScore] = useState<number>(0);
   const menuRefs = useRef<(HTMLDivElement | null)[]>([]);
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const queryClient = useQueryClient();
+
+  queryClient.invalidateQueries({ queryKey: ['accessCheck'] });
+  const cacheData = queryClient.getQueryData(['accessCheck']);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -50,6 +61,16 @@ const Comment = ({ id }: ParamsId) => {
       setComment('');
       return;
     }
+    queryClient.invalidateQueries({ queryKey: ['accessCheck'] });
+    const cacheData = queryClient.getQueryData(['accessCheck']);
+    if(!cacheData) {
+      Swal.fire({
+        icon: 'error',
+        title: '로그인 필요',
+        text: '로그인이 필요한 서비스입니다.'
+      });
+      return;
+    }
     postCommentMutate({ id, score, comment });
     setComment('');
     setScore(0);
@@ -59,7 +80,17 @@ const Comment = ({ id }: ParamsId) => {
     setCommentOptionVisible((prev) => (prev === commentId ? null : commentId));
   };
 
-  const handleDeleteComment = (commentId: number) => deleteCommentMutate(commentId);
+  const handleDeleteComment = (commentId: number) => {
+    if(!cacheData) {
+      Swal.fire({
+        icon: 'error',
+        title: '로그인 필요',
+        text: '로그인이 필요한 서비스입니다.'
+      });
+      return;
+    }
+    deleteCommentMutate(commentId)
+  };
 
   const handleUpdateComment = (commentId: number) => {
     setCommentOptionVisible(null); // 옵션 메뉴 닫기
@@ -85,6 +116,14 @@ const Comment = ({ id }: ParamsId) => {
   };
 
   const handlePostUpdate = (commentId: number) => {
+    if(!cacheData) {
+      Swal.fire({
+        icon: 'error',
+        title: '로그인 필요',
+        text: '로그인이 필요한 서비스입니다.'
+      });
+      return;
+    }
     const originalComment = data?.content.find((comment: CommentResponse) => comment.id === commentId);
 
     // 새 별점이 0이거나 원래 별점과 같다면, 원래 별점을 사용
@@ -146,7 +185,7 @@ const Comment = ({ id }: ParamsId) => {
                 />
               </div>
               <div className={`flex relative justify-end gap-1 text-sm ${updateToggle[comment.id] ? 'hidden' : 'block'}`}>
-                <button ref={(el) => { buttonRefs.current[comment.id] = el; }} onClick={() => toggleCommentOptions(comment.id)} className={`text-xl ${Object.values(updateToggle).includes(true) ? 'hidden' : 'block'}`}>
+                <button ref={(el) => { buttonRefs.current[comment.id] = el; }} onClick={() => toggleCommentOptions(comment.id)} className={`text-xl ${Object.values(updateToggle).includes(true) || !cacheData || loginNickname !== comment?.member?.nickname ? 'hidden' : 'block'}`}>
                   <BsThreeDots className="text-sm sm:text-2xl" />
                 </button>
                 {commentOptionVisible === comment.id && ( // 현재 활성화된 ID와 비교

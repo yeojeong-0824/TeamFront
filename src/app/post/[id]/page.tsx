@@ -10,23 +10,28 @@ import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/app/components/Loading";
 import ErrorShow from "@/app/components/Error";
 import { IoEyeOutline } from "react-icons/io5";
-import { QueryClient } from "@tanstack/react-query";
 import { BsThreeDots } from "react-icons/bs";
 import { PiNotePencilThin } from "react-icons/pi";
 import { CiTrash } from "react-icons/ci";
 import KakaoShare from "@/app/components/KakaoShare";
 import { CiLink } from "react-icons/ci";
+import { useQueryClient } from "@tanstack/react-query";
+import useGetUserInfo from "@/hooks/userHooks/useGetUserInfo";
 
 const Post = ({ params }: { params: ParamsId }) => {
   const { id } = params;
   const { data, isLoading, isError, error, isSuccess } = usePost(id);
   const { mutate: deletePostMutate } = useDeletePost();
   const router = useRouter();
-  const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-  const queryClient = new QueryClient();
   const [postOptionVisible, setPostOptionVisible] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const queryClient = useQueryClient();
+
+  queryClient.invalidateQueries({ queryKey: ['accessCheck'] });
+  const cacheData = queryClient.getQueryData(['accessCheck']);
+  const { data: userInfoData, isLoading: userInfoIsLoading } = useGetUserInfo();
+  const userCheck = data?.member?.nickname === userInfoData?.nickname;
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -54,11 +59,11 @@ const Post = ({ params }: { params: ParamsId }) => {
   const handleThreeDots = () => setPostOptionVisible((prev) => !prev);
 
   const handleUpdate = () => {
-    if (!token) {
+    if (!cacheData) {
       Swal.fire({
         icon: 'error',
         title: '로그인 필요',
-        text: '로그인이 필요한 서비스입니다'
+        text: '로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다'
       });
       router.push(`/login-ui`);
       return;
@@ -66,7 +71,18 @@ const Post = ({ params }: { params: ParamsId }) => {
     router.push(`/update/${id}`);
   }
 
-  const handlePostDelete = () => deletePostMutate(id);
+  const handlePostDelete = () => {
+    if(!cacheData) {
+      Swal.fire({
+        icon: 'error',
+        title: '로그인 필요',
+        text: '로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다'
+      });
+      router.push(`/login-ui`);
+      return;
+    }
+    deletePostMutate(id)
+  };
 
   const handleShareLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -76,7 +92,7 @@ const Post = ({ params }: { params: ParamsId }) => {
       timer: 1000,
     });
     setPostOptionVisible(false);
-  }
+  };
 
   return (
     <div className="min-h-[1300px] sm:my-12 p-1 sm:p-2">
@@ -103,14 +119,18 @@ const Post = ({ params }: { params: ParamsId }) => {
                 {postOptionVisible && <div className="flex flex-col absolute w-[90px] sm:w-[120px] gap-1 p-1 sm:p-3 top-6 border bg-white z-10 rounded-md shadow-md"
                 id="post-option-menu"
                 ref={menuRef}>
-                  <button className="flex items-center gap-1 p-1 hover:text-blue-300 text-xs sm:text-medium"
+                  <button 
+                    className={`flex items-center gap-1 p-1 hover:text-blue-300 text-xs sm:text-medium ${userCheck ? 'block' : 'hidden'}`}
                     onClick={handleUpdate}>
-                    <PiNotePencilThin className="inline text-lg sm:text-xl" />
+                    <PiNotePencilThin className="inline text-lg sm:text-xl" 
+                  />
                     수정하기
                   </button>
-                  <button className="flex items-center gap-1 p-1 hover:text-red-300 text-xs sm:text-medium"
+                  <button 
+                    className={`flex items-center gap-1 p-1 hover:text-red-300 text-xs sm:text-medium ${userCheck ? 'block' : 'hidden'}`}
                     onClick={handlePostDelete}>
-                    <CiTrash className="inline text-lg sm:text-xl" />
+                    <CiTrash className="inline text-lg sm:text-xl" 
+                  />
                     삭제하기
                   </button>
                   <button className="flex items-center gap-1 p-1 text-xs sm:text-medium hover:text-gray-400"
@@ -142,7 +162,7 @@ const Post = ({ params }: { params: ParamsId }) => {
           </div>
         </div>
       )}
-      {isSuccess && <Comment id={id} />}
+      {isSuccess && <Comment id={id} loginNickname={userInfoData?.nickname} />}
     </div>
   );
 }

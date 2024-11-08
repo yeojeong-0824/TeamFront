@@ -4,10 +4,8 @@ import updatePost from "@/api/updatePost";
 import { useMutation } from "@tanstack/react-query";
 import { WriteUpdateType } from "@/types/board";
 import { useRouter } from "next/navigation";
-
 import Swal from "sweetalert2";
 import { useQueryClient } from "@tanstack/react-query";
-import { CustomError } from "@/types/error";
 
 const useUpdatePost = (id: number) => {
   const router = useRouter();
@@ -15,16 +13,6 @@ const useUpdatePost = (id: number) => {
 
   const updateM = useMutation({
     mutationFn: (data: WriteUpdateType) => updatePost(data, id),
-    onError: (error: CustomError) => {
-      if(error?.response.status === 403) {
-        Swal.fire({
-          icon: 'error',
-          title: '로그인 필요',
-          text: '로그인이 필요한 서비스입니다'
-        });
-        router.push(`/login-ui`);
-      }
-    },
     onSuccess: () => {
       Swal.fire({
         icon: 'success',
@@ -32,7 +20,6 @@ const useUpdatePost = (id: number) => {
         text: '글 수정이 완료되었습니다',
         showConfirmButton: false,
         timer: 1500,
-        
       });
       queryClient.invalidateQueries({queryKey: ['sortPosts']});
       router.push(`/post/${id}`);

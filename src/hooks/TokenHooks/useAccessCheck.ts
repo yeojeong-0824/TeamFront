@@ -7,6 +7,6 @@ export default function useAccessCheck() {
     queryFn: accessCheck,
     staleTime: 3600000, // 1 hour
     gcTime: 3600000, // 1 hour
-    retry: false
+    retry: false,
   })
-}
+};

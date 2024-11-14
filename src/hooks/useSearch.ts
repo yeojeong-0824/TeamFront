@@ -13,6 +13,6 @@ const useSearch = (keyword: string, currentPage: number, sortKeyword: string) =>
   });
 
   return searchQuery;
-}
+};
 
 export default useSearch;

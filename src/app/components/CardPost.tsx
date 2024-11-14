@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CardPostProps } from "@/types/post";
 import { IoEyeOutline } from "react-icons/io5";
 import { FaRegCommentDots } from "react-icons/fa6";
+import formatDate from "@/util/formatDate";
 
 const CardPost = ({ post }: CardPostProps): JSX.Element => {
   const titleCut = () => {
@@ -25,7 +26,7 @@ const CardPost = ({ post }: CardPostProps): JSX.Element => {
 
         <div className="flex items-center gap-3 text-xs sm:text-sm">
           <p>{post?.member?.nickname}</p>
-          <p>7시간 전</p>
+          <p>{formatDate(post?.time?.createTime)}</p>
         </div>
 
         <div className="flex items-center gap-3 font-semibold text-xs sm:text-sm">

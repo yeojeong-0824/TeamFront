@@ -1,6 +1,5 @@
 'use client';
 
-import { ParamsId } from "@/types/post";
 import { Textarea } from "@nextui-org/input";
 import { useEffect, useRef, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
@@ -14,6 +13,7 @@ import useUpdateComment from "@/hooks/useUpdateComment";
 import { Rate } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import formatDate from "@/util/formatDate";
 
 type CommentProps = {
   id: number;
@@ -146,7 +146,7 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
       [commentId]: '',
     }));
   };
-
+  
   return (
     <div className="flex flex-col max-w-[800px] mx-auto p-3 text-gray-900">
       {data?.content.length ? <h2 className="text-sm sm:text-medium mb-10">{data?.content.length}개의 댓글</h2> : null}
@@ -175,6 +175,9 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
               <div className="flex items-center gap-2">
                 <h3 className="text-sm sm:text-medium font-semibold">{comment?.member.nickname}</h3>
                 <p className="text-xs text-gray-400">{loginNickname === comment?.member?.nickname && '내 댓글'}</p>
+                <p>
+
+                </p>
                 {comment?.score ? (
                   <Rate
                     value={comment?.score}

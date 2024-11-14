@@ -14,6 +14,10 @@ export type Post = {
   }
   title: string;
   view: number;
+  time: {
+    createTime: string;
+    updateTime: string;
+  }
 }
 
 export interface CardPostProps {

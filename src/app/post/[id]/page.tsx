@@ -17,6 +17,7 @@ import KakaoShare from "@/app/components/KakaoShare";
 import { CiLink } from "react-icons/ci";
 import { useQueryClient } from "@tanstack/react-query";
 import useGetUserInfo from "@/hooks/userHooks/useGetUserInfo";
+import formatDate from "@/util/formatDate";
 
 const Post = ({ params }: { params: ParamsId }) => {
   const { id } = params;
@@ -107,7 +108,7 @@ const Post = ({ params }: { params: ParamsId }) => {
                 {userInfoData?.nickname === data?.member?.nickname && '내가 작성한 글'}
               </p>
               <h3 className="font-medium">{data?.member?.nickname}</h3>
-              <h3>7시간 전</h3>
+              <h3>{formatDate(data?.time?.createTime)}</h3>
               <h3 className="text-sm">
                 <IoEyeOutline className="inline mr-[1.5px] mb-[1.5px] text-lg" />
                 {data?.view}

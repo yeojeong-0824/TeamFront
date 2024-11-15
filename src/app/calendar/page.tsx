@@ -1,10 +1,23 @@
 'use client';
 
-import { Button, Calendar } from "@nextui-org/react";
+import { Button, RangeCalendar, Calendar } from "@nextui-org/react";
 import { IoIosAdd } from "react-icons/io";
 import { FaCircleArrowDown } from "react-icons/fa6";
+import { useState } from "react";
+import type {DateValue} from "@react-types/calendar"
+import type {RangeValue} from "@react-types/shared";
+import {today, getLocalTimeZone} from "@internationalized/date";
+import {parseDate} from "@internationalized/date";
 
 export default function Calender() {
+  const [calValue, setCalValue] = useState<DateValue>(parseDate('2024-11-15'));
+  const [rangeCalValue, setRangeCalValue] = useState<RangeValue<DateValue>>({
+    start: today(getLocalTimeZone()),
+    end: today(getLocalTimeZone()).add({weeks: 1}),
+  });
+
+  console.log(calValue);
+
   return (
     <div className="min-h-[1300px] sm:my-12 p-1 sm:p-2">
       <div className="flex flex-col justify-between max-w-[800px] gap-3 mx-auto mt-24 p-3 text-gray-900">
@@ -16,7 +29,20 @@ export default function Calender() {
             <span className="text-[#3D6592]">플래너</span>를 이용해 더욱 편리하게 여행 일정을 관리해보세요.
           </p>
         </div>
-        <Calendar aria-label="Date (No Selection)" visibleMonths={3} className="mt-10" showShadow={true} />
+        <RangeCalendar 
+          aria-label="Date (No Selection)" 
+          className="mt-10 mx-auto" 
+          showShadow={true}  
+          value={rangeCalValue} 
+          onChange={setRangeCalValue} 
+        />
+        <Calendar 
+          aria-label="Date (No Selection)" 
+          className="mt-10 mx-auto" 
+          showShadow={true} 
+          value={calValue}
+          onChange={setCalValue}
+        />
 
         <Button color="primary">
             <div className="flex items-center">

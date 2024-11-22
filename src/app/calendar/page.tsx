@@ -1,22 +1,22 @@
 'use client';
 
-import { Button, RangeCalendar, Calendar } from "@nextui-org/react";
+import { Button, Calendar } from "@nextui-org/react";
 import { IoIosAdd } from "react-icons/io";
 import { FaCircleArrowDown } from "react-icons/fa6";
 import { useState } from "react";
 import type {DateValue} from "@react-types/calendar"
-import type {RangeValue} from "@react-types/shared";
-import {today, getLocalTimeZone} from "@internationalized/date";
 import {parseDate} from "@internationalized/date";
+import { useRouter } from "next/navigation";
 
 export default function Calender() {
+  const router = useRouter();
   const [calValue, setCalValue] = useState<DateValue>(parseDate('2024-11-15'));
-  const [rangeCalValue, setRangeCalValue] = useState<RangeValue<DateValue>>({
-    start: today(getLocalTimeZone()),
-    end: today(getLocalTimeZone()).add({weeks: 1}),
-  });
 
-  console.log(calValue);
+  const ChangeDate = () => {
+    return calValue.year + "년 " + calValue.month + "월 " + calValue.day + "일";
+  };
+
+  const routePostCalender = () => router.push('/postCalender');
 
   return (
     <div className="min-h-[1300px] sm:my-12 p-1 sm:p-2">
@@ -29,13 +29,6 @@ export default function Calender() {
             <span className="text-[#3D6592]">플래너</span>를 이용해 더욱 편리하게 여행 일정을 관리해보세요.
           </p>
         </div>
-        <RangeCalendar 
-          aria-label="Date (No Selection)" 
-          className="mt-10 mx-auto" 
-          showShadow={true}  
-          value={rangeCalValue} 
-          onChange={setRangeCalValue} 
-        />
         <Calendar 
           aria-label="Date (No Selection)" 
           className="mt-10 mx-auto" 
@@ -44,7 +37,7 @@ export default function Calender() {
           onChange={setCalValue}
         />
 
-        <Button color="primary">
+        <Button color="primary" onClick={routePostCalender}>
             <div className="flex items-center">
               일정추가
               <IoIosAdd className="text-2xl font-semibold" />
@@ -52,7 +45,7 @@ export default function Calender() {
           </Button>
 
         <div className="w-full space-y-5 mt-10">
-          <h1 className="text-2xl font-semibold text-blue-500 mb-3">11월 9일</h1>
+          <h1 className="text-2xl font-semibold text-blue-500 mb-3">{ChangeDate()}</h1>
 
           <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
             <h2 className="font-semibold text-lg">경북궁</h2>

@@ -6,7 +6,6 @@ import { WriteUpdateType } from "@/types/board";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { useQueryClient } from "@tanstack/react-query";
-import { CustomError } from "@/types/error";
 
 const useWritePost = () => {
   const router = useRouter();
@@ -14,21 +13,6 @@ const useWritePost = () => {
 
   const writeM = useMutation({
     mutationFn: (data: WriteUpdateType) => writePost(data),
-    onError: (error: CustomError) => {
-      if(error?.response.status === 403) {
-        Swal.fire({
-          icon: 'error',
-          title: '로그인 필요',
-          text: '로그인이 필요한 서비스입니다'
-        });
-        router.push(`/login-ui`);
-      }
-      Swal.fire({
-        icon: 'error',
-        title: '글 작성 실패',
-        text: '다시 시도해주세요',
-      });
-    },
     onSuccess: () => {
       Swal.fire({
         icon: 'success',

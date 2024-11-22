@@ -6,8 +6,9 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ControlBarMainProps } from "@/types/controlbar";
 import { Input } from "@nextui-org/react";
-import { CiSearch } from "react-icons/ci";
+import { CiSearch, CiCalendarDate } from "react-icons/ci";
 import { PiNotePencilThin } from "react-icons/pi";
+import { useQueryClient } from "@tanstack/react-query";
 
 type FormData = {
   keyword: string;
@@ -20,6 +21,10 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const queryClient = useQueryClient();
+
+  queryClient.invalidateQueries({ queryKey: ['accessCheck'] });
+  const cacheData = queryClient.getQueryData(['accessCheck']);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -32,7 +37,7 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
     }
   };
 
-  useEffect(()=> {
+  useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
@@ -74,13 +79,11 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
   };
 
   const handlePost = () => {
-    // const token = localStorage.getItem('accessToken');
-    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-    if (!token) {
+    if (!cacheData) {
       Swal.fire({
         icon: 'error',
         title: '로그인 필요',
-        text: '로그인이 필요한 서비스입니다'
+        text: '로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다'
       });
       router.push('/login-ui');
       return;
@@ -88,12 +91,32 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
     router.push('/write');
   };
 
+  const handleCalendar = () => {
+    if(!cacheData) {
+      Swal.fire({
+        icon: 'error',
+        title: '로그인 필요',
+        text: '로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다'
+      });
+      router.push('/login-ui');
+      return;
+    }
+    router.push('/calendar');
+  }
+
+  const btnStyle = 'flex items-center gap-1 p-1.5 px-2 text-xs text-white rounded-lg sm:p-2 sm:px-3 sm:text-sm';
   return (
     <div className="flex justify-between items-center mt-[30px] pb-8 border-b-1">
-        <button onClick={handlePost} className="flex items-center gap-1 p-1.5 px-2 text-xs bg-[#6EB4FB] text-white hover:bg-blue-500 rounded-lg sm:p-2 sm:px-3 sm:text-sm">
-        <PiNotePencilThin className="inline text-sm sm:text-xl"/>
-        작성하기
+      <div className="flex gap-2">
+        <button onClick={handlePost} className={`${btnStyle} bg-[#6EB4FB] hover:bg-blue-500`}>
+          <PiNotePencilThin className="inline text-sm sm:text-xl" />
+          작성하기
         </button>
+        <button onClick={handleCalendar} className={`${btnStyle} bg-pink-400 hover:bg-pink-500`}>
+          <CiCalendarDate className="inline text-sm sm:text-xl" />
+          캘린더
+        </button>
+      </div>
 
       <form className="flex items-end gap-1" onSubmit={handleSubmit(onSubmit, onInvalid)}>
         <Input
@@ -102,6 +125,7 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
           label="검색"
           variant="underlined"
           placeholder="게시글을 검색해보세요"
+          required
           {...register('keyword', {
             required: '검색어를 입력해주세요',
             maxLength: { value: 15, message: '검색어는 15자 이하로 입력하세요' }
@@ -116,8 +140,8 @@ const ControlBarMain = ({ sortOption, setSortOption, setCurrentPage }: ControlBa
       </form>
 
       <div>
-        <button ref={buttonRef} className="p-1.5 sm:p-2 text-xs sm:text-sm border text-gray-900 rounded-lg" 
-        onClick={() => setSortOptionVisible((option)=> !option)}>
+        <button ref={buttonRef} className="p-1.5 sm:p-2 text-xs sm:text-sm border text-gray-900 rounded-lg"
+          onClick={() => setSortOptionVisible((option) => !option)}>
           {sortOption === 'latest' ? '최신순' : sortOption === 'score' ? '별점순' : '댓글순'}
         </button>
         {sortOptionVisible && (

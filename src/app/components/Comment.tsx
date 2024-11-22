@@ -1,6 +1,5 @@
 'use client';
 
-import { ParamsId } from "@/types/post";
 import { Textarea } from "@nextui-org/input";
 import { useEffect, useRef, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
@@ -12,8 +11,16 @@ import { CommentResponse } from "@/types/comment";
 import useDelteMutation from "@/hooks/useDeleteComment";
 import useUpdateComment from "@/hooks/useUpdateComment";
 import { Rate } from "antd";
+import { useQueryClient } from "@tanstack/react-query";
+import Swal from "sweetalert2";
+import formatDate from "@/util/formatDate";
 
-const Comment = ({ id }: ParamsId) => {
+type CommentProps = {
+  id: number;
+  loginNickname: string;
+};
+
+const Comment = ({ id, loginNickname }: CommentProps) => {
   const [commentOptionVisible, setCommentOptionVisible] = useState<number | null>(null); // 단일 ID로 변경
   const [comment, setComment] = useState<string>('');
   const [updateToggle, setUpdateToggle] = useState<{ [key: number]: boolean }>({});
@@ -26,6 +33,10 @@ const Comment = ({ id }: ParamsId) => {
   const [updateScore, setUpdateScore] = useState<number>(0);
   const menuRefs = useRef<(HTMLDivElement | null)[]>([]);
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const queryClient = useQueryClient();
+
+  queryClient.invalidateQueries({ queryKey: ['accessCheck'] });
+  const cacheData = queryClient.getQueryData(['accessCheck']);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -50,6 +61,16 @@ const Comment = ({ id }: ParamsId) => {
       setComment('');
       return;
     }
+    queryClient.invalidateQueries({ queryKey: ['accessCheck'] });
+    const cacheData = queryClient.getQueryData(['accessCheck']);
+    if(!cacheData) {
+      Swal.fire({
+        icon: 'error',
+        title: '로그인 필요',
+        text: '로그인이 필요한 서비스입니다.'
+      });
+      return;
+    }
     postCommentMutate({ id, score, comment });
     setComment('');
     setScore(0);
@@ -59,7 +80,17 @@ const Comment = ({ id }: ParamsId) => {
     setCommentOptionVisible((prev) => (prev === commentId ? null : commentId));
   };
 
-  const handleDeleteComment = (commentId: number) => deleteCommentMutate(commentId);
+  const handleDeleteComment = (commentId: number) => {
+    if(!cacheData) {
+      Swal.fire({
+        icon: 'error',
+        title: '로그인 필요',
+        text: '로그인이 필요한 서비스입니다.'
+      });
+      return;
+    }
+    deleteCommentMutate(commentId)
+  };
 
   const handleUpdateComment = (commentId: number) => {
     setCommentOptionVisible(null); // 옵션 메뉴 닫기
@@ -85,6 +116,14 @@ const Comment = ({ id }: ParamsId) => {
   };
 
   const handlePostUpdate = (commentId: number) => {
+    if(!cacheData) {
+      Swal.fire({
+        icon: 'error',
+        title: '로그인 필요',
+        text: '로그인이 필요한 서비스입니다.'
+      });
+      return;
+    }
     const originalComment = data?.content.find((comment: CommentResponse) => comment.id === commentId);
 
     // 새 별점이 0이거나 원래 별점과 같다면, 원래 별점을 사용
@@ -107,7 +146,7 @@ const Comment = ({ id }: ParamsId) => {
       [commentId]: '',
     }));
   };
-
+  
   return (
     <div className="flex flex-col max-w-[800px] mx-auto p-3 text-gray-900">
       {data?.content.length ? <h2 className="text-sm sm:text-medium mb-10">{data?.content.length}개의 댓글</h2> : null}
@@ -133,23 +172,27 @@ const Comment = ({ id }: ParamsId) => {
         {data?.content.map((comment: CommentResponse) => (
           <div className="flex flex-col gap-1 p-5 border-b text-gray-900" key={comment.id}>
             <div className="flex justify-between items-center">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <h3 className="text-sm sm:text-medium font-semibold">{comment?.member.nickname}</h3>
-                <p className="text-xs text-gray-500">7분전</p>
-                <Rate
-                  value={comment?.score}
-                  disabled
-                  style={{
-                    fontSize: '13px',
-                    display: updateToggle[comment.id] ? 'none' : 'block',
-                  }}
-                />
+                <p className="text-xs text-gray-400">{loginNickname === comment?.member?.nickname && '내 댓글'}</p>
+                <p>
+
+                </p>
+                {comment?.score ? (
+                  <Rate
+                    value={comment?.score}
+                    disabled
+                    style={{
+                      fontSize: '13px',
+                      display: updateToggle[comment.id] ? 'none' : 'block',
+                    }}
+                  />) : null}
               </div>
               <div className={`flex relative justify-end gap-1 text-sm ${updateToggle[comment.id] ? 'hidden' : 'block'}`}>
-                <button ref={(el) => { buttonRefs.current[comment.id] = el; }} onClick={() => toggleCommentOptions(comment.id)} className={`text-xl ${Object.values(updateToggle).includes(true) ? 'hidden' : 'block'}`}>
+                <button ref={(el) => { buttonRefs.current[comment.id] = el; }} onClick={() => toggleCommentOptions(comment.id)} className={`text-xl ${Object.values(updateToggle).includes(true) || !cacheData || loginNickname !== comment?.member?.nickname ? 'hidden' : 'block'}`}>
                   <BsThreeDots className="text-sm sm:text-2xl" />
                 </button>
-                {commentOptionVisible === comment.id && ( // 현재 활성화된 ID와 비교
+                {commentOptionVisible === comment.id && (
                   <div className="flex flex-col absolute w-[90px] sm:w-[120px] gap-1 top-5 p-1 sm:p-3 border bg-white rounded-md z-10 shadow-md"
                   ref={(el) => { menuRefs.current[comment.id] = el; }}>
                     <button

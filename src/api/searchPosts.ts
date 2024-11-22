@@ -4,7 +4,7 @@ export const searchPosts = async (keyword: string, currentPage: number, sortKeyw
   const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}boards?page=${currentPage}`, {
     params: {
       keyword,
-      searchKeyword: 'title',
+      searchKeyword: 'content',
       sortKeyword
     },
     headers: {

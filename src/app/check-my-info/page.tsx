@@ -28,7 +28,7 @@ export default function CheckMyInfo() {
   // Jwt 토큰을 이용해 데이터를 받아오는 부분
   const getMyInfo = async () => {
     try {
-      const response = await fetch(`${url}/member/authed`, {
+      const response = await fetch(`${url}members/authed`, {
         method: 'GET',
         headers: {
           'Authorization': `${localStorage.getItem("accessToken")}`,

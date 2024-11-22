@@ -155,7 +155,7 @@ export default function SignupDemo() {
               isLoading={sendEmail.isPending}
               isDisabled={emailConfirmM.isSuccess}
             >
-              전송
+              {emailConfirmM.isSuccess ? '전송완료' : '전송'}
             </Button>
           </div>
           <ErrorMessage

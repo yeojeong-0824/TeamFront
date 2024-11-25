@@ -44,7 +44,7 @@ export default function PostCalender({ setStep }: PostCalenderProps) {
 
       <div className="w-full space-y-5 mt-10">
         <div className="flex justify-between">
-          <h1 className="text-2xl font-semibold text-blue-500 mb-3">
+          <h1 className="text-xl sm:text-3xl font-semibold text-blue-500 mb-3">
             {date(rangeCalValue.start)} ~{" "}
             <span className="text-orange-300">{date(rangeCalValue.end)}</span>
           </h1>
@@ -57,7 +57,7 @@ export default function PostCalender({ setStep }: PostCalenderProps) {
           size="lg"
         />
         <Button className="w-full" color="primary" onClick={() => setStep(1)}>
-          장소 추가하기
+          플래너 추가
         </Button>
       </div>
     </div>

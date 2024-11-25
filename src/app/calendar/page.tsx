@@ -7,6 +7,7 @@ import { useState } from "react";
 import type { DateValue } from "@react-types/calendar";
 import { parseDate } from "@internationalized/date";
 import { useRouter } from "next/navigation";
+import { FaChevronLeft } from "react-icons/fa";
 
 export default function Calender() {
   const router = useRouter();
@@ -23,16 +24,20 @@ export default function Calender() {
       <div className="flex flex-col justify-between max-w-[800px] gap-3 mx-auto mt-24 p-3 text-gray-900">
         <div className="flex flex-col gap-2">
           <h1 className="text-xl sm:text-3xl text-gray-700 leading-10">
-            여행 일정 관리를 <span className="text-[#3D6592]">플래너</span>로!
+            여행 일정 관리를 <span className="text-[#3D6592]">플래너</span>
+            로!
           </h1>
           <p className="text-xs sm:text-medium ml-1 text-gray-400">
             <span className="text-[#3D6592]">플래너</span>를 이용해 더욱
             편리하게 여행 일정을 관리해보세요.
           </p>
         </div>
+        <h1 className="text-2xl font-semibold text-blue-500 my-3">
+          {ChangeDate()}
+        </h1>
         <Calendar
           aria-label="Date (No Selection)"
-          className="mt-10 mx-auto"
+          className="mx-auto"
           showShadow={true}
           value={calValue}
           onChange={setCalValue}
@@ -40,14 +45,14 @@ export default function Calender() {
 
         <Button color="primary" onClick={routePostCalender}>
           <div className="flex items-center">
-            일정추가
+            플래너 추가
             <IoIosAdd className="text-2xl font-semibold" />
           </div>
         </Button>
 
         <div className="w-full space-y-5 mt-10">
-          <h1 className="text-2xl font-semibold text-blue-500 mb-3">
-            {ChangeDate()}
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
+            연말 서울 여행
           </h1>
 
           <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">

@@ -18,6 +18,7 @@ import type { TimeInputValue } from "@nextui-org/react";
 import { useDateFormatter } from "@react-aria/i18n";
 import { FaCircleArrowDown } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
+import { FaAngleDoubleDown, FaAngleDoubleUp } from "react-icons/fa";
 
 interface PostCalenderProps {
   setStep: (step: number) => void;
@@ -31,6 +32,7 @@ export default function PostLocation({ setStep }: PostCalenderProps) {
   const [timeEndValue, setTimeEndValue] = useState<TimeInputValue>(
     parseAbsoluteToLocal("2024-04-08T18:45:22Z")
   );
+  const [calendarView, setCalendarView] = useState(true);
 
   // const getDatesInRange = (start: DateValue, end: DateValue) => {
   //   const dates = [];
@@ -108,41 +110,55 @@ export default function PostLocation({ setStep }: PostCalenderProps) {
       </div>
 
       <div className="w-full space-y-5 mt-10">
-        <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
-          연말 서울 여행
-        </h1>
-
-        <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
-          <h2 className="font-semibold text-lg">경북궁</h2>
-          <p className="text-gray-700">서울 종로구 사직로 161 경복궁</p>
-          <p className="text-sm text-gray-500">
-            한복 빌려 입고 이쁜 사진 찍기!
-          </p>
+        <div className="flex justify-between items-center">
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
+            연말 서울 여행
+          </h1>
+          <button onClick={() => setCalendarView((prev) => !prev)}>
+            {calendarView ? (
+              <FaAngleDoubleUp className="text-2xl text-gray-500" />
+            ) : (
+              <FaAngleDoubleDown className="text-2xl text-gray-500" />
+            )}
+          </button>
         </div>
+        {calendarView && (
+          <div className="space-y-5">
+            <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
+              <h2 className="font-semibold text-lg">경북궁</h2>
+              <p className="text-gray-700">서울 종로구 사직로 161 경복궁</p>
+              <p className="text-sm text-gray-500">
+                한복 빌려 입고 이쁜 사진 찍기!
+              </p>
+            </div>
 
-        <div className="flex gap-2 justify-center items-center">
-          <FaCircleArrowDown className="text-3xl text-green-500" />
-          <p className="text-orange-700">4분</p>
-        </div>
+            <div className="flex gap-2 justify-center items-center">
+              <FaCircleArrowDown className="text-3xl text-green-500" />
+              <p className="text-orange-700">4분</p>
+            </div>
 
-        <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
-          <h2 className="font-semibold text-lg">애즈라이크 서촌</h2>
-          <p className="text-gray-700">
-            서울 종로구 효자로 7길 23 1층 애즈라이크
-          </p>
-          <p className="text-sm text-gray-500">스테이크 샌드위치 추천 메뉴</p>
-        </div>
+            <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
+              <h2 className="font-semibold text-lg">애즈라이크 서촌</h2>
+              <p className="text-gray-700">
+                서울 종로구 효자로 7길 23 1층 애즈라이크
+              </p>
+              <p className="text-sm text-gray-500">
+                스테이크 샌드위치 추천 메뉴
+              </p>
+            </div>
 
-        <div className="flex gap-2 justify-center items-center">
-          <FaCircleArrowDown className="text-3xl text-green-500" />
-          <p className="text-orange-700">14분</p>
-        </div>
+            <div className="flex gap-2 justify-center items-center">
+              <FaCircleArrowDown className="text-3xl text-green-500" />
+              <p className="text-orange-700">14분</p>
+            </div>
 
-        <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
-          <h2 className="font-semibold text-lg">서울역</h2>
-          <p className="text-gray-700">서울 용산구 한강대로 405</p>
-          <p className="text-sm text-gray-500">21시 6번 플랫폼</p>
-        </div>
+            <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
+              <h2 className="font-semibold text-lg">서울역</h2>
+              <p className="text-gray-700">서울 용산구 한강대로 405</p>
+              <p className="text-sm text-gray-500">21시 6번 플랫폼</p>
+            </div>
+          </div>
+        )}
       </div>
       {/* 
       <div className="text-xl text-center text-gray-500 mt-40">

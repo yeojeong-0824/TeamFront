@@ -69,7 +69,7 @@ const CardPosts = () => {
         setSortOption={setSortOption}
         setCurrentPage={setCurrentPage} />
       {renderNoPostsFound()}
-      <LoadingSpinner size={15} mt={400} isLoading={isLoading}/>
+      <LoadingSpinner size={15} mt={400} isLoading={isLoading} />
       {isError && <ErrorShow error={error?.message}/>}
       {data?.content.map((post: Post) => (
         <CardPost key={post.id} post={post} />

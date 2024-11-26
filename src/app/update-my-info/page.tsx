@@ -1,76 +1,186 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Button, Input } from "@nextui-org/react";
+import { useForm } from "react-hook-form";
+import { ErrorMessage } from '@hookform/error-message';
+import { usernameV, nicknameV, emailV, emailConfirmV, passwordV, passwordConfirmV, ageV } from "../validationRules";
+import { useCallback, useEffect, useState } from "react";
 
-import { url } from '../store';
+import useGetUserInfo from "@/hooks/userHooks/useGetUserInfo";
+import useSendEmail from "@/hooks/userHooks/useSendEmail";
+import useEmailConfirm from "@/hooks/userHooks/useEmailConfirm";
+import useCheckUsername from "@/hooks/userHooks/useCheckUsername";
+import useCheckNickname from "@/hooks/userHooks/useCheckNickname";
+import useSignup from "@/hooks/userHooks/useSignup";
 
-export default function UpdateMyInfo() {
+import Swal from "sweetalert2";
+import { SignupData, SignupRequest } from "@/types/userTypes/signup";
+import { useRouter } from "next/navigation";
+
+export default function SignupDemo() {
+  const [checkKey, setCheckKey] = useState('');
+  
+  const modal = () => {
+    if(checkKey) return null;
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+          <div className="mb-4">
+            <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
+              비밀번호 확인
+            </h3>
+            <Input
+              type="password"
+              variant="underlined"
+              label="기존 비밀번호"
+              {...register('oldPassword', passwordConfirmV)}
+            />
+            <ErrorMessage
+              errors={errors}
+              name="password"
+              render={({ message }) => <p className={errorStyle}>{message}</p>}
+            />
+          </div>
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={checkPassword} >비밀번호 확인</button>
+        </div>
+      </div>
+    )
+  };
+  
+  const checkPassword = () => {
+    setCheckKey('test');
+  };
+
+  const { register, handleSubmit, formState: { errors }, getValues, trigger, setValue } = useForm<SignupData>({
+    mode: 'onChange', // 입력 값이 변경될 때마다 유효성 검사
+    reValidateMode: 'onChange', // 입력 값이 변경될 때마다 유효성 검사
+  });
+
   const router = useRouter();
 
-  const [updateData, setUpdateData] = useState({
-    nickname: "",
-    password: ""
-  })
+  const { data, error, isLoading } = useGetUserInfo();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUpdateData({
-      ...updateData,
-      [name]: value
+  useEffect(() => { if (data?.email) { setValue('email', data.email); } }, [data, setValue]);
+
+  const checkNickname = useCheckNickname();
+  const signup = useSignup();
+
+  // nickname 중복확인
+  const handleCheckNickname = async () => {
+    const isValid = await trigger('nickname');
+    if (!isValid) return;
+    const nickname = getValues('nickname');
+    checkNickname.mutate(nickname);
+  };
+
+  // 회원가입 요청
+  const onSubmit = (signupData: SignupRequest) => {
+    if (!checkNickname.isSuccess) {
+      Swal.fire({
+        icon: 'error',
+        title: '회원가입 실패',
+        text: '모든 인증과 중복확인을 완료해주세요.'
+      })
+      return;
+    }
+
+    const { username, nickname, email, password, age } = signupData;
+    signup.mutate({ username, nickname, email, password, age }, {
+      onSuccess: () => {
+        Swal.fire({
+          icon: 'success',
+          title: '회원가입 성공',
+          text: '로그인 페이지로 이동합니다.'
+        });
+        router.push('/login-ui');
+      },
+      onError: (error) => {
+        Swal.fire({
+          icon: 'error',
+          title: '회원가입 실패',
+          text: error.message
+        })
+      }
     });
   };
 
-  // jwt 만료 되었을 때 설정을 안해줬습니다! api 요청에서 리팩토링이 필요해 보여서 jwt 토큰이 만료 안된 상황만 처리했습니다.
-  async function patchMember() {
-    try {
-        const response = await fetch(`${url}/member/authed`, {
-            method: "PATCH",
-            headers: {
-                'Authorization': `${localStorage.getItem("accessToken")}`,
-                'Content-Type': 'application/json' // 데이터 형식 설정
-            },
-            body: JSON.stringify(updateData)})
-        if (response.status === 200) {
-            alert("회원정보가 수정되었습니다")
-            router.push('/check-my-info'); // 로그인 페이지로 리다이렉트
-        }
-        else if (response.status === 400) {
-            alert("입력값을 확인해주세요");
-        }
-    } catch (error) {
-        alert(error);
-    }
-}
-
+  const errorStyle = 'text-sm text-red-500 font-semibold';
   return (
-    <div className = "h-screen flex items-center justify-center bg-gray-100">
-        <div className="bg-white w-full py-20 px-4 text-center border-1 border-gray-300 max-w-md shadow-md rounded-lg overflow-hidden">
-            <h3 className="text-3xl text-gray-800 font-semibold">회원정보 수정</h3>
-            <div className="flex flex-col mt-5 px-5">
-                <input
-                  placeholder ="NICKNAME"
-                  className="bg-white focus:outline-none border-1 focus:border-opacity-50 focus:border-gray-300 mb-3 py-3 px-5 rounded-lg"
-                  id="nickname"
-                  name="nickname"
-                  value={updateData.nickname}
-                  onChange={handleChange}
-                  required/>
-                <input
-                  placeholder ="PASSWORD"
-                  type="password"
-                  className="bg-white focus:outline-none border-1 focus:border-opacity-50 focus:border-gray-300 py-3 px-5 rounded-lg"
-                  id="password"
-                  name="password"
-                  value={updateData.password}
-                  onChange={handleChange}
-                  required/>
-                
-                <button className='py-3 px-5 text-white bg-[#6EB4FB] mt-3 text-lg rounded-lg focus:outline-none hover:opacity-90 hover:bg-blue-500' onClick={patchMember}>
-                    회원정보 수정
-                </button>
-            </div>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-1">
+      <div>
+        {modal()}
+      </div>
+      <div className="p-10 mt-10 sm:p-20 bg-white text-center shadow-md rounded-lg">
+        <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
+          내 정보 수정
+        </h3>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-5 mt-5">
+          <div className="flex items-end gap-1">
+            <Input
+              type="email"
+              variant='underlined'
+              label="이메일"
+              defaultValue={data?.email}
+            />
+          </div>
+          {/* username입력&중복확인&에러메세지 */}
+          <div className="flex items-end gap-1">
+            <Input
+              type="text"
+              variant="underlined"
+              label="아이디"
+              defaultValue={data?.username}
+            />
+          </div>
+          {/* nickname입력&중복확인&에러메세지 */}
+          <div className="flex items-end gap-1">
+            <Input
+              type="text"
+              variant="underlined"
+              label="닉네임"
+              defaultValue={data?.nickname}
+              isDisabled={checkNickname.isSuccess}
+              {...register('nickname', nicknameV)}
+            />
+            <Button
+              color="primary"
+              size="sm"
+              isDisabled={checkNickname.isSuccess}
+              onClick={handleCheckNickname}
+            >
+              {checkNickname.isSuccess ? '확인완료' : '중복확인'}
+            </Button>
+          </div>
+          <ErrorMessage
+            errors={errors}
+            name="nickname"
+            render={({ message }) => <p className={errorStyle}>{message}</p>}
+          />
+          {/* 나이 입력&에러메세지 */}
+          <Input
+            type="number"
+            variant="underlined"
+            label="나이"
+            {...register('age', ageV)}
+          />
+          <ErrorMessage
+            errors={errors}
+            name="age"
+            render={({ message }) => <p className={errorStyle}>{message}</p>}
+          />
+          {/* 수정 버튼 */}
+          <Button 
+            color="primary" 
+            variant="bordered" 
+            type="submit"
+            isLoading={signup.isPending}
+          >
+            내 정보 수정
+          </Button>
+        </form>
+      </div>
     </div>
-  );
-}
+  )
+};

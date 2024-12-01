@@ -3,25 +3,53 @@
 import { Button, Input } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
-import { usernameV, nicknameV, emailV, emailConfirmV, passwordV, passwordConfirmV, ageV } from "../validationRules";
-import { useCallback, useEffect, useState } from "react";
+import { nicknameV, passwordV, ageV } from "../validationRules";
 
 import useGetUserInfo from "@/hooks/userHooks/useGetUserInfo";
-import useSendEmail from "@/hooks/userHooks/useSendEmail";
-import useEmailConfirm from "@/hooks/userHooks/useEmailConfirm";
-import useCheckUsername from "@/hooks/userHooks/useCheckUsername";
 import useCheckNickname from "@/hooks/userHooks/useCheckNickname";
-import useSignup from "@/hooks/userHooks/useSignup";
 
-import Swal from "sweetalert2";
-import { SignupData, SignupRequest } from "@/types/userTypes/signup";
-import { useRouter } from "next/navigation";
+import { SignupData } from "@/types/userTypes/signup";
+import Swal from 'sweetalert2';
+import useCheckPassword from "@/hooks/userHooks/useCheckPassword";
 
-export default function SignupDemo() {
-  const [checkKey, setCheckKey] = useState('');
-  
+type CheckPassword = {
+  password: string;
+};
+
+export default function UpdateMyInfo() {
+
+  const { mutate, isPending } = useCheckPassword();
+  let checkKey : string = ''
+
+  const checkPassword = (data: CheckPassword) => {
+    if(!data.password) return;
+    mutate(data, {
+        onSuccess: () => {
+            Swal.fire({
+                icon: 'success',
+                title: '비밀번호 전송 성공',
+                text: '이메일을 확인하여 새로운 비밀번호로 로그인 후 비밀번호를 변경해주세요',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        },
+        onError: () => {
+            Swal.fire({
+                icon: 'error',
+                title: '비밀번호 전송 실패',
+                text: '아이디와 이메일 주소를 확인해주세요',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    })
+  };
+
   const modal = () => {
-    if(!checkKey) return null;
+    if(checkKey) return null;
+    let data: CheckPassword = {
+      password: ""
+    }
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
         <div className="bg-white p-8 rounded-lg shadow-lg w-96">
@@ -29,26 +57,30 @@ export default function SignupDemo() {
             <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
               비밀번호 확인
             </h3>
-            <Input
-              type="password"
-              variant="underlined"
-              label="기존 비밀번호"
-              {...register('oldPassword', passwordConfirmV)}
-            />
-            <ErrorMessage
-              errors={errors}
-              name="password"
-              render={({ message }) => <p className={errorStyle}>{message}</p>}
-            />
+            <form
+            onSubmit={handleSubmit(checkPassword)}
+            className="flex flex-col gap-5 mt-5">
+              {/* 비밀번호 입력&에러메세지 */}
+              <Input
+                type="password"
+                variant="underlined"
+                label="비밀번호"
+                {...register('password', passwordV)}
+              />
+              <ErrorMessage
+                errors={errors}
+                name="password"
+                render={({ message }) => <p className={errorStyle}>{message}</p>}
+              />
+              <Button
+                color="primary"
+                size="sm"
+              >비밀번호 확인</Button>
+            </form>
           </div>
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={checkPassword} >비밀번호 확인</button>
         </div>
       </div>
     )
-  };
-  
-  const checkPassword = () => {
-    setCheckKey('test');
   };
 
   const { register, handleSubmit, formState: { errors }, getValues, trigger, setValue } = useForm<SignupData>({
@@ -56,14 +88,10 @@ export default function SignupDemo() {
     reValidateMode: 'onChange', // 입력 값이 변경될 때마다 유효성 검사
   });
 
-  const router = useRouter();
-
+  
   const { data, error, isLoading } = useGetUserInfo();
 
-  useEffect(() => { if (data?.email) { setValue('email', data.email); } }, [data, setValue]);
-
   const checkNickname = useCheckNickname();
-  const signup = useSignup();
 
   // nickname 중복확인
   const handleCheckNickname = async () => {
@@ -73,36 +101,6 @@ export default function SignupDemo() {
     checkNickname.mutate(nickname);
   };
 
-  // 회원가입 요청
-  const onSubmit = (signupData: SignupRequest) => {
-    if (!checkNickname.isSuccess) {
-      Swal.fire({
-        icon: 'error',
-        title: '회원가입 실패',
-        text: '모든 인증과 중복확인을 완료해주세요.'
-      })
-      return;
-    }
-
-    const { username, nickname, email, password, age } = signupData;
-    signup.mutate({ username, nickname, email, password, age }, {
-      onSuccess: () => {
-        Swal.fire({
-          icon: 'success',
-          title: '회원가입 성공',
-          text: '로그인 페이지로 이동합니다.'
-        });
-        router.push('/login-ui');
-      },
-      onError: (error) => {
-        Swal.fire({
-          icon: 'error',
-          title: '회원가입 실패',
-          text: error.message
-        })
-      }
-    });
-  };
 
   const errorStyle = 'text-sm text-red-500 font-semibold';
   return (
@@ -115,7 +113,7 @@ export default function SignupDemo() {
           내 정보 수정
         </h3>
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          // onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-5 mt-5">
           <div className="flex items-end gap-1">
             <Input
@@ -175,7 +173,7 @@ export default function SignupDemo() {
             color="primary" 
             variant="bordered" 
             type="submit"
-            isLoading={signup.isPending}
+            // isLoading={signup.isPending}
           >
             내 정보 수정
           </Button>

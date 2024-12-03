@@ -1,13 +1,16 @@
 import useCheckPassword from "@/hooks/userHooks/useCheckPassword";
-import { CheckOldPassword } from "@/types/userTypes/signup";
 import { ErrorMessage } from "@hookform/error-message";
 import { Input, Button } from "@nextui-org/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { passwordV } from "../validationRules";
+import { CheckOldPassword } from "@/types/userTypes/updateInfo";
+import { useRouter } from "next/navigation";
+import { FiArrowRight } from "react-icons/fi";
 
 const CheckPasswordModal = ({ checkKey, setCheckKey }: { checkKey: string; setCheckKey: (data: string) => void;}) => {
+  const router = useRouter();
   if (checkKey) return null;
 
   const { mutate, isPending } = useCheckPassword();
@@ -43,14 +46,7 @@ const CheckPasswordModal = ({ checkKey, setCheckKey }: { checkKey: string; setCh
     });
   };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    getValues,
-    trigger,
-    setValue,
-  } = useForm<CheckOldPassword>({
+  const {register, handleSubmit, formState: { errors }, getValues, trigger, setValue,} = useForm<CheckOldPassword>({
     mode: "onChange", // 입력 값이 변경될 때마다 유효성 검사
     reValidateMode: "onChange", // 입력 값이 변경될 때마다 유효성 검사
   });
@@ -60,10 +56,11 @@ const CheckPasswordModal = ({ checkKey, setCheckKey }: { checkKey: string; setCh
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-8 rounded-lg shadow-lg w-96">
         <div className="mb-4">
-          <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
-            비밀번호 확인
-          </h3>
-          <form onSubmit={checkPassword} className="flex flex-col gap-5 mt-5">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold">비밀번호 확인</h3>
+            <FiArrowRight className="w-6 h-6 ml-2" onClick={() => router.back()}/>
+          </div>
+          <form onSubmit={ checkPassword } className="flex flex-col gap-5 mt-5">
             {/* 비밀번호 입력&에러메세지 */}
             <Input
               type="password"

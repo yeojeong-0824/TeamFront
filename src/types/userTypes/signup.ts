@@ -15,12 +15,3 @@ export type SignupRequest = {
   password: string;
   email: string;
 };
-
-export type CheckOldPassword = {
-  password: string;
-}
-
-export type ChangeInfo = {
-  nickname: string;
-  age: number;
-}

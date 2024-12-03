@@ -3,46 +3,81 @@
 import { Button, Input } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
-import { usernameV, nicknameV, emailV, emailConfirmV, passwordV, passwordConfirmV, ageV } from "../validationRules";
-import { useCallback, useEffect, useState } from "react";
-import useSendEmail from "@/hooks/userHooks/useSendEmail";
-import useEmailConfirm from "@/hooks/userHooks/useEmailConfirm";
-import useCheckUsername from "@/hooks/userHooks/useCheckUsername";
-import useCheckNickname from "@/hooks/userHooks/useCheckNickname";
-import useSignup from "@/hooks/userHooks/useSignup";
-import Swal from "sweetalert2";
-import { SignupData, SignupRequest } from "@/types/userTypes/signup";
+import { passwordV, passwordConfirmV } from "../validationRules";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import CheckPasswordModal from "../components/CheckPasswordModal";
+import useUpdateUserPassword from "@/hooks/userHooks/useUpdateUserPassword";
+import { UpdateUserPassword } from "@/types/userTypes/updateInfo";
+import Swal from "sweetalert2";
 
 export default function UpdateMyPassword() {
-  const { register, handleSubmit, formState: { errors }, getValues, trigger } = useForm<SignupData>({
+  const router = useRouter();
+  const [checkKey, setCheckKey] = useState('');
+  const [checkPassword, setCheckPassword] = useState('');
+  const [password, setPassword] = useState('');
+
+  const { register, handleSubmit, formState: { errors }, getValues, trigger } = useForm<UpdateUserPassword>({
     mode: 'onChange', // 입력 값이 변경될 때마다 유효성 검사
     reValidateMode: 'onChange', // 입력 값이 변경될 때마다 유효성 검사
   });
 
-  const router = useRouter();
+  const updateData: UpdateUserPassword = {
+    key: checkKey,
+    checkPassword: checkPassword,
+    password: password
+  }
 
-  // 회원가입 요청
-  const onSubmit = (signupData: SignupRequest) => {
-    return
+  const { mutate, isPending } = useUpdateUserPassword();
+
+  const submit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    mutate(updateData, {
+      onSuccess: () => {
+        Swal.fire({
+          icon: "success",
+          title: "비밀번호 수정 성공",
+          text: "비밀번호 수정에 성공하였습니다.",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(() => {
+          router.back();
+        });
+      },
+      onError: () => {
+        Swal.fire({
+          icon: "error",
+          title: "비밀번호 수정 실패",
+          text: "비밀번호 값을 확인해주세요.",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      },
+    });
   };
 
   const errorStyle = 'text-sm text-red-500 font-semibold';
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-1">
+      <div>
+        <CheckPasswordModal checkKey={ checkKey } setCheckKey={ setCheckKey }/>
+      </div>
       <div className="p-10 mt-10 sm:p-20 bg-white text-center shadow-md rounded-lg">
         <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
           새로운 비밀번호
         </h3>
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={ submit }
           className="flex flex-col gap-5 mt-5">
           {/* 비밀번호 입력&에러메세지 */}
           <Input
             type="password"
             variant="underlined"
             label="비밀번호"
-            {...register('password', passwordV)}
+            {...register('password', {
+              ...passwordV,
+              onChange: (e) => setPassword(e.target.value),
+            })}
           />
           <ErrorMessage
             errors={errors}
@@ -54,14 +89,17 @@ export default function UpdateMyPassword() {
             type="password"
             variant="underlined"
             label="비밀번호 확인"
-            {...register('passwordConfirm', passwordConfirmV)}
+            {...register('checkPassword', {
+              ...passwordConfirmV,
+              onChange: (e) => setCheckPassword(e.target.value),
+            })}
           />
           <ErrorMessage
             errors={errors}
-            name="passwordConfirm"
+            name="checkPassword"
             render={({ message }) => <p className={errorStyle}>{message}</p>}
           />
-          {/* 회원가입 버튼 */}
+          {/* 비밀번호 변경 버튼 */}
           <Button 
             color="primary" 
             variant="bordered" 

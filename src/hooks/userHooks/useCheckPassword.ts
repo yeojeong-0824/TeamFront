@@ -1,13 +1,10 @@
 import { checkPassword } from "@/api/userApi/checkPassword";
+import { CheckOldPassword } from "@/types/userTypes/updateInfo";
 import { useMutation } from "@tanstack/react-query";
-
-type CheckPassword = {
-  password: string;
-};
 
 const useCheckPassword = () => {
   return useMutation({
-    mutationFn:(password: CheckPassword)=> checkPassword(password),
+    mutationFn:(password: CheckOldPassword)=> checkPassword(password),
   });
 };
 

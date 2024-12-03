@@ -1,10 +1,7 @@
+import { CheckOldPassword } from "@/types/userTypes/updateInfo";
 import axios from "axios";
 
-type CheckPassword = {
-  password: string;
-};
-
-export const checkPassword = async (password: CheckPassword) => {
+export const checkPassword = async (password: CheckOldPassword) => {
   const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}members/authed/checkPassword`, password, {
     headers: {
       "Content-Type": "application/json",

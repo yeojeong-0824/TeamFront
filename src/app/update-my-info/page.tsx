@@ -11,6 +11,7 @@ import useCheckNickname from "@/hooks/userHooks/useCheckNickname";
 import { SignupData } from "@/types/userTypes/signup";
 import Swal from 'sweetalert2';
 import useCheckPassword from "@/hooks/userHooks/useCheckPassword";
+import { useState } from "react";
 
 type CheckPassword = {
   password: string;
@@ -21,35 +22,38 @@ export default function UpdateMyInfo() {
   const { mutate, isPending } = useCheckPassword();
   let checkKey : string = ''
 
-  const checkPassword = (data: CheckPassword) => {
-    if(!data.password) return;
-    mutate(data, {
-        onSuccess: () => {
-            Swal.fire({
-                icon: 'success',
-                title: '비밀번호 전송 성공',
-                text: '이메일을 확인하여 새로운 비밀번호로 로그인 후 비밀번호를 변경해주세요',
-                showConfirmButton: false,
-                timer: 1500
-            });
-        },
-        onError: () => {
-            Swal.fire({
-                icon: 'error',
-                title: '비밀번호 전송 실패',
-                text: '아이디와 이메일 주소를 확인해주세요',
-                showConfirmButton: false,
-                timer: 1500
-            })
-        }
+  const [oldPassword, setOldPassword] = useState("")
+  let oldPasswordData: CheckPassword = {
+    password: oldPassword
+  }
+
+  const checkPassword = () => {
+    if(!oldPasswordData.password) return;
+    mutate(oldPasswordData, {
+      onSuccess: (response) => {
+          console.log(response.data)
+          Swal.fire({
+              icon: 'success',
+              title: '비밀번호 확인 성공',
+              text: '회원 정보 수정을 진행해주세요.',
+              showConfirmButton: false,
+              timer: 1500
+          });
+      },
+      onError: () => {
+          Swal.fire({
+              icon: 'error',
+              title: '비밀번호 확인 실패',
+              text: '비밀번호가 일치하지 않습니다.',
+              showConfirmButton: false,
+              timer: 1500
+          })
+      }
     })
   };
 
   const modal = () => {
     if(checkKey) return null;
-    let data: CheckPassword = {
-      password: ""
-    }
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
         <div className="bg-white p-8 rounded-lg shadow-lg w-96">
@@ -58,14 +62,17 @@ export default function UpdateMyInfo() {
               비밀번호 확인
             </h3>
             <form
-            onSubmit={handleSubmit(checkPassword)}
+            onSubmit={() => checkPassword()}
             className="flex flex-col gap-5 mt-5">
               {/* 비밀번호 입력&에러메세지 */}
               <Input
                 type="password"
                 variant="underlined"
                 label="비밀번호"
-                {...register('password', passwordV)}
+                {...register('password', {
+                  ...passwordV,
+                  onChange: (e) => setOldPassword(e.target.value)
+                })}
               />
               <ErrorMessage
                 errors={errors}
@@ -73,8 +80,9 @@ export default function UpdateMyInfo() {
                 render={({ message }) => <p className={errorStyle}>{message}</p>}
               />
               <Button
-                color="primary"
-                size="sm"
+                color="primary" 
+                variant="bordered" 
+                type="submit"
               >비밀번호 확인</Button>
             </form>
           </div>
@@ -113,8 +121,8 @@ export default function UpdateMyInfo() {
           내 정보 수정
         </h3>
         <form
-          // onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-5 mt-5">
+          {/* email */}
           <div className="flex items-end gap-1">
             <Input
               type="email"
@@ -123,7 +131,7 @@ export default function UpdateMyInfo() {
               defaultValue={data?.email}
             />
           </div>
-          {/* username입력&중복확인&에러메세지 */}
+          {/* username */}
           <div className="flex items-end gap-1">
             <Input
               type="text"

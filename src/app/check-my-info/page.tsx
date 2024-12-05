@@ -4,7 +4,6 @@ import { Link } from '@nextui-org/react';
 
 import formatDate from '@/util/formatDate';
 import useGetUserInfo from '@/hooks/userHooks/useGetUserInfo';
-import Image from 'next/image';
 
 export default function CheckMyInfo() {
   const { data, error, isLoading } = useGetUserInfo();
@@ -14,7 +13,7 @@ export default function CheckMyInfo() {
       <div className="bg-gray-100 flex items-center justify-center min-h-screen">
         <div className="max-w-md w-full bg-white shadow-md rounded-lg overflow-hidden">
           <div className="bg-gray-200 p-4 text-center">
-            <Image
+            <img
               src="https://via.placeholder.com/100"
               alt="Profile Picture"
               className="w-24 h-24 rounded-full mx-auto border-4 border-[#6EB4FB]"

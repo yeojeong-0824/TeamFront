@@ -11,11 +11,17 @@ import { FiArrowRight } from "react-icons/fi";
 
 const CheckPasswordModal = ({ checkKey, setCheckKey }: { checkKey: string; setCheckKey: (data: string) => void;}) => {
   const router = useRouter();
-  if (checkKey) return null;
 
   const { mutate, isPending } = useCheckPassword();
-
   const [oldPassword, setOldPassword] = useState("");
+
+  const {register, handleSubmit, formState: { errors }, getValues, trigger, setValue,} = useForm<CheckOldPassword>({
+    mode: "onChange", // 입력 값이 변경될 때마다 유효성 검사
+    reValidateMode: "onChange", // 입력 값이 변경될 때마다 유효성 검사
+  });
+  
+  if (checkKey) return null;
+
   const oldPasswordData: CheckOldPassword = {
     password: oldPassword,
   };
@@ -45,11 +51,6 @@ const CheckPasswordModal = ({ checkKey, setCheckKey }: { checkKey: string; setCh
       },
     });
   };
-
-  const {register, handleSubmit, formState: { errors }, getValues, trigger, setValue,} = useForm<CheckOldPassword>({
-    mode: "onChange", // 입력 값이 변경될 때마다 유효성 검사
-    reValidateMode: "onChange", // 입력 값이 변경될 때마다 유효성 검사
-  });
 
   const errorStyle = "text-sm text-red-500 font-semibold";
   return (

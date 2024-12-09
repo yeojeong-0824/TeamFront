@@ -1,20 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import useAuthStore from '../store';
-import { useRouter } from 'next/navigation';
-
-import { url } from '../store';
 import { Link } from '@nextui-org/react';
 
 import formatDate from '@/util/formatDate';
 import useGetUserInfo from '@/hooks/userHooks/useGetUserInfo';
 
 export default function CheckMyInfo() {
-  // 이건 뭔지 몰라서 놔뒀어요
-  const router = useRouter();
-  const { clearTokens } = useAuthStore();
-
   const { data, error, isLoading } = useGetUserInfo();
 
   return (

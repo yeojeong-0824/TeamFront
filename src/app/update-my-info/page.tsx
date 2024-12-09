@@ -57,7 +57,7 @@ export default function UpdateMyInfo() {
 
   const { data, error, isLoading } = useGetUserInfo();
 
-  const { register, handleSubmit, formState: { errors }, getValues, trigger, setValue } = useForm<ChangeInfo>({
+  const { register, handleSubmit, formState: { errors }, getValues, trigger, setValue } = useForm<UpdateUserInfo>({
     mode: 'onChange', // 입력 값이 변경될 때마다 유효성 검사
     reValidateMode: 'onChange', // 입력 값이 변경될 때마다 유효성 검사
   });

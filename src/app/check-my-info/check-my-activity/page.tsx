@@ -1,6 +1,14 @@
+import CardPost from "@/app/components/CardPost";
 import ControlBarMain from "@/app/components/ControlBarMain";
+import ErrorShow from "@/app/components/Error";
 import LoadingSpinner from "@/app/components/Loading";
+import NavigationNumberMain from "@/app/components/NavigationNumberMain";
+import useSortPosts from "@/hooks/useSortPosts";
+import { Post } from "@/types/post";
+import { useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 export default function CheckMyInfo() {
   const router = useRouter(); 

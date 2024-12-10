@@ -3,13 +3,13 @@
 import { Button, Input } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
-import { nicknameV, ageV } from "../validationRules";
+import { nicknameV, ageV } from "../../validationRules";
 
 import useGetUserInfo from "@/hooks/userHooks/useGetUserInfo";
 import useCheckNickname from "@/hooks/userHooks/useCheckNickname";
 
 import { useEffect, useState } from "react";
-import CheckPasswordModal from "../components/CheckPasswordModal";
+import CheckPasswordModal from "../../components/CheckPasswordModal";
 import { UpdateUserInfo } from "@/types/userTypes/updateInfo";
 import useUpdateUserInfo from "@/hooks/userHooks/useUpdateUserInfo";
 import Swal from "sweetalert2";

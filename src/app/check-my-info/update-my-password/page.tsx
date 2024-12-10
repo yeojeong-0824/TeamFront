@@ -3,10 +3,10 @@
 import { Button, Input } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
-import { passwordV, passwordConfirmV } from "../validationRules";
+import { passwordV, passwordConfirmV } from "../../validationRules";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import CheckPasswordModal from "../components/CheckPasswordModal";
+import CheckPasswordModal from "../../components/CheckPasswordModal";
 import useUpdateUserPassword from "@/hooks/userHooks/useUpdateUserPassword";
 import { UpdateUserPassword } from "@/types/userTypes/updateInfo";
 import Swal from "sweetalert2";

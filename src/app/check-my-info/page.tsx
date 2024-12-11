@@ -31,7 +31,7 @@ export default function CheckMyInfo() {
         </li>
         <hr/>
         <li>
-          <Link href="/check-my-activity/boards" className="text-gray-600 hover:text-gray-800">
+          <Link href="/check-my-activity" className="text-gray-600 hover:text-gray-800">
             나의 활동
           </Link>
         </li>

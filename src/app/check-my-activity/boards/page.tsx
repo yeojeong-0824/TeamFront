@@ -52,17 +52,15 @@ function CheckMyActivityBoard() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-1">
-      <div className="p-10 mt-10 sm:p-20 bg-white text-left shadow-md rounded-lg w-1/2">
-        <h2> 게시글 </h2>
-        {renderNoPostsFound()}
-        <LoadingSpinner size={15} isLoading={isLoading}/>
-        {isError && <ErrorShow error={error?.message}/>}
-        {data?.content.map((post: Post) => (
-          <CardPost key={post.id} post={post} />
-        ))}
-        <NavigationNumberMain currentPage={currentPage} setCurrentPage={setCurrentPage} totalPage={totalPages} />
-      </div>
+    <div>
+      <h2> 게시글 </h2>
+      {renderNoPostsFound()}
+      <LoadingSpinner size={15} isLoading={isLoading}/>
+      {isError && <ErrorShow error={error?.message}/>}
+      {data?.content.map((post: Post) => (
+        <CardPost key={post.id} post={post} />
+      ))}
+      <NavigationNumberMain currentPage={currentPage} setCurrentPage={setCurrentPage} totalPage={totalPages} />
     </div>
   );
 }

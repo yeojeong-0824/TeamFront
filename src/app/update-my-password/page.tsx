@@ -62,7 +62,7 @@ export default function UpdateMyPassword() {
       <div>
         <CheckPasswordModal checkKey={ checkKey } setCheckKey={ setCheckKey }/>
       </div>
-      <div className="p-10 mt-10 sm:p-20 bg-white text-center shadow-md rounded-lg">
+      <div className="p-10 mt-10 sm:p-20 bg-white text-center shadow-md rounded-lg w-1/4">
         <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
           새로운 비밀번호
         </h3>

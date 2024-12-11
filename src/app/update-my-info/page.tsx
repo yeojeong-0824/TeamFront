@@ -3,13 +3,13 @@
 import { Button, Input } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
-import { nicknameV, ageV } from "../../validationRules";
+import { nicknameV, ageV } from "../validationRules";
 
 import useGetUserInfo from "@/hooks/userHooks/useGetUserInfo";
 import useCheckNickname from "@/hooks/userHooks/useCheckNickname";
 
 import { useEffect, useState } from "react";
-import CheckPasswordModal from "../../components/CheckPasswordModal";
+import CheckPasswordModal from "../components/CheckPasswordModal";
 import { UpdateUserInfo } from "@/types/userTypes/updateInfo";
 import useUpdateUserInfo from "@/hooks/userHooks/useUpdateUserInfo";
 import Swal from "sweetalert2";
@@ -85,7 +85,7 @@ export default function UpdateMyInfo() {
       <div>
         <CheckPasswordModal checkKey={ checkKey } setCheckKey={ setCheckKey }/>
       </div>
-      <div className="p-10 mt-10 sm:p-20 bg-white text-center shadow-md rounded-lg">
+      <div className="p-10 mt-10 sm:p-20 bg-white text-center shadow-md rounded-lg w-1/4">
         <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
           내 정보 수정
         </h3>

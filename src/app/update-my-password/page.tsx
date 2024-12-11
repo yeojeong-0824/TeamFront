@@ -3,10 +3,10 @@
 import { Button, Input } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
-import { passwordV, passwordConfirmV } from "../../validationRules";
+import { passwordV, passwordConfirmV } from "../validationRules";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import CheckPasswordModal from "../../components/CheckPasswordModal";
+import CheckPasswordModal from "../components/CheckPasswordModal";
 import useUpdateUserPassword from "@/hooks/userHooks/useUpdateUserPassword";
 import { UpdateUserPassword } from "@/types/userTypes/updateInfo";
 import Swal from "sweetalert2";
@@ -62,7 +62,7 @@ export default function UpdateMyPassword() {
       <div>
         <CheckPasswordModal checkKey={ checkKey } setCheckKey={ setCheckKey }/>
       </div>
-      <div className="p-10 mt-10 sm:p-20 bg-white text-center shadow-md rounded-lg">
+      <div className="p-10 mt-10 sm:p-20 bg-white text-center shadow-md rounded-lg w-1/4">
         <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
           새로운 비밀번호
         </h3>

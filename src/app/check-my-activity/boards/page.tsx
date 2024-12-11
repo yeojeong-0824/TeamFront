@@ -54,6 +54,7 @@ function CheckMyActivityBoard() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-1">
       <div className="p-10 mt-10 sm:p-20 bg-white text-left shadow-md rounded-lg w-1/2">
+        <h2> 게시글 </h2>
         {renderNoPostsFound()}
         <LoadingSpinner size={15} isLoading={isLoading}/>
         {isError && <ErrorShow error={error?.message}/>}
@@ -66,9 +67,8 @@ function CheckMyActivityBoard() {
   );
 }
 
-
 const CheckMyActivityBoardWrapper = () => (
-  <Suspense fallback={<div>Loading...</div>}>
+  <Suspense fallback={<LoadingSpinner size={15} mt={400} isLoading={true} />}>
     <CheckMyActivityBoard />
   </Suspense>
 )

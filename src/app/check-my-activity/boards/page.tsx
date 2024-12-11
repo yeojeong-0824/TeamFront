@@ -8,9 +8,9 @@ import useUserPostsCall from "@/hooks/userHooks/useUserPostsCall";
 import { Post } from "@/types/post";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
-export default function CheckMyActivityBoard() {
+function CheckMyActivityBoard() {
   const router = useRouter(); 
   const searchParams = useSearchParams(); 
 
@@ -24,12 +24,8 @@ export default function CheckMyActivityBoard() {
 
   useEffect(() => {
     router.push(`?page=${currentPage}`);
-    queryClient.invalidateQueries({ queryKey: ['sortPosts', currentPage] });
+    queryClient.invalidateQueries({ queryKey: ['sortPosts', currentPage]});
   }, [currentPage, queryClient, router]);
-
-  useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ['sortPosts', currentPage] });
-  }, [currentPage, queryClient]);
 
   // 컴포넌트가 마운트될 때 상태 초기화
   useEffect(() => {
@@ -69,3 +65,12 @@ export default function CheckMyActivityBoard() {
     </div>
   );
 }
+
+
+const CheckMyActivityBoardWrapper = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <CheckMyActivityBoard />
+  </Suspense>
+)
+
+export default CheckMyActivityBoardWrapper;

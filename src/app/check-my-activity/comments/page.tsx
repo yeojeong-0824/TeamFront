@@ -8,7 +8,7 @@ import useUserCommentsCall from "@/hooks/userHooks/useUserCommentsCall";
 import { Post } from "@/types/post";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 function CheckMyActivityComment() {
   const router = useRouter(); 
@@ -64,4 +64,12 @@ function CheckMyActivityComment() {
   );
 }
 
-export default CheckMyActivityComment;
+function CheckMyActivityCommentWrapper() {
+  return (
+    <Suspense fallback={<LoadingSpinner size={15} isLoading={true} />}>
+      <CheckMyActivityComment />
+    </Suspense>
+  )
+};
+
+export default CheckMyActivityCommentWrapper;

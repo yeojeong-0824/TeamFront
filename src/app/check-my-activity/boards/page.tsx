@@ -8,7 +8,7 @@ import useUserPostsCall from "@/hooks/userHooks/useUserPostsCall";
 import { Post } from "@/types/post";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 function CheckMyActivityBoard() {
   const router = useRouter(); 
@@ -64,4 +64,12 @@ function CheckMyActivityBoard() {
   );
 }
 
-export default CheckMyActivityBoard;
+function CheckMyActivityBoardWrapper() {
+  return (
+    <Suspense fallback={<LoadingSpinner size={15} isLoading={true} />}>
+      <CheckMyActivityBoard />
+    </Suspense>
+  )
+};
+
+export default CheckMyActivityBoardWrapper;

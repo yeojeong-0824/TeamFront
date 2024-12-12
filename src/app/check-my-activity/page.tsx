@@ -1,9 +1,8 @@
 "use client";
 
-import { Suspense, useState } from 'react';
+import { useState } from 'react';
 import CheckMyActivityBoardWrapper from './boards/page';
 import CheckMyActivityCommentWrapper from './comments/page';
-import LoadingSpinner from '../components/Loading';
 
 function CheckMyActivity() {
   const [pageStatus, setPageStatus] = useState("board");
@@ -27,9 +26,7 @@ function CheckMyActivity() {
         </div>
         <hr/>
         <div className="relative max-w-[800px] min-h-[1300px] mx-auto mt-10 sm:mt-20 p-2">
-          <Suspense fallback={<LoadingSpinner size={15} isLoading={true} />}>
-            {pageStatus === "board" ? <CheckMyActivityBoardWrapper /> : <CheckMyActivityCommentWrapper />}
-          </Suspense>
+          {pageStatus === "board" ? <CheckMyActivityBoardWrapper /> : <CheckMyActivityCommentWrapper />}
         </div>
       </div>
     </div>

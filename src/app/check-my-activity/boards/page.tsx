@@ -8,7 +8,7 @@ import useUserPostsCall from "@/hooks/userHooks/useUserPostsCall";
 import { Post } from "@/types/post";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 function CheckMyActivityBoard() {
   const router = useRouter(); 
@@ -53,9 +53,8 @@ function CheckMyActivityBoard() {
 
   return (
     <div>
-      <h2> 게시글 </h2>
       {renderNoPostsFound()}
-      <LoadingSpinner size={15} isLoading={isLoading}/>
+      <LoadingSpinner size={15} mt={400} isLoading={isLoading}/>
       {isError && <ErrorShow error={error?.message}/>}
       {data?.content.map((post: Post) => (
         <CardPost key={post.id} post={post} />
@@ -65,10 +64,4 @@ function CheckMyActivityBoard() {
   );
 }
 
-const CheckMyActivityBoardWrapper = () => (
-  <Suspense fallback={<LoadingSpinner size={15} mt={400} isLoading={true} />}>
-    <CheckMyActivityBoard />
-  </Suspense>
-)
-
-export default CheckMyActivityBoardWrapper;
+export default CheckMyActivityBoard;

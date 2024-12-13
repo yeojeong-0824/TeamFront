@@ -53,9 +53,8 @@ function CheckMyActivityBoard() {
 
   return (
     <div>
-      <h2> 게시글 </h2>
       {renderNoPostsFound()}
-      <LoadingSpinner size={15} isLoading={isLoading}/>
+      <LoadingSpinner size={15} mt={400} isLoading={isLoading}/>
       {isError && <ErrorShow error={error?.message}/>}
       {data?.content.map((post: Post) => (
         <CardPost key={post.id} post={post} />
@@ -65,10 +64,12 @@ function CheckMyActivityBoard() {
   );
 }
 
-const CheckMyActivityBoardWrapper = () => (
-  <Suspense fallback={<LoadingSpinner size={15} mt={400} isLoading={true} />}>
-    <CheckMyActivityBoard />
-  </Suspense>
-)
+function CheckMyActivityBoardWrapper() {
+  return (
+    <Suspense fallback={<LoadingSpinner size={15} isLoading={true} />}>
+      <CheckMyActivityBoard />
+    </Suspense>
+  )
+};
 
 export default CheckMyActivityBoardWrapper;

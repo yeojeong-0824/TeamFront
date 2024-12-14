@@ -95,7 +95,7 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
     "배",
   ];
 
-  const highlightedDates: CalendarDate[] = data?.locationInfo.map(
+  const highlightedDates: DateValue[] = data?.locationInfo.map(
     (location: LocationInfo) =>
       new CalendarDate(location.year, location.month, location.day)
   );

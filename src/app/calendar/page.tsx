@@ -8,6 +8,15 @@ import type { DateValue } from "@react-types/calendar";
 import { useRouter } from "next/navigation";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import useGetUserPlanners from "@/hooks/calender/useGetUserPlanners";
+import ModalCalendar from "../components/ModalCalendar";
+
+interface Planner {
+  id: number;
+  locationCount: number;
+  personnel: number;
+  title: string;
+  subTitle: string;
+}
 
 export default function Calender() {
   const router = useRouter();
@@ -15,6 +24,8 @@ export default function Calender() {
     today(getLocalTimeZone())
   );
   const { data: planners } = useGetUserPlanners();
+  const [modalData, setModalData] = useState<Planner>();
+  const [showModal, setShowModal] = useState(false);
 
   const ChangeDate = () => {
     return calValue.year + "년 " + calValue.month + "월 " + calValue.day + "일";
@@ -59,7 +70,6 @@ export default function Calender() {
           value={calValue}
           onChange={setCalValue}
         />
-
         <Button color="primary" onClick={routePostCalender}>
           <div className="flex items-center">
             플래너 추가
@@ -67,8 +77,15 @@ export default function Calender() {
           </div>
         </Button>
         <div className="space-y-5">
-          {planners?.content.map((planner: any) => (
-            <div key={planner.id} className="p-3 border-2 shadow-sm rounded-lg">
+          {planners?.content.map((planner: Planner) => (
+            <div
+              key={planner.id}
+              className="p-3 border-2 shadow-sm rounded-lg"
+              onClick={() => {
+                setModalData(planner);
+                setShowModal(true);
+              }}
+            >
               <h1 className="text-xl font-semibold">{planner.title}</h1>
               <h2 className="text-lg">{planner.subTitle}</h2>
               <p className="text-green-500">{planner.personnel}명</p>
@@ -76,6 +93,9 @@ export default function Calender() {
           ))}
         </div>
       </div>
+      {showModal && (
+        <ModalCalendar modalData={modalData} setShowModal={setShowModal} />
+      )}
     </div>
   );
 }

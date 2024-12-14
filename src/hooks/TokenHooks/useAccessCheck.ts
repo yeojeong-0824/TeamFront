@@ -3,10 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function useAccessCheck() {
   return useQuery({
-    queryKey: ['accessCheck'],
+    queryKey: ["accessCheck"],
     queryFn: accessCheck,
     staleTime: 3600000, // 1 hour
     gcTime: 3600000, // 1 hour
     retry: false,
-  })
-};
+  });
+}

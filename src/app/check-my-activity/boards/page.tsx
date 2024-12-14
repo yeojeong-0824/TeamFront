@@ -8,9 +8,9 @@ import useUserPostsCall from "@/hooks/userHooks/useUserPostsCall";
 import { Post } from "@/types/post";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
-export default function CheckMyActivityBoard() {
+function CheckMyActivityBoard() {
   const router = useRouter(); 
   const searchParams = useSearchParams(); 
 
@@ -24,12 +24,8 @@ export default function CheckMyActivityBoard() {
 
   useEffect(() => {
     router.push(`?page=${currentPage}`);
-    queryClient.invalidateQueries({ queryKey: ['sortPosts', currentPage] });
+    queryClient.invalidateQueries({ queryKey: ['sortPosts', currentPage]});
   }, [currentPage, queryClient, router]);
-
-  useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ['sortPosts', currentPage] });
-  }, [currentPage, queryClient]);
 
   // 컴포넌트가 마운트될 때 상태 초기화
   useEffect(() => {
@@ -56,16 +52,24 @@ export default function CheckMyActivityBoard() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-1">
-      <div className="p-10 mt-10 sm:p-20 bg-white text-left shadow-md rounded-lg w-1/2">
-        {renderNoPostsFound()}
-        <LoadingSpinner size={15} isLoading={isLoading}/>
-        {isError && <ErrorShow error={error?.message}/>}
-        {data?.content.map((post: Post) => (
-          <CardPost key={post.id} post={post} />
-        ))}
-        <NavigationNumberMain currentPage={currentPage} setCurrentPage={setCurrentPage} totalPage={totalPages} />
-      </div>
+    <div>
+      {renderNoPostsFound()}
+      <LoadingSpinner size={15} mt={400} isLoading={isLoading}/>
+      {isError && <ErrorShow error={error?.message}/>}
+      {data?.content.map((post: Post) => (
+        <CardPost key={post.id} post={post} />
+      ))}
+      <NavigationNumberMain currentPage={currentPage} setCurrentPage={setCurrentPage} totalPage={totalPages} />
     </div>
   );
 }
+
+function CheckMyActivityBoardWrapper() {
+  return (
+    <Suspense fallback={<LoadingSpinner size={15} isLoading={true} />}>
+      <CheckMyActivityBoard />
+    </Suspense>
+  )
+};
+
+export default CheckMyActivityBoardWrapper;

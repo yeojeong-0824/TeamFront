@@ -59,7 +59,7 @@ const CheckPasswordModal = ({ checkKey, setCheckKey }: { checkKey: string; setCh
         <div className="mb-4">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold">비밀번호 확인</h3>
-            <FiArrowRight className="w-6 h-6 ml-2" onClick={() => router.back()}/>
+            <FiArrowRight className="w-6 h-6 ml-2 hover:opacity-75 cursor-pointer" onClick={() => router.back()}/>
           </div>
           <form onSubmit={ checkPassword } className="flex flex-col gap-5 mt-5">
             {/* 비밀번호 입력&에러메세지 */}

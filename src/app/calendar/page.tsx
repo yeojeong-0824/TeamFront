@@ -5,17 +5,34 @@ import { IoIosAdd } from "react-icons/io";
 import { FaCircleArrowDown } from "react-icons/fa6";
 import { useState } from "react";
 import type { DateValue } from "@react-types/calendar";
-import { parseDate } from "@internationalized/date";
 import { useRouter } from "next/navigation";
-import { FaChevronLeft } from "react-icons/fa";
+import { today, getLocalTimeZone } from "@internationalized/date";
+import useGetUserPlanners from "@/hooks/calender/useGetUserPlanners";
 
 export default function Calender() {
   const router = useRouter();
-  const [calValue, setCalValue] = useState<DateValue>(parseDate("2024-11-15"));
+  const [calValue, setCalValue] = useState<DateValue>(
+    today(getLocalTimeZone())
+  );
+  const { data: planners } = useGetUserPlanners();
 
   const ChangeDate = () => {
     return calValue.year + "년 " + calValue.month + "월 " + calValue.day + "일";
   };
+
+  // function dateToUnix(dateString: string) {
+  //   const date = new Date(dateString);
+  //   return Math.floor(date.getTime() / 1000);
+  // }
+
+  // const date = dateToUnix(
+  //   calValue.year + "-" + calValue.month + "-" + calValue.day
+  // );
+  // console.log(
+  //   new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul" }).format(
+  //     date * 1000
+  //   )
+  // );
 
   const routePostCalender = () => router.push("/post-calender");
 
@@ -49,43 +66,14 @@ export default function Calender() {
             <IoIosAdd className="text-2xl font-semibold" />
           </div>
         </Button>
-
-        <div className="w-full space-y-5 mt-10">
-          <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
-            연말 서울 여행
-          </h1>
-
-          <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
-            <h2 className="font-semibold text-lg">경북궁</h2>
-            <p className="text-gray-700">서울 종로구 사직로 161 경복궁</p>
-            <p className="text-sm text-gray-500">
-              한복 빌려 입고 이쁜 사진 찍기!
-            </p>
-          </div>
-
-          <div className="flex gap-2 justify-center items-center">
-            <FaCircleArrowDown className="text-3xl text-green-500" />
-            <p className="text-orange-700">4분</p>
-          </div>
-
-          <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
-            <h2 className="font-semibold text-lg">애즈라이크 서촌</h2>
-            <p className="text-gray-700">
-              서울 종로구 효자로 7길 23 1층 애즈라이크
-            </p>
-            <p className="text-sm text-gray-500">스테이크 샌드위치 추천 메뉴</p>
-          </div>
-
-          <div className="flex gap-2 justify-center items-center">
-            <FaCircleArrowDown className="text-3xl text-green-500" />
-            <p className="text-orange-700">14분</p>
-          </div>
-
-          <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
-            <h2 className="font-semibold text-lg">서울역</h2>
-            <p className="text-gray-700">서울 용산구 한강대로 405</p>
-            <p className="text-sm text-gray-500">21시 6번 플랫폼</p>
-          </div>
+        <div className="space-y-5">
+          {planners?.content.map((planner: any) => (
+            <div key={planner.id} className="p-3 border-2 shadow-sm rounded-lg">
+              <h1 className="text-xl font-semibold">{planner.title}</h1>
+              <h2 className="text-lg">{planner.subTitle}</h2>
+              <p className="text-green-500">{planner.personnel}명</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

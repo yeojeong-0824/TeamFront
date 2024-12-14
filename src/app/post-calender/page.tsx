@@ -5,14 +5,16 @@ import PostCalender from "../components/PostCalender";
 import PostLocation from "../components/PostLocation";
 import { FaChevronLeft } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
+import useConfirmPageLeave from "@/util/useConfirmPageLeave";
 
 export default function PostCalenderPage() {
   const [step, setStep] = useState(0);
+  const [plannerId, setPlannerId] = useState("");
   const router = useRouter();
 
-  if (step === -1) {
-    router.push("/calendar");
-  }
+  useConfirmPageLeave();
+
+  if (step === -1) router.push("/calendar");
 
   return (
     <div className="min-h-[1300px] sm:my-12 p-1 sm:p-2">
@@ -32,8 +34,10 @@ export default function PostCalenderPage() {
               ? "플래너를 추가해주세요! 플래너란 여행 일정의 날짜와 제목을 의미합니다."
               : "여행 장소를 추가해주세요! 장소란 여행 일정의 각 스케줄을 의미하고, 위치와 설명을 추가할 수 있습니다."}
           </p>
-          {step === 0 && <PostCalender setStep={setStep} />}
-          {step === 1 && <PostLocation setStep={setStep} />}
+          {step === 0 && (
+            <PostCalender setStep={setStep} setPlannerId={setPlannerId} />
+          )}
+          {step === 1 && <PostLocation plannerId={plannerId} />}
         </div>
       </div>
     </div>

@@ -24,7 +24,6 @@ export default function UpdateMyInfo() {
   const [age, setAge] = useState(0);
   
   const updateData: UpdateUserInfo = {
-    key: checkKey,
     nickname: nickname,
     age: age
   }
@@ -34,28 +33,10 @@ export default function UpdateMyInfo() {
 
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutate(updateData, {
-      onSuccess: () => {
-        Swal.fire({
-          icon: "success",
-          title: "회원 정보 수정 성공",
-          text: "회원 정보 수정에 성공하였습니다.",
-          showConfirmButton: false,
-          timer: 1500,
-        }).then(() => {
-          router.back();
-        });
-      },
-      onError: () => {
-        Swal.fire({
-          icon: "error",
-          title: "회원정보 수정 실패",
-          text: "입력 값을 확인해주세요.",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      },
-    });
+    try {
+      mutate(updateData);
+      router.back();
+    } catch (error) {}
   };
 
   const { register, handleSubmit, formState: { errors }, getValues, trigger, setValue } = useForm<UpdateUserInfo>({

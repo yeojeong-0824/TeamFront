@@ -23,7 +23,6 @@ export default function UpdateMyPassword() {
   });
 
   const updateData: UpdateUserPassword = {
-    key: checkKey,
     checkPassword: checkPassword,
     password: password
   }
@@ -32,28 +31,10 @@ export default function UpdateMyPassword() {
 
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutate(updateData, {
-      onSuccess: () => {
-        Swal.fire({
-          icon: "success",
-          title: "비밀번호 수정 성공",
-          text: "비밀번호 수정에 성공하였습니다.",
-          showConfirmButton: false,
-          timer: 1500,
-        }).then(() => {
-          router.back();
-        });
-      },
-      onError: () => {
-        Swal.fire({
-          icon: "error",
-          title: "비밀번호 수정 실패",
-          text: "비밀번호 값을 확인해주세요.",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      },
-    });
+    try {
+      mutate(updateData);
+      router.back();
+    } catch (error) {}
   };
 
   const errorStyle = 'text-sm text-red-500 font-semibold';

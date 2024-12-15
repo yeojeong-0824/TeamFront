@@ -29,26 +29,8 @@ const CheckPasswordModal = ({ checkKey, setCheckKey }: { checkKey: string; setCh
   const checkPassword = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!oldPasswordData.password) return;
-    mutate(oldPasswordData, {
-      onSuccess: (response) => {
-        setCheckKey(response.key);
-        Swal.fire({
-          icon: "success",
-          title: "비밀번호 확인 성공",
-          text: "회원 정보 수정을 진행해주세요.",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      },
-      onError: () => {
-        Swal.fire({
-          icon: "error",
-          title: "비밀번호 확인 실패",
-          text: "비밀번호가 일치하지 않습니다.",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      },
+    mutate(oldPasswordData).then(() => {
+      setCheckKey("AUTHED");
     });
   };
 

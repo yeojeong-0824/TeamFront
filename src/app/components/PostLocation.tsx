@@ -47,6 +47,14 @@ interface LocationInfo {
   memo: string;
 }
 
+interface UnixTime {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+}
+
 export default function PostLocation({ plannerId }: PostCalenderProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -120,13 +128,23 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
 
   const routeCalender = () => router.push("/calendar");
 
+  const toUnixTime = (time: UnixTime) => {
+    const { year, month, day, hour, minute } = time;
+    const date = new Date(year, month, day, hour, minute);
+    return Math.floor(date.getTime() / 1000);
+  };
+
   const onSubmit = (formData: FormData) => {
-    const locationData = {
+    const unixTime = toUnixTime({
       year: calValue.year,
       month: calValue.month,
       day: calValue.day,
       hour: timeStartValue.hour,
       minute: timeStartValue.minute,
+    });
+
+    const locationData = {
+      unixTime,
       travelTime: totalMinutes,
       transportation: selectedTransportation,
       ...formData,

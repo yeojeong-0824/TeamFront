@@ -2,11 +2,7 @@ import postLocation from "@/api/calender/postLocation";
 import { useMutation } from "@tanstack/react-query";
 
 interface LocationData {
-  year: number;
-  month: number;
-  day: number;
-  hour: number;
-  minute: number;
+  unixTime: number;
   travelTime: number;
   transportation: string;
   transportationNote: string;

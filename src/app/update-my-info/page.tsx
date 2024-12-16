@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
 import { Button, Input } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
-import { ErrorMessage } from '@hookform/error-message';
+import { ErrorMessage } from "@hookform/error-message";
 import { nicknameV, ageV } from "../validationRules";
 import LoadingSpinner from "@/app/components/Loading";
 
@@ -19,15 +19,15 @@ import { useRouter } from "next/navigation";
 export default function UpdateMyInfo() {
   const router = useRouter();
 
-  const [checkKey, setCheckKey] = useState('');
-  const [nickname, setNickname] = useState('');
+  const [checkKey, setCheckKey] = useState("");
+  const [nickname, setNickname] = useState("");
   const [age, setAge] = useState(0);
-  
+
   const updateData: UpdateUserInfo = {
     key: checkKey,
     nickname: nickname,
-    age: age
-  }
+    age: age,
+  };
 
   const { mutate, isPending } = useUpdateUserInfo();
   const { data: userInfo, error, isLoading } = useGetUserInfo();
@@ -58,15 +58,22 @@ export default function UpdateMyInfo() {
     });
   };
 
-  const { register, handleSubmit, formState: { errors }, getValues, trigger, setValue } = useForm<UpdateUserInfo>({
-    mode: 'onChange', // 입력 값이 변경될 때마다 유효성 검사
-    reValidateMode: 'onChange', // 입력 값이 변경될 때마다 유효성 검사
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+    trigger,
+    setValue,
+  } = useForm<UpdateUserInfo>({
+    mode: "onChange", // 입력 값이 변경될 때마다 유효성 검사
+    reValidateMode: "onChange", // 입력 값이 변경될 때마다 유효성 검사
   });
 
   useEffect(() => {
-    if(userInfo) {
-      setValue('nickname', userInfo.nickname)
-      setValue('age', userInfo.age)
+    if (userInfo) {
+      setValue("nickname", userInfo.nickname);
+      setValue("age", userInfo.age);
     }
   }, [userInfo, checkKey]);
 
@@ -74,34 +81,34 @@ export default function UpdateMyInfo() {
 
   // nickname 중복확인
   const handleCheckNickname = async () => {
-    const isValid = await trigger('nickname');
+    const isValid = await trigger("nickname");
     if (!isValid) return;
-    const nickname = getValues('nickname');
+    const nickname = getValues("nickname");
     checkNickname.mutate(nickname);
   };
 
-  const errorStyle = 'text-sm text-red-500 font-semibold';
+  const errorStyle = "text-sm text-red-500 font-semibold";
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-1">
       <div>
-        <CheckPasswordModal checkKey={ checkKey } setCheckKey={ setCheckKey }/>
+        <CheckPasswordModal checkKey={checkKey} setCheckKey={setCheckKey} />
       </div>
-      {isLoading ? (<LoadingSpinner size={15} isLoading={isLoading} />) : (
+      {isLoading ? (
+        <LoadingSpinner size={15} isLoading={isLoading} />
+      ) : (
         <>
           <div className="p-10 mt-10 sm:p-20 bg-white text-center shadow-md rounded-lg w-1/4">
             <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
               내 정보 수정
             </h3>
-            <form
-              onSubmit={ submit }
-              className="flex flex-col gap-5 mt-5">
+            <form onSubmit={submit} className="flex flex-col gap-5 mt-5">
               {/* email */}
               <div className="flex items-end gap-1">
                 <Input
                   type="email"
-                  variant='underlined'
+                  variant="underlined"
                   label="이메일"
-                  value={ userInfo?.email }
+                  value={userInfo?.email}
                   readOnly
                 />
               </div>
@@ -111,7 +118,7 @@ export default function UpdateMyInfo() {
                   type="text"
                   variant="underlined"
                   label="아이디"
-                  value={ userInfo?.username }
+                  value={userInfo?.username}
                   readOnly
                 />
               </div>
@@ -122,7 +129,7 @@ export default function UpdateMyInfo() {
                   variant="underlined"
                   label="닉네임"
                   isDisabled={checkNickname.isSuccess}
-                  {...register('nickname', {
+                  {...register("nickname", {
                     ...nicknameV,
                     onChange: (e) => setNickname(e.target.value),
                   })}
@@ -133,20 +140,22 @@ export default function UpdateMyInfo() {
                   isDisabled={checkNickname.isSuccess}
                   onClick={handleCheckNickname}
                 >
-                  {checkNickname.isSuccess ? '확인완료' : '중복확인'}
+                  {checkNickname.isSuccess ? "확인완료" : "중복확인"}
                 </Button>
               </div>
               <ErrorMessage
                 errors={errors}
                 name="nickname"
-                render={({ message }) => <p className={errorStyle}>{message}</p>}
+                render={({ message }) => (
+                  <p className={errorStyle}>{message}</p>
+                )}
               />
               {/* 나이 입력&에러메세지 */}
               <Input
                 type="number"
                 variant="underlined"
                 label="나이"
-                {...register('age', {
+                {...register("age", {
                   ...ageV,
                   onChange: (e) => setAge(e.target.value),
                 })}
@@ -154,12 +163,14 @@ export default function UpdateMyInfo() {
               <ErrorMessage
                 errors={errors}
                 name="age"
-                render={({ message }) => <p className={errorStyle}>{message}</p>}
+                render={({ message }) => (
+                  <p className={errorStyle}>{message}</p>
+                )}
               />
               {/* 수정 버튼 */}
-              <Button 
-                color="primary" 
-                variant="bordered" 
+              <Button
+                color="primary"
+                variant="bordered"
                 type="submit"
                 // isLoading={signup.isPending}
               >
@@ -170,5 +181,5 @@ export default function UpdateMyInfo() {
         </>
       )}
     </div>
-  )
-};
+  );
+}

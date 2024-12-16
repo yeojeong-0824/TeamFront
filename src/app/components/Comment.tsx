@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Textarea } from "@nextui-org/input";
 import { useEffect, useRef, useState } from "react";
@@ -14,6 +14,7 @@ import { Rate } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import formatDate from "@/util/formatDate";
+import { Button } from "@nextui-org/react";
 
 type CommentProps = {
   id: number;
@@ -21,12 +22,19 @@ type CommentProps = {
 };
 
 const Comment = ({ id, loginNickname }: CommentProps) => {
-  const [commentOptionVisible, setCommentOptionVisible] = useState<number | null>(null); // 단일 ID로 변경
-  const [comment, setComment] = useState<string>('');
-  const [updateToggle, setUpdateToggle] = useState<{ [key: number]: boolean }>({});
-  const [updateComment, setUpdateComment] = useState<{ [key: number]: string }>({});
+  const [commentOptionVisible, setCommentOptionVisible] = useState<
+    number | null
+  >(null); // 단일 ID로 변경
+  const [comment, setComment] = useState<string>("");
+  const [updateToggle, setUpdateToggle] = useState<{ [key: number]: boolean }>(
+    {}
+  );
+  const [updateComment, setUpdateComment] = useState<{ [key: number]: string }>(
+    {}
+  );
   const { data, isLoading, isError, error, isSuccess } = useGetComment(id);
-  const { mutate: postCommentMutate } = usePostComment(id);
+  const { mutate: postCommentMutate, isPending: PostCommentIsPending } =
+    usePostComment(id);
   const { mutate: deleteCommentMutate } = useDelteMutation(id);
   const { mutate: updateCommentMutate } = useUpdateComment(id);
   const [score, setScore] = useState<number>(0);
@@ -35,44 +43,49 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const queryClient = useQueryClient();
 
-  queryClient.invalidateQueries({ queryKey: ['accessCheck'] });
-  const cacheData = queryClient.getQueryData(['accessCheck']);
+  queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
+  const cacheData = queryClient.getQueryData(["accessCheck"]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (commentOptionVisible !== null) {
         const menuElement = menuRefs.current[commentOptionVisible];
         const buttonElement = buttonRefs.current[commentOptionVisible];
-        if (menuElement && !menuElement.contains(event.target as Node) && buttonElement && !buttonElement.contains(event.target as Node)) {
+        if (
+          menuElement &&
+          !menuElement.contains(event.target as Node) &&
+          buttonElement &&
+          !buttonElement.contains(event.target as Node)
+        ) {
           setCommentOptionVisible(null);
         }
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [commentOptionVisible]);
 
   const handleCommentPost = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!comment.trim()) {
-      setComment('');
+      setComment("");
       return;
     }
-    queryClient.invalidateQueries({ queryKey: ['accessCheck'] });
-    const cacheData = queryClient.getQueryData(['accessCheck']);
-    if(!cacheData) {
+    queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
+    const cacheData = queryClient.getQueryData(["accessCheck"]);
+    if (!cacheData) {
       Swal.fire({
-        icon: 'error',
-        title: '로그인 필요',
-        text: '로그인이 필요한 서비스입니다.'
+        icon: "error",
+        title: "로그인 필요",
+        text: "로그인이 필요한 서비스입니다.",
       });
       return;
     }
     postCommentMutate({ id, score, comment });
-    setComment('');
+    setComment("");
     setScore(0);
   };
 
@@ -81,15 +94,15 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
   };
 
   const handleDeleteComment = (commentId: number) => {
-    if(!cacheData) {
+    if (!cacheData) {
       Swal.fire({
-        icon: 'error',
-        title: '로그인 필요',
-        text: '로그인이 필요한 서비스입니다.'
+        icon: "error",
+        title: "로그인 필요",
+        text: "로그인이 필요한 서비스입니다.",
       });
       return;
     }
-    deleteCommentMutate(commentId)
+    deleteCommentMutate(commentId);
   };
 
   const handleUpdateComment = (commentId: number) => {
@@ -100,7 +113,10 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
     }));
     setUpdateComment((prev) => ({
       ...prev,
-      [commentId]: data?.content.find((comment: CommentResponse) => comment.id === commentId)?.comment || '',
+      [commentId]:
+        data?.content.find(
+          (comment: CommentResponse) => comment.id === commentId
+        )?.comment || "",
     }));
   };
 
@@ -111,30 +127,42 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
     }));
     setUpdateComment((prev) => ({
       ...prev,
-      [commentId]: '',
+      [commentId]: "",
     }));
   };
 
   const handlePostUpdate = (commentId: number) => {
-    if(!cacheData) {
+    if (!cacheData) {
       Swal.fire({
-        icon: 'error',
-        title: '로그인 필요',
-        text: '로그인이 필요한 서비스입니다.'
+        icon: "error",
+        title: "로그인 필요",
+        text: "로그인이 필요한 서비스입니다.",
       });
       return;
     }
-    const originalComment = data?.content.find((comment: CommentResponse) => comment.id === commentId);
+    const originalComment = data?.content.find(
+      (comment: CommentResponse) => comment.id === commentId
+    );
 
     // 새 별점이 0이거나 원래 별점과 같다면, 원래 별점을 사용
-    const finalScore = updateScore === 0 || updateScore === originalComment?.score ? originalComment?.score : updateScore;
+    const finalScore =
+      updateScore === 0 || updateScore === originalComment?.score
+        ? originalComment?.score
+        : updateScore;
 
     // 댓글 내용과 별점이 변경되지 않았으면 리턴
-    if (originalComment?.comment === updateComment[commentId] && finalScore === originalComment?.score) {
+    if (
+      originalComment?.comment === updateComment[commentId] &&
+      finalScore === originalComment?.score
+    ) {
       return;
     }
 
-    updateCommentMutate({ commentId, score: finalScore, comment: updateComment[commentId] });
+    updateCommentMutate({
+      commentId,
+      score: finalScore,
+      comment: updateComment[commentId],
+    });
     setCommentOptionVisible(null);
     setUpdateScore(0);
     setUpdateToggle((prev) => ({
@@ -143,14 +171,21 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
     }));
     setUpdateComment((prev) => ({
       ...prev,
-      [commentId]: '',
+      [commentId]: "",
     }));
   };
-  
+
   return (
     <div className="flex flex-col max-w-[800px] mx-auto p-3 text-gray-900">
-      {data?.content.length ? <h2 className="text-sm sm:text-medium mb-10">{data?.content.length}개의 댓글</h2> : null}
-      <form className="flex flex-col gap-1 mb-10 p-5 border-2 rounded-md" onSubmit={handleCommentPost}>
+      {data?.content.length ? (
+        <h2 className="text-sm sm:text-medium mb-10">
+          {data?.content.length}개의 댓글
+        </h2>
+      ) : null}
+      <form
+        className="flex flex-col gap-1 mb-10 p-5 border-2 rounded-md"
+        onSubmit={handleCommentPost}
+      >
         <Rate value={score} onChange={(value) => setScore(value)} />
         <Textarea
           variant="underlined"
@@ -164,37 +199,71 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
           className="text-sm sm:text-medium"
         />
         <div className="flex justify-end gap-1">
-          <button className="mt-2 p-1 px-3 text-sm sm:p-2 sm:px-6 sm:text-medium bg-[#6EB4FB] text-white rounded-lg hover:bg-blue-500">댓글 쓰기</button>
+          <Button
+            className="mt-2 p-1 px-3 text-sm sm:p-2 sm:px-6 sm:text-medium bg-[#6EB4FB] text-white rounded-lg hover:bg-blue-500"
+            type="submit"
+            isLoading={PostCommentIsPending}
+          >
+            댓글 쓰기
+          </Button>
         </div>
       </form>
 
       <div>
         {data?.content.map((comment: CommentResponse) => (
-          <div className="flex flex-col gap-1 p-5 border-b text-gray-900" key={comment.id}>
+          <div
+            className="flex flex-col gap-1 p-5 border-b text-gray-900"
+            key={comment.id}
+          >
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <h3 className="text-sm sm:text-medium font-semibold">{comment?.member.nickname}</h3>
-                <p className="text-xs text-gray-400">{loginNickname === comment?.member?.nickname && '내 댓글'}</p>
-                <p>
-
+                <h3 className="text-sm sm:text-medium font-semibold">
+                  {comment?.member.nickname}
+                </h3>
+                <p className="text-xs text-gray-400">
+                  {loginNickname === comment?.member?.nickname && "내 댓글"}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {formatDate(comment?.time?.createTime)}
                 </p>
                 {comment?.score ? (
                   <Rate
                     value={comment?.score}
                     disabled
                     style={{
-                      fontSize: '13px',
-                      display: updateToggle[comment.id] ? 'none' : 'block',
+                      fontSize: "13px",
+                      display: updateToggle[comment.id] ? "none" : "block",
                     }}
-                  />) : null}
+                  />
+                ) : null}
               </div>
-              <div className={`flex relative justify-end gap-1 text-sm ${updateToggle[comment.id] ? 'hidden' : 'block'}`}>
-                <button ref={(el) => { buttonRefs.current[comment.id] = el; }} onClick={() => toggleCommentOptions(comment.id)} className={`text-xl ${Object.values(updateToggle).includes(true) || !cacheData || loginNickname !== comment?.member?.nickname ? 'hidden' : 'block'}`}>
+              <div
+                className={`flex relative justify-end gap-1 text-sm ${
+                  updateToggle[comment.id] ? "hidden" : "block"
+                }`}
+              >
+                <button
+                  ref={(el) => {
+                    buttonRefs.current[comment.id] = el;
+                  }}
+                  onClick={() => toggleCommentOptions(comment.id)}
+                  className={`text-xl ${
+                    Object.values(updateToggle).includes(true) ||
+                    !cacheData ||
+                    loginNickname !== comment?.member?.nickname
+                      ? "hidden"
+                      : "block"
+                  }`}
+                >
                   <BsThreeDots className="text-sm sm:text-2xl" />
                 </button>
                 {commentOptionVisible === comment.id && (
-                  <div className="flex flex-col absolute w-[90px] sm:w-[120px] gap-1 top-5 p-1 sm:p-3 border bg-white rounded-md z-10 shadow-md"
-                  ref={(el) => { menuRefs.current[comment.id] = el; }}>
+                  <div
+                    className="flex flex-col absolute w-[90px] sm:w-[120px] gap-1 top-5 p-1 sm:p-3 border bg-white rounded-md z-10 shadow-md"
+                    ref={(el) => {
+                      menuRefs.current[comment.id] = el;
+                    }}
+                  >
                     <button
                       className="flex items-center gap-1 p-1 hover:text-blue-500 text-xs sm:text-medium"
                       onClick={() => handleUpdateComment(comment.id)}
@@ -217,7 +286,10 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
               <p className="text-sm">{comment?.comment}</p>
             ) : (
               <div>
-                <Rate defaultValue={comment?.score} onChange={(value)=> setUpdateScore(value)} />
+                <Rate
+                  defaultValue={comment?.score}
+                  onChange={(value) => setUpdateScore(value)}
+                />
                 <Textarea
                   variant="underlined"
                   labelPlacement="outside"
@@ -230,7 +302,7 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
                       [comment.id]: e.target.value,
                     }))
                   }
-                  value={updateComment[comment.id] || ''}
+                  value={updateComment[comment.id] || ""}
                   className="text-sm sm:text-medium"
                 />
                 <div className="flex justify-end gap-3">

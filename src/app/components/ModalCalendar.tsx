@@ -9,6 +9,10 @@ import { IoIosAdd } from "react-icons/io";
 import { FiMinus } from "react-icons/fi";
 import fromUnixTime from "@/util/fromUnixTime";
 import formatTravelTime from "@/util/formatTravelTime";
+import formatStartTime from "@/util/formatStartTime";
+import { FaCircleArrowDown } from "react-icons/fa6";
+import { CiEdit } from "react-icons/ci";
+import LoadingSpinner from "./Loading";
 
 interface Planner {
   id: number;
@@ -38,7 +42,9 @@ export default function ModalCalendar({
   setShowModal,
 }: ModalCalendarProps) {
   const queryClient = useQueryClient();
-  const { data } = useGetPlanner(modalData ? modalData.id.toString() : "");
+  const { data, isLoading } = useGetPlanner(
+    modalData ? modalData.id.toString() : ""
+  );
   const { mutate: deletePlanner, isPending: deletePlannerIsPending } =
     useDeletePlanner();
 
@@ -67,20 +73,29 @@ export default function ModalCalendar({
           <h2 className="text-lg text-gray-500">{modalData?.subTitle}</h2>
           <p className="text-green-500">{modalData?.personnel}명</p>
         </div>
-
+        <LoadingSpinner isLoading={isLoading} size={15} />
         <div className="space-y-5">
-          {data?.locationInfo.map((location: LocationInfo) => {
+          {data?.locationInfo.map((location: LocationInfo, index: number) => {
             const dateTime = fromUnixTime(location.unixTime);
 
             return (
-              <div key={location.id} className="bg-gray-100 rounded-md p-2">
-                <h1 className="font-semibold text-lg text-gray-700">
-                  {dateTime.year}년 {dateTime.month}월 {dateTime.day}일
-                </h1>
-                <h2>{location.place}</h2>
-                <h3>{location.address}</h3>
-                <p>{location.memo}</p>
-                <p>{formatTravelTime(location.travelTime)}</p>
+              <div key={location.id}>
+                <div className="flex gap-2 justify-center items-center mb-4">
+                  <FaCircleArrowDown className="text-3xl text-green-500" />
+                  <p className="text-orange-700">
+                    {formatTravelTime(location.travelTime)}
+                  </p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
+                  <h2 className="font-semibold text-lg text-gray-700">
+                    {dateTime.year}년 {dateTime.month}월 {dateTime.day}일
+                  </h2>
+                  <p className="text-gray-700">
+                    {formatStartTime(dateTime.hour, dateTime.minute)}부터
+                  </p>
+                  <p className="text-sm text-gray-500">{location.place}</p>
+                  <p className="text-sm text-gray-500">{location.address}</p>
+                </div>
               </div>
             );
           })}
@@ -92,25 +107,33 @@ export default function ModalCalendar({
             </p>
           </div>
         )}
-        <div className="flex justify-end gap-2 mt-3">
-          <Button color="primary" size="sm">
-            <div className="flex items-center">
-              일정 추가
-              <IoIosAdd className="text-xl font-semibold" />
-            </div>
-          </Button>
-          <Button
-            onClick={handleDeletePlanner}
-            isLoading={deletePlannerIsPending}
-            variant="bordered"
-            size="sm"
-          >
-            <div className="flex items-center gap-1">
-              삭제
-              <FiMinus className="text-[16px] font-semibold" />
-            </div>
-          </Button>
-        </div>
+        {!isLoading && (
+          <div className="flex justify-end gap-2 mt-3">
+            <Button color="primary" size="sm">
+              <div className="flex items-center">
+                일정 추가
+                <IoIosAdd className="text-xl font-semibold" />
+              </div>
+            </Button>
+            <Button variant="solid" size="sm">
+              <div className="flex items-center">
+                수정
+                <CiEdit className="text-lg font-semibold" />
+              </div>
+            </Button>
+            <Button
+              onClick={handleDeletePlanner}
+              isLoading={deletePlannerIsPending}
+              variant="bordered"
+              size="sm"
+            >
+              <div className="flex items-center gap-1">
+                삭제
+                <FiMinus className="text-[16px] font-semibold" />
+              </div>
+            </Button>
+          </div>
+        )}
         <button
           onClick={() => setShowModal(false)}
           className="absolute top-3 right-3"

@@ -22,6 +22,7 @@ import usePostLocation from "@/hooks/calender/usePostLocation";
 import { useQueryClient } from "@tanstack/react-query";
 import LocationItems from "./locationItems";
 import toUnixTime from "@/util/toUnixTime";
+import LoadingSpinner from "./Loading";
 
 interface PostCalenderProps {
   plannerId: string;
@@ -58,7 +59,7 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
     new Time(9, 0)
   );
   const [calendarView, setCalendarView] = useState(true);
-  const { data } = useGetPlanner(plannerId);
+  const { data, isLoading } = useGetPlanner(plannerId);
   const { register, handleSubmit, reset } = useForm<FormData>();
   const [selectedTransportation, setSelectedTransportation] = useState("");
   const [hours, setHours] = useState(0);
@@ -246,22 +247,27 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
 
       <div className="w-full space-y-5 mt-10">
         <div className="flex justify-between items-center">
-          <h1 className="text-xl font-semibold text-gray-800">
-            현재 해당 플래너에 저장된 정보
-          </h1>
-          <button onClick={() => setCalendarView((prev) => !prev)}>
-            {calendarView ? (
-              <FaAngleDoubleUp className="text-2xl text-gray-500 hover:text-gray-900" />
-            ) : (
-              <FaAngleDoubleDown className="text-2xl text-gray-500 hover:text-gray-900" />
-            )}
-          </button>
+          {data?.locationInfo.length !== 0 && (
+            <h1 className="text-xl font-semibold text-gray-800">
+              현재 해당 플래너에 저장된 정보
+            </h1>
+          )}
+          {data?.locationInfo.length !== 0 && (
+            <button onClick={() => setCalendarView((prev) => !prev)}>
+              {calendarView ? (
+                <FaAngleDoubleUp className="text-2xl text-gray-500 hover:text-gray-900" />
+              ) : (
+                <FaAngleDoubleDown className="text-2xl text-gray-500 hover:text-gray-900" />
+              )}
+            </button>
+          )}
         </div>
+        <LoadingSpinner isLoading={isLoading} size={15} />
         {calendarView && <LocationItems locationItems={data?.locationInfo} />}
       </div>
 
       {data?.locationInfo.length === 0 && (
-        <div className="text-xl text-center text-gray-500 mt-40">
+        <div className="text-xl text-center text-gray-500 m-10">
           <p>해당 플래너에 아직 장소가 등록되지 않았습니다.</p>
         </div>
       )}

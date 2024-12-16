@@ -9,7 +9,6 @@ import useRefreshReissue from "@/hooks/TokenHooks/useRefreshReissue";
 import { useEffect } from "react";
 
 const Header = (): JSX.Element => {
-  const accessToken = localStorage.getItem("accessToken");
   const { data: accessCheckData, error } = useAccessCheck();
   const queryClient = useQueryClient();
   const { mutate: refreshReissue } = useRefreshReissue();

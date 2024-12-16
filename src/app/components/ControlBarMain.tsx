@@ -105,7 +105,7 @@ const ControlBarMain = ({
     "flex items-center gap-1 p-1.5 px-2 text-xs text-white rounded-lg sm:p-2 sm:px-3 sm:text-sm";
   return (
     <div className="flex justify-between items-center mt-[30px] pb-8 border-b-1">
-      <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <button
           onClick={() => handleLoginCheck("/write")}
           className={`${btnStyle} bg-[#6EB4FB] hover:bg-blue-500`}

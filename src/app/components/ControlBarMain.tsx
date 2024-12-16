@@ -32,36 +32,6 @@ const ControlBarMain = ({
   const buttonRef = useRef<HTMLButtonElement>(null);
   const queryClient = useQueryClient();
 
-  const useCheckLogin = async () => {
-    try {
-      const accessData = await queryClient.fetchQuery({
-        queryKey: ["accessCheck"],
-      });
-      return accessData;
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "오류 발생",
-        text: "로그인 상태를 확인하는 중 문제가 발생했습니다.",
-      });
-      return null;
-    }
-  };
-
-  const handleNavigation = async (path: string) => {
-    const accessData = await useCheckLogin();
-    if (!accessData) {
-      Swal.fire({
-        icon: "error",
-        title: "로그인 필요",
-        text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
-      });
-      router.push("/login-ui");
-      return;
-    }
-    router.push(path);
-  };
-
   const handleClickOutside = (event: MouseEvent) => {
     if (
       menuRef.current &&
@@ -114,20 +84,37 @@ const ControlBarMain = ({
     setCurrentPage(1);
   };
 
+  const handleLoginCheck = (url: string) => {
+    queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
+    const updatedLoginStatus = queryClient.getQueryData(["accessCheck"]);
+    if (!updatedLoginStatus) {
+      Swal.fire({
+        icon: "error",
+        title: "로그인이 필요한 서비스입니다.",
+        text: "로그인 후 이용해주세요.",
+        showConfirmButton: false,
+        timer: 800,
+      });
+      return;
+    } else {
+      router.push(url);
+    }
+  };
+
   const btnStyle =
     "flex items-center gap-1 p-1.5 px-2 text-xs text-white rounded-lg sm:p-2 sm:px-3 sm:text-sm";
   return (
     <div className="flex justify-between items-center mt-[30px] pb-8 border-b-1">
       <div className="flex gap-2">
         <button
-          onClick={() => handleNavigation("/write")}
+          onClick={() => handleLoginCheck("/write")}
           className={`${btnStyle} bg-[#6EB4FB] hover:bg-blue-500`}
         >
           <PiNotePencilThin className="inline text-sm sm:text-xl" />
           작성하기
         </button>
         <button
-          onClick={() => handleNavigation("/calendar")}
+          onClick={() => handleLoginCheck("/calendar")}
           className={`${btnStyle} bg-pink-400 hover:bg-pink-500`}
         >
           <CiCalendarDate className="inline text-sm sm:text-xl" />

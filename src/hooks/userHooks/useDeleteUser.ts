@@ -6,13 +6,13 @@ export default function useDeleteUser() {
   return useMutation({
     mutationFn:() => deleteUser(),
     onSuccess: () => {
-        Swal.fire({
-            icon: "success",
-            title: "삭제 성공",
-            text: "계정 삭제가 성공하였습니다.",
-            showConfirmButton: false,
-            timer: 1500,
-        });
+      Swal.fire({
+          icon: "success",
+          title: "삭제 성공",
+          text: "계정 삭제가 성공하였습니다.",
+          showConfirmButton: false,
+          timer: 1500,
+      });
     },
     onError:(error: any)=> {
       Swal.fire({

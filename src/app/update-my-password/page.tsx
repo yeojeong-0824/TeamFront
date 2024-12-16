@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 import CheckPasswordModal from "../components/CheckPasswordModal";
 import useUpdateUserPassword from "@/hooks/userHooks/useUpdateUserPassword";
 import { UpdateUserPassword } from "@/types/userTypes/updateInfo";
-import Swal from "sweetalert2";
 
 export default function UpdateMyPassword() {
   const router = useRouter();
@@ -31,10 +30,11 @@ export default function UpdateMyPassword() {
 
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      mutate(updateData);
-      router.back();
-    } catch (error) {}
+    mutate(updateData, {
+      onSuccess: () => {
+        router.back();
+      },
+    });
   };
 
   const errorStyle = 'text-sm text-red-500 font-semibold';

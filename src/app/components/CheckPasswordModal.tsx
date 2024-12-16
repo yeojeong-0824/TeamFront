@@ -29,9 +29,12 @@ const CheckPasswordModal = ({ checkKey, setCheckKey }: { checkKey: string; setCh
   const checkPassword = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!oldPasswordData.password) return;
-    mutate(oldPasswordData).then(() => {
-      setCheckKey("AUTHED");
-    });
+
+    mutate(oldPasswordData, {
+      onSuccess: () => {
+        setCheckKey("AUTHED");
+      },
+    })
   };
 
   const errorStyle = "text-sm text-red-500 font-semibold";

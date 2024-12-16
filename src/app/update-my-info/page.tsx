@@ -13,8 +13,8 @@ import { useEffect, useState } from "react";
 import CheckPasswordModal from "../components/CheckPasswordModal";
 import { UpdateUserInfo } from "@/types/userTypes/updateInfo";
 import useUpdateUserInfo from "@/hooks/userHooks/useUpdateUserInfo";
-import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 export default function UpdateMyInfo() {
   const router = useRouter();
@@ -33,10 +33,11 @@ export default function UpdateMyInfo() {
 
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      mutate(updateData);
-      router.back();
-    } catch (error) {}
+    mutate(updateData, {
+      onSuccess: () => {
+        router.back();
+      },
+    });
   };
 
   const { register, handleSubmit, formState: { errors }, getValues, trigger, setValue } = useForm<UpdateUserInfo>({

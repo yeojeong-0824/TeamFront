@@ -4,7 +4,7 @@ import { useState } from "react";
 import CheckPasswordModal from "../components/CheckPasswordModal";
 import { Button } from "@nextui-org/react";
 import useDeleteUser from "@/hooks/userHooks/useDeleteUser";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function deleteUserCall() {
   const router = useRouter();
@@ -14,10 +14,11 @@ export default function deleteUserCall() {
 
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-        mutate();
+    mutate(undefined, {
+      onSuccess: () => {
         router.back();
-      } catch (error) {}
+      },
+    });
   }
 
   return (

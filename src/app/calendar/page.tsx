@@ -80,7 +80,7 @@ export default function Calender() {
           {planners?.content.map((planner: Planner) => (
             <div
               key={planner.id}
-              className="p-3 border-2 shadow-sm rounded-lg"
+              className="p-3 border-2 shadow-sm rounded-lg cursor-pointer hover:bg-gray-100"
               onClick={() => {
                 setModalData(planner);
                 setShowModal(true);

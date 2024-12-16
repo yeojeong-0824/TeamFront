@@ -23,6 +23,11 @@ export default function LoginUi() {
         const tokenWithBearer = res.headers["authorization"];
         localStorage.setItem("accessToken", tokenWithBearer);
         queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
+        if (localStorage.getItem("signup")) {
+          localStorage.removeItem("signup");
+          router.push("/");
+          return;
+        }
         router.back();
       },
       onError: (error) => {

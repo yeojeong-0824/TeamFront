@@ -4,6 +4,9 @@ import { Button } from "@nextui-org/react";
 import useGetPlanner from "@/hooks/calender/useGetPlanner";
 import useDeletePlanner from "@/hooks/calender/useDeletePlanner";
 import { useQueryClient } from "@tanstack/react-query";
+import { IoCloseOutline } from "react-icons/io5";
+import { IoIosAdd } from "react-icons/io";
+import { FiMinus } from "react-icons/fi";
 
 interface Planner {
   id: number;
@@ -47,8 +50,14 @@ export default function ModalCalendar({
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50">
-      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 rounded-lg">
+    <div
+      className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50"
+      onClick={(e) => setShowModal(false)}
+    >
+      <div
+        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 rounded-lg"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="space-y-2 mb-3">
           <h1 className="text-xl font-semibold text-gray-800">
             {modalData?.title}
@@ -74,19 +83,31 @@ export default function ModalCalendar({
             </p>
           </div>
         )}
-        <div className="flex gap-2 mt-3">
-          <Button color="primary">일정 추가</Button>
+        <div className="flex justify-end gap-2 mt-3">
+          <Button color="primary" size="sm">
+            <div className="flex items-center">
+              일정 추가
+              <IoIosAdd className="text-xl font-semibold" />
+            </div>
+          </Button>
           <Button
             onClick={handleDeletePlanner}
             isLoading={deletePlannerIsPending}
-            color="danger"
+            variant="bordered"
+            size="sm"
           >
-            플래너 삭제
-          </Button>
-          <Button onClick={() => setShowModal(false)} color="success">
-            닫기
+            <div className="flex items-center gap-1">
+              삭제
+              <FiMinus className="text-[16px] font-semibold" />
+            </div>
           </Button>
         </div>
+        <button
+          onClick={() => setShowModal(false)}
+          className="absolute top-3 right-3"
+        >
+          <IoCloseOutline className="text-2xl" />
+        </button>
       </div>
     </div>
   );

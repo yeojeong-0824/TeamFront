@@ -5,9 +5,11 @@ import CheckPasswordModal from "../components/CheckPasswordModal";
 import { Button } from "@nextui-org/react";
 import useDeleteUser from "@/hooks/userHooks/useDeleteUser";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function deleteUserCall() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [checkKey, setCheckKey] = useState('');
 
   const { mutate, isPending } = useDeleteUser();
@@ -16,6 +18,8 @@ export default function deleteUserCall() {
     e.preventDefault();
     mutate(undefined, {
       onSuccess: () => {
+        localStorage.removeItem("accessToken");
+        queryClient.resetQueries({ queryKey: ["accessCheck"] });
         router.back();
       },
     });

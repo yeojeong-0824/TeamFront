@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import useGetUserPlanners from "@/hooks/calender/useGetUserPlanners";
 import ModalCalendar from "../components/ModalCalendar";
+import LoadingSpinner from "../components/Loading";
 
 interface Planner {
   id: number;
@@ -23,7 +24,7 @@ export default function Calender() {
   const [calValue, setCalValue] = useState<DateValue>(
     today(getLocalTimeZone())
   );
-  const { data: planners } = useGetUserPlanners();
+  const { data: planners, isLoading } = useGetUserPlanners();
   const [modalData, setModalData] = useState<Planner>();
   const [showModal, setShowModal] = useState(false);
 
@@ -76,6 +77,7 @@ export default function Calender() {
             <IoIosAdd className="text-2xl font-semibold" />
           </div>
         </Button>
+        <LoadingSpinner isLoading={isLoading} size={15} mt={200} />
         <div className="space-y-5">
           {planners?.content.map((planner: Planner) => (
             <div

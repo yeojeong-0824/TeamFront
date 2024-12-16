@@ -21,6 +21,7 @@ import { useForm } from "react-hook-form";
 import usePostLocation from "@/hooks/calender/usePostLocation";
 import { useQueryClient } from "@tanstack/react-query";
 import LocationItems from "./locationItems";
+import toUnixTime from "@/util/toUnixTime";
 
 interface PostCalenderProps {
   plannerId: string;
@@ -45,14 +46,6 @@ interface LocationInfo {
   place: string;
   address: string;
   memo: string;
-}
-
-interface UnixTime {
-  year: number;
-  month: number;
-  day: number;
-  hour: number;
-  minute: number;
 }
 
 export default function PostLocation({ plannerId }: PostCalenderProps) {
@@ -127,12 +120,6 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
   };
 
   const routeCalender = () => router.push("/calendar");
-
-  const toUnixTime = (time: UnixTime) => {
-    const { year, month, day, hour, minute } = time;
-    const date = new Date(year, month, day, hour, minute);
-    return Math.floor(date.getTime() / 1000);
-  };
 
   const onSubmit = (formData: FormData) => {
     const unixTime = toUnixTime({
@@ -273,7 +260,7 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
         {calendarView && <LocationItems locationItems={data?.locationInfo} />}
       </div>
 
-      {!data && (
+      {data?.locationInfo.length === 0 && (
         <div className="text-xl text-center text-gray-500 mt-40">
           <p>해당 플래너에 아직 장소가 등록되지 않았습니다.</p>
         </div>

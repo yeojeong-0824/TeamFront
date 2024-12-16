@@ -7,6 +7,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { IoCloseOutline } from "react-icons/io5";
 import { IoIosAdd } from "react-icons/io";
 import { FiMinus } from "react-icons/fi";
+import fromUnixTime from "@/util/fromUnixTime";
+import formatTravelTime from "@/util/formatTravelTime";
 
 interface Planner {
   id: number;
@@ -55,7 +57,7 @@ export default function ModalCalendar({
       onClick={(e) => setShowModal(false)}
     >
       <div
-        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 rounded-lg"
+        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 rounded-lg w-[370px] sm:w-[700px] md:w-[1000px] min-h-[300px]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="space-y-2 mb-3">
@@ -63,18 +65,25 @@ export default function ModalCalendar({
             {modalData?.title}
           </h1>
           <h2 className="text-lg text-gray-500">{modalData?.subTitle}</h2>
-          <p>{modalData?.personnel}명</p>
+          <p className="text-green-500">{modalData?.personnel}명</p>
         </div>
 
         <div className="space-y-5">
-          {data?.locationInfo.map((location: LocationInfo) => (
-            <div key={location.id} className="bg-gray-100 rounded-md p-2">
-              <h1>{location.place}</h1>
-              <h2>{location.address}</h2>
-              <p>{location.memo}</p>
-              <p>{location.travelTime}분</p>
-            </div>
-          ))}
+          {data?.locationInfo.map((location: LocationInfo) => {
+            const dateTime = fromUnixTime(location.unixTime);
+
+            return (
+              <div key={location.id} className="bg-gray-100 rounded-md p-2">
+                <h1 className="font-semibold text-lg text-gray-700">
+                  {dateTime.year}년 {dateTime.month}월 {dateTime.day}일
+                </h1>
+                <h2>{location.place}</h2>
+                <h3>{location.address}</h3>
+                <p>{location.memo}</p>
+                <p>{formatTravelTime(location.travelTime)}</p>
+              </div>
+            );
+          })}
         </div>
         {data?.locationInfo.length === 0 && (
           <div>

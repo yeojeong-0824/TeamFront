@@ -7,7 +7,7 @@ import useDeleteUser from "@/hooks/userHooks/useDeleteUser";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
-export default function deleteUserCall() {
+export default function DeleteUserCall() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [checkKey, setCheckKey] = useState('');

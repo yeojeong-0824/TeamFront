@@ -13,8 +13,8 @@ import { useEffect, useState } from "react";
 import CheckPasswordModal from "../components/CheckPasswordModal";
 import { UpdateUserInfo } from "@/types/userTypes/updateInfo";
 import useUpdateUserInfo from "@/hooks/userHooks/useUpdateUserInfo";
-import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 export default function UpdateMyInfo() {
   const router = useRouter();
@@ -24,7 +24,6 @@ export default function UpdateMyInfo() {
   const [age, setAge] = useState(0);
 
   const updateData: UpdateUserInfo = {
-    key: checkKey,
     nickname: nickname,
     age: age,
   };
@@ -36,24 +35,7 @@ export default function UpdateMyInfo() {
     e.preventDefault();
     mutate(updateData, {
       onSuccess: () => {
-        Swal.fire({
-          icon: "success",
-          title: "회원 정보 수정 성공",
-          text: "회원 정보 수정에 성공하였습니다.",
-          showConfirmButton: false,
-          timer: 1500,
-        }).then(() => {
-          router.back();
-        });
-      },
-      onError: () => {
-        Swal.fire({
-          icon: "error",
-          title: "회원정보 수정 실패",
-          text: "입력 값을 확인해주세요.",
-          showConfirmButton: false,
-          timer: 1500,
-        });
+        router.back();
       },
     });
   };

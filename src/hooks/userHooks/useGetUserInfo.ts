@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function useGetUserInfo() {
   return useQuery({
-    queryKey: ['getUserInfo'],
+    queryKey: ["getUserInfo"],
     queryFn: getUserInfo,
   });
-};
+}

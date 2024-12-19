@@ -7,11 +7,13 @@ import useAccessCheck from "@/hooks/TokenHooks/useAccessCheck";
 import { useQueryClient } from "@tanstack/react-query";
 import useRefreshReissue from "@/hooks/TokenHooks/useRefreshReissue";
 import { useEffect } from "react";
+import useRemoveRefreshToken from "@/hooks/TokenHooks/useRemoveRefeshToken";
 
 const Header = (): JSX.Element => {
   const { data: accessCheckData, error } = useAccessCheck();
   const queryClient = useQueryClient();
   const { mutate: refreshReissue } = useRefreshReissue();
+  const { mutate: removeRefreshToken } = useRemoveRefreshToken();
   const isTokenExpired = (error as any)?.response?.status === 401;
 
   useEffect(() => {
@@ -35,8 +37,19 @@ const Header = (): JSX.Element => {
   }, [isTokenExpired]);
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    queryClient.resetQueries({ queryKey: ["accessCheck"] });
+    removeRefreshToken(undefined, {
+      onSuccess: () => {
+        localStorage.removeItem("accessToken");
+        queryClient.resetQueries({ queryKey: ["accessCheck"] });
+      },
+      onError: () => {
+        Swal.fire({
+          icon: "error",
+          title: "로그아웃 실패",
+          text: "다시 시도해주세요.",
+        });
+      },
+    });
   };
 
   const commonStyle = "p-1 px-2.5 text-xs sm:p-2 sm:px-4 sm:text-sm";

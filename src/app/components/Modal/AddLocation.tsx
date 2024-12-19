@@ -12,20 +12,18 @@ import {
 import { useState } from "react";
 import { Time } from "@internationalized/date";
 import type { TimeInputValue } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
-import { FaAngleDoubleDown, FaAngleDoubleUp } from "react-icons/fa";
 import useGetPlanner from "@/hooks/calender/useGetPlanner";
 import type { DateValue } from "@react-types/calendar";
 import { today, getLocalTimeZone, CalendarDate } from "@internationalized/date";
 import { useForm } from "react-hook-form";
 import usePostLocation from "@/hooks/calender/usePostLocation";
 import { useQueryClient } from "@tanstack/react-query";
-import LocationItems from "./locationItems";
 import toUnixTime from "@/util/toUnixTime";
-import LoadingSpinner from "./Loading";
+import Swal from "sweetalert2";
 
 interface PostCalenderProps {
   plannerId: string;
+  setModalState: (value: number) => void;
 }
 
 interface FormData {
@@ -49,8 +47,10 @@ interface LocationInfo {
   memo: string;
 }
 
-export default function PostLocation({ plannerId }: PostCalenderProps) {
-  const router = useRouter();
+export default function AddLocation({
+  plannerId,
+  setModalState,
+}: PostCalenderProps) {
   const queryClient = useQueryClient();
   const [calValue, setCalValue] = useState<DateValue>(
     today(getLocalTimeZone())
@@ -58,7 +58,6 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
   const [timeStartValue, setTimeStartValue] = useState<TimeInputValue>(
     new Time(9, 0)
   );
-  const [calendarView, setCalendarView] = useState(true);
   const { data, isLoading } = useGetPlanner(plannerId);
   const { register, handleSubmit, reset } = useForm<FormData>();
   const [selectedTransportation, setSelectedTransportation] = useState("");
@@ -120,8 +119,6 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
     setTotalMinutes(hours * 60 + minutes);
   };
 
-  const routeCalender = () => router.push("/calendar");
-
   const onSubmit = (formData: FormData) => {
     const unixTime = toUnixTime({
       year: calValue.year,
@@ -140,28 +137,31 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
     mutate(locationData, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["planner", plannerId] });
-        setCalValue(today(getLocalTimeZone()));
-        setTimeStartValue(new Time(9, 0));
-        setSelectedTransportation("");
-        setHours(0);
-        setMinutes(0);
-        setTotalMinutes(0);
-        reset();
+        queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
+        setModalState(0);
+      },
+      onError: () => {
+        Swal.fire({
+          icon: "error",
+          title: "일정 추가 실패",
+          text: "일정 추가에 실패했습니다. 다시 시도해주세요.",
+        });
       },
     });
   };
 
   return (
     <div>
+      <h1 className="flex items-center gap-1 text-2xl font-semibold mb-3">
+        장소 작성
+      </h1>
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl sm:text-2xl font-semibold text-gray-800">
-          {data?.title}
-        </h1>
-        <h2 className="text-xl text-gray-500">{data?.subTitle}</h2>
+        <h1 className="text-xl font-semibold text-gray-800">{data?.title}</h1>
+        <h2 className="text-lg text-gray-500">{data?.subTitle}</h2>
         <h3 className="text-green-500">{data?.personnel}명</h3>
       </div>
       <form
-        className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md mt-10"
+        className="p-3 rounded-lg space-y-2"
         onSubmit={handleSubmit(onSubmit)}
       >
         <h1 className="text-xl font-semibold text-blue-500 my-3 text-center">
@@ -239,48 +239,15 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
           required
           {...register("memo")}
         />
-        <div className="flex justify-end">
-          <Button
-            variant="flat"
-            color="success"
-            type="submit"
-            isLoading={isPending}
-          >
-            장소 추가하기
-          </Button>
-        </div>
+        <Button
+          color="primary"
+          type="submit"
+          className="w-full"
+          isLoading={isPending}
+        >
+          장소 추가하기
+        </Button>
       </form>
-
-      <div className="w-full space-y-5 mt-10">
-        <div className="flex justify-between items-center">
-          {data?.locationInfo.length !== 0 && (
-            <h1 className="text-xl font-semibold text-gray-800">
-              현재 플래너에 저장된 장소
-            </h1>
-          )}
-          {data?.locationInfo.length !== 0 && (
-            <button onClick={() => setCalendarView((prev) => !prev)}>
-              {calendarView ? (
-                <FaAngleDoubleUp className="text-2xl text-gray-500 hover:text-gray-900" />
-              ) : (
-                <FaAngleDoubleDown className="text-2xl text-gray-500 hover:text-gray-900" />
-              )}
-            </button>
-          )}
-        </div>
-        <LoadingSpinner isLoading={isLoading} size={15} />
-        {calendarView && <LocationItems locationItems={data?.locationInfo} />}
-      </div>
-
-      {data?.locationInfo.length === 0 && (
-        <div className="text-xl text-center text-gray-500 m-10">
-          <p>해당 플래너에 아직 장소가 등록되지 않았습니다.</p>
-        </div>
-      )}
-
-      <Button className="w-full mt-3" color="primary" onClick={routeCalender}>
-        작성 완료
-      </Button>
     </div>
   );
 }

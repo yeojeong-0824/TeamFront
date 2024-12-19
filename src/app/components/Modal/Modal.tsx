@@ -16,6 +16,7 @@ import { MdChevronLeft } from "react-icons/md";
 import LoadingSpinner from "../Loading";
 import { useState } from "react";
 import EditPlanner from "./EditPlanner";
+import AddLocation from "./AddLocation";
 
 interface Planner {
   id: number;
@@ -55,6 +56,15 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
         queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
         setShowModal(false);
       },
+    });
+  };
+
+  const handleBack = () => {
+    setModalState((prev) => {
+      if (prev === 2) {
+        return 0;
+      }
+      return prev - 1;
     });
   };
 
@@ -118,7 +128,11 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
             )}
             {!isLoading && (
               <div className="flex justify-end gap-2 mt-3">
-                <Button color="primary" size="sm">
+                <Button
+                  color="primary"
+                  size="sm"
+                  onClick={() => setModalState(2)}
+                >
                   <div className="flex items-center">
                     일정 추가
                     <IoIosAdd className="text-xl font-semibold" />
@@ -152,9 +166,15 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
         {modalState === 1 && (
           <EditPlanner setModalState={setModalState} plannerData={data} />
         )}
+        {modalState === 2 && (
+          <AddLocation
+            plannerId={modalData ? modalData.id.toString() : ""}
+            setModalState={setModalState}
+          />
+        )}
         <div className="absolute top-3 right-3 flex items-center gap-2">
           {modalState !== 0 && (
-            <button onClick={() => setModalState((prev) => prev - 1)}>
+            <button onClick={handleBack}>
               <MdChevronLeft className="text-3xl" />
             </button>
           )}

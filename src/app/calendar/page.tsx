@@ -2,7 +2,7 @@
 
 import { Button, Calendar } from "@nextui-org/react";
 import { IoIosAdd } from "react-icons/io";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { DateValue } from "@react-types/calendar";
 import { useRouter } from "next/navigation";
 import { today, getLocalTimeZone } from "@internationalized/date";
@@ -27,23 +27,18 @@ export default function Calender() {
   const [modalData, setModalData] = useState<Planner>();
   const [showModal, setShowModal] = useState(false);
 
+  useEffect(() => {
+    // 모달 켜졌을 때 배경 스크롤 막기
+    if (showModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [showModal]);
+
   const ChangeDate = () => {
     return calValue.year + "년 " + calValue.month + "월 " + calValue.day + "일";
   };
-
-  // function dateToUnix(dateString: string) {
-  //   const date = new Date(dateString);
-  //   return Math.floor(date.getTime() / 1000);
-  // }
-
-  // const date = dateToUnix(
-  //   calValue.year + "-" + calValue.month + "-" + calValue.day
-  // );
-  // console.log(
-  //   new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul" }).format(
-  //     date * 1000
-  //   )
-  // );
 
   const routePostCalender = () => router.push("/post-calender");
 

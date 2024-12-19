@@ -14,7 +14,7 @@ const Header = (): JSX.Element => {
   const queryClient = useQueryClient();
   const { mutate: refreshReissue } = useRefreshReissue();
   const { mutate: removeRefreshToken } = useRemoveRefreshToken();
-  const isTokenExpired = (error as any)?.response?.status === 401;
+  const isTokenExpired = (error as any)?.response?.status === 403;
 
   useEffect(() => {
     if (isTokenExpired) {
@@ -26,7 +26,6 @@ const Header = (): JSX.Element => {
           queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
         },
         onError: (error: any) => {
-          if (error.response?.status === 403) return;
           Swal.fire({
             icon: "error",
             title: "토큰 갱신 실패",

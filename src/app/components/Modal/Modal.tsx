@@ -61,10 +61,10 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
   return (
     <div
       className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50"
-      onClick={(e) => setShowModal(false)}
+      onClick={() => setShowModal(false)}
     >
       <div
-        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 rounded-lg w-[370px] sm:w-[700px] max-h-[650px] overflow-y-auto"
+        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 rounded-lg w-[370px] sm:w-[700px] max-h-[625px] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {modalState === 0 && (
@@ -130,7 +130,7 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
                   onClick={() => setModalState(1)}
                 >
                   <div className="flex items-center">
-                    플래너 수정
+                    플래너/장소 수정
                     <CiEdit className="text-lg font-semibold" />
                   </div>
                 </Button>

@@ -249,7 +249,7 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
         <div className="flex justify-between items-center">
           {data?.locationInfo.length !== 0 && (
             <h1 className="text-xl font-semibold text-gray-800">
-              현재 해당 플래너에 저장된 정보
+              현재 플래너에 저장된 장소
             </h1>
           )}
           {data?.locationInfo.length !== 0 && (

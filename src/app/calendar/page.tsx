@@ -31,7 +31,9 @@ export default function Calender() {
     // 모달 켜졌을 때 배경 스크롤 막기
     if (showModal) {
       document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
     } else {
+      document.body.style.touchAction = "auto";
       document.body.style.overflow = "auto";
     }
   }, [showModal]);
@@ -41,7 +43,7 @@ export default function Calender() {
   };
 
   const routePostCalender = () => router.push("/post-calender");
-
+  console.log(planners);
   return (
     <div className="min-h-[1300px] sm:my-12 p-1 sm:p-2">
       <div className="flex flex-col justify-between max-w-[800px] gap-3 mx-auto mt-24 p-3 text-gray-900">
@@ -85,6 +87,16 @@ export default function Calender() {
               <h1 className="text-xl font-semibold">{planner.title}</h1>
               <h2 className="text-lg">{planner.subTitle}</h2>
               <p className="text-green-500">{planner.personnel}명</p>
+              {planner.locationCount !== 0 ? (
+                <p className="text-sm text-gray-500">
+                  <span className="text-blue-500 font-semibold">
+                    {planner.locationCount}
+                  </span>
+                  개의 장소가 있습니다.
+                </p>
+              ) : (
+                <p className="text-sm text-gray-500">등록된 장소가 없습니다.</p>
+              )}
             </div>
           ))}
         </div>

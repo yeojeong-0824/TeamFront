@@ -12,6 +12,7 @@ import { FaAngleDoubleDown, FaAngleDoubleUp } from "react-icons/fa";
 import useEditPlanner from "@/hooks/calender/useEditPlanner";
 import Swal from "sweetalert2";
 import { useQueryClient } from "@tanstack/react-query";
+import useDeleteLocation from "@/hooks/calender/useDeleteLocation";
 
 interface LocationInfo {
   address: string;
@@ -46,12 +47,14 @@ export default function EditPlanner({
   setModalState,
   plannerData,
 }: EditPlannerProps) {
+  const queryClient = useQueryClient();
   const { register, handleSubmit, setValue } = useForm<EditData>();
   const [personnel, setPersonnel] = useState(plannerData.personnel);
   const [calendarView, setCalendarView] = useState(false);
   const { mutate: editPlanner, isPending: editPlannerIsPending } =
     useEditPlanner(plannerData.id);
-  const queryClient = useQueryClient();
+  const { mutate: deleteLocation, isPending: deleteLocationIsPending } =
+    useDeleteLocation();
 
   useEffect(() => {
     if (plannerData) {
@@ -110,10 +113,21 @@ export default function EditPlanner({
     setPersonnel((prev) => Math.max(1, prev - 1));
   };
 
+  const handleDeleteLocation = (id: number) => {
+    deleteLocation(id, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["planner", plannerData.id.toString()],
+        });
+        queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
+      },
+    });
+  };
+
   return (
     <div>
       <h1 className="flex items-center gap-1 text-xl font-semibold">
-        플래너 수정
+        플래너/장소 수정
         <CiEdit className="text-2xl font-semibold" />
       </h1>
       <form
@@ -175,7 +189,7 @@ export default function EditPlanner({
       <div className="flex justify-between items-center mt-10">
         {plannerData?.locationInfo.length !== 0 && (
           <h1 className="text-xl font-semibold text-gray-800">
-            현재 해당 플래너에 저장된 정보
+            현재 플래너에 저장된 장소
           </h1>
         )}
         {plannerData?.locationInfo.length !== 0 && (
@@ -193,7 +207,7 @@ export default function EditPlanner({
           {plannerData?.locationInfo.map(
             (location: LocationInfo, index: number) => {
               const dateTime = fromUnixTime(location?.unixTime);
-
+              console.log(location);
               return (
                 <div key={location.id}>
                   <div className="flex gap-2 justify-center items-center mb-4">
@@ -212,10 +226,16 @@ export default function EditPlanner({
                     <p className="text-sm text-gray-500">{location.place}</p>
                     <p className="text-sm text-gray-500">{location.address}</p>
                     <div className="flex justify-end gap-2">
+                      {/* 장소 수정 */}
                       <Button size="sm">
                         <CiEdit className="text-xl" />
                       </Button>
-                      <Button size="sm">
+                      {/* 장소 삭제 */}
+                      <Button
+                        size="sm"
+                        onClick={() => handleDeleteLocation(location.id)}
+                        isLoading={deleteLocationIsPending}
+                      >
                         <CiTrash className="text-xl" />
                       </Button>
                     </div>

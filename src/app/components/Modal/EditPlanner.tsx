@@ -36,6 +36,7 @@ interface Planner {
 interface EditPlannerProps {
   setModalState: (value: number) => void;
   plannerData: Planner;
+  setLocationId: (value: number) => void;
 }
 
 interface EditData {
@@ -46,6 +47,7 @@ interface EditData {
 export default function EditPlanner({
   setModalState,
   plannerData,
+  setLocationId,
 }: EditPlannerProps) {
   const queryClient = useQueryClient();
   const { register, handleSubmit, setValue } = useForm<EditData>();
@@ -124,6 +126,11 @@ export default function EditPlanner({
     });
   };
 
+  const handleEditLocation = (id: number) => {
+    setLocationId(id);
+    setModalState(3);
+  };
+
   return (
     <div>
       <h1 className="flex items-center gap-1 text-xl font-semibold">
@@ -189,7 +196,8 @@ export default function EditPlanner({
       <div className="flex justify-between items-center mt-10">
         {plannerData?.locationInfo.length !== 0 && (
           <h1 className="text-xl font-semibold text-gray-800">
-            현재 플래너에 저장된 장소
+            현재 플래너에 저장된 장소{" "}
+            <span className="text-sm text-gray-400 font-medium">수정/삭제</span>
           </h1>
         )}
         {plannerData?.locationInfo.length !== 0 && (
@@ -207,7 +215,7 @@ export default function EditPlanner({
           {plannerData?.locationInfo.map(
             (location: LocationInfo, index: number) => {
               const dateTime = fromUnixTime(location?.unixTime);
-              console.log(location);
+
               return (
                 <div key={location.id}>
                   <div className="flex gap-2 justify-center items-center mb-4">
@@ -227,7 +235,10 @@ export default function EditPlanner({
                     <p className="text-sm text-gray-500">{location.address}</p>
                     <div className="flex justify-end gap-2">
                       {/* 장소 수정 */}
-                      <Button size="sm">
+                      <Button
+                        size="sm"
+                        onClick={() => handleEditLocation(location.id)}
+                      >
                         <CiEdit className="text-xl" />
                       </Button>
                       {/* 장소 삭제 */}

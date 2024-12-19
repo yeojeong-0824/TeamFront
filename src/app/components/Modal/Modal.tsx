@@ -17,6 +17,7 @@ import LoadingSpinner from "../Loading";
 import { useState } from "react";
 import EditPlanner from "./EditPlanner";
 import AddLocation from "./AddLocation";
+import EditLocation from "./EditLocation";
 
 interface Planner {
   id: number;
@@ -49,6 +50,7 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
   const { mutate: deletePlanner, isPending: deletePlannerIsPending } =
     useDeletePlanner();
   const [modalState, setModalState] = useState(0);
+  const [locationId, setLocationId] = useState<number>(0);
 
   const handleDeletePlanner = () => {
     deletePlanner(modalData ? modalData.id.toString() : "", {
@@ -61,7 +63,7 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
 
   const handleBack = () => {
     setModalState((prev) => {
-      if (prev === 2) {
+      if (prev === 2 || prev === 3) {
         return 0;
       }
       return prev - 1;
@@ -134,7 +136,7 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
                   onClick={() => setModalState(2)}
                 >
                   <div className="flex items-center">
-                    일정 추가
+                    장소 추가
                     <IoIosAdd className="text-xl font-semibold" />
                   </div>
                 </Button>
@@ -164,12 +166,23 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
           </>
         )}
         {modalState === 1 && (
-          <EditPlanner setModalState={setModalState} plannerData={data} />
+          <EditPlanner
+            setModalState={setModalState}
+            plannerData={data}
+            setLocationId={setLocationId}
+          />
         )}
         {modalState === 2 && (
           <AddLocation
             plannerId={modalData ? modalData.id.toString() : ""}
             setModalState={setModalState}
+          />
+        )}
+        {modalState === 3 && (
+          <EditLocation
+            plannerId={modalData ? modalData.id.toString() : ""}
+            setModalState={setModalState}
+            locationId={locationId}
           />
         )}
         <div className="absolute top-3 right-3 flex items-center gap-2">

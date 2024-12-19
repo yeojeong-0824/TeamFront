@@ -152,6 +152,9 @@ export default function AddLocation({
 
   return (
     <div>
+      <h1 className="flex items-center gap-1 text-2xl font-semibold mb-3">
+        장소 작성
+      </h1>
       <div className="flex flex-col gap-2">
         <h1 className="text-xl font-semibold text-gray-800">{data?.title}</h1>
         <h2 className="text-lg text-gray-500">{data?.subTitle}</h2>

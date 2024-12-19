@@ -25,7 +25,8 @@ const Header = (): JSX.Element => {
           localStorage.setItem("accessToken", tokenWithBearer);
           queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
         },
-        onError: () => {
+        onError: (error: any) => {
+          if (error.response?.status === 403) return;
           Swal.fire({
             icon: "error",
             title: "토큰 갱신 실패",

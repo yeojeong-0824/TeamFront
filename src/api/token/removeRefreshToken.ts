@@ -7,6 +7,7 @@ export default async function removeRefreshToken() {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
+      withCredentials: true,
     }
   );
   return response.data;

@@ -2,13 +2,12 @@
 
 import { Button, Calendar } from "@nextui-org/react";
 import { IoIosAdd } from "react-icons/io";
-import { FaCircleArrowDown } from "react-icons/fa6";
 import { useState } from "react";
 import type { DateValue } from "@react-types/calendar";
 import { useRouter } from "next/navigation";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import useGetUserPlanners from "@/hooks/calender/useGetUserPlanners";
-import ModalCalendar from "../components/ModalCalendar";
+import ModalCalendar from "../components/Modal/Modal";
 import LoadingSpinner from "../components/Loading";
 
 interface Planner {

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import useGetUserPlanners from "@/hooks/calender/useGetUserPlanners";
+import { useRouter } from "next/navigation";
 
 interface PostModalProps {
   setShowModal: (value: boolean) => void;
@@ -21,7 +21,12 @@ export default function PostModal({
   setShowModal,
   setPlannerId,
 }: PostModalProps) {
+  const router = useRouter();
   const { data: planners } = useGetUserPlanners();
+
+  const handleRouteCalendar = () => {
+    router.push("/calendar");
+  };
 
   return (
     <div
@@ -65,6 +70,15 @@ export default function PostModal({
               )}
             </div>
           ))}
+        </div>
+        <div className="flex justify-end mt-5 ">
+          <button
+            className="p-1 px-3 sm:p-2 sm:px-6 border text-gray-900 hover:bg-gray-100 rounded-lg text-sm sm:text-base"
+            type="button"
+            onClick={handleRouteCalendar}
+          >
+            캘린더 페이지로 이동
+          </button>
         </div>
       </div>
     </div>

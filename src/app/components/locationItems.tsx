@@ -12,6 +12,9 @@ interface LocationInfo {
   plannerId: number;
   travelTime: number;
   unixTime: number;
+  transportation: string;
+  transportationNote: string;
+  phoneNumber: string;
 }
 
 export default function LocationItems({
@@ -39,8 +42,29 @@ export default function LocationItems({
               <p className="text-gray-700">
                 {formatStartTime(dateTime.hour, dateTime.minute)}부터
               </p>
-              <p className="text-sm text-gray-500">{location.place}</p>
-              <p className="text-sm text-gray-500">{location.address}</p>
+              <div className="flex gap-1 text-sm">
+                <p>도착지 주소:</p>
+                <p className="text-gray-500">{location.place},</p>
+                <p className="text-gray-500">{location.address}</p>
+              </div>
+              <div className="text-sm space-y-2 text-gray-900">
+                <p>
+                  교통수단:{" "}
+                  <span className="text-gray-500">
+                    {location.transportation}
+                  </span>
+                </p>
+                <p>
+                  교통수단 메모:{" "}
+                  <span className="text-gray-500">
+                    {location.transportationNote}
+                  </span>
+                </p>
+                <p>{location.phoneNumber}</p>
+                <p>
+                  메모: <span className="text-gray-500">{location.memo}</span>
+                </p>
+              </div>
             </div>
           </div>
         );

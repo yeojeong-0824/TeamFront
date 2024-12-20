@@ -18,6 +18,7 @@ import { useState } from "react";
 import EditPlanner from "./EditPlanner";
 import AddLocation from "./AddLocation";
 import EditLocation from "./EditLocation";
+import { useRouter } from "next/navigation";
 
 interface Planner {
   id: number;
@@ -35,6 +36,9 @@ interface LocationInfo {
   plannerId: number;
   travelTime: number;
   unixTime: number;
+  transportation: string;
+  transportationNote: string;
+  phoneNumber: string;
 }
 
 interface ModalCalendarProps {
@@ -43,6 +47,7 @@ interface ModalCalendarProps {
 }
 
 export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { data, isLoading } = useGetPlanner(
     modalData ? modalData.id.toString() : ""
@@ -68,6 +73,11 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
       }
       return prev - 1;
     });
+  };
+
+  const handlePlannerPost = () => {
+    localStorage.setItem("plannerId", modalData?.id.toString() || "");
+    router.push(`/write`);
   };
 
   return (
@@ -109,12 +119,32 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
                         <p className="text-gray-700">
                           {formatStartTime(dateTime.hour, dateTime.minute)}부터
                         </p>
-                        <p className="text-sm text-gray-500">
-                          {location.place}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {location.address}
-                        </p>
+                        <div className="flex gap-1 text-sm">
+                          <p>도착지 주소:</p>
+                          <p className="text-gray-500">{location.place},</p>
+                          <p className="text-gray-500">{location.address}</p>
+                        </div>
+                        <div className="text-sm space-y-2 text-gray-900">
+                          <p>
+                            교통수단:{" "}
+                            <span className="text-gray-500">
+                              {location.transportation}
+                            </span>
+                          </p>
+                          <p>
+                            교통수단 메모:{" "}
+                            <span className="text-gray-500">
+                              {location.transportationNote}
+                            </span>
+                          </p>
+                          <p>{location.phoneNumber}</p>
+                          <p>
+                            메모:{" "}
+                            <span className="text-gray-500">
+                              {location.memo}
+                            </span>
+                          </p>
+                        </div>
                       </div>
                     </div>
                   );
@@ -130,6 +160,9 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
             )}
             {!isLoading && (
               <div className="flex justify-end gap-2 mt-3">
+                <Button color="success" size="sm" onClick={handlePlannerPost}>
+                  게시글 작성
+                </Button>
                 <Button
                   color="primary"
                   size="sm"

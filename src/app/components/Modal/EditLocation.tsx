@@ -20,6 +20,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import toUnixTime from "@/util/toUnixTime";
 import Swal from "sweetalert2";
 import useGetLocation from "@/hooks/calender/useGetLocation";
+import fromUnixTime from "@/util/fromUnixTime";
+import useEditLocation from "@/hooks/calender/useEditLocation";
 
 interface PostCalenderProps {
   plannerId: string;
@@ -33,19 +35,8 @@ interface FormData {
   address: string;
   phoneNumber: string;
   memo: string;
-}
-
-interface LocationInfo {
-  id: number;
-  travelTime: number;
-  year: number;
-  month: number;
-  day: number;
-  hour: number;
-  minute: number;
-  place: string;
-  address: string;
-  memo: string;
+  travleTimeHours: number;
+  travleTimeMinutes: number;
 }
 
 export default function AditLocation({
@@ -54,28 +45,47 @@ export default function AditLocation({
   locationId,
 }: PostCalenderProps) {
   const queryClient = useQueryClient();
+  const { data: locationData, isLoading: locationIsLoading } =
+    useGetLocation(locationId);
+  const { mutate: editLocation, isPending: editLocationIsPending } =
+    useEditLocation(Number(locationId));
+
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
   const [calValue, setCalValue] = useState<DateValue>(
     today(getLocalTimeZone())
   );
   const [timeStartValue, setTimeStartValue] = useState<TimeInputValue>(
-    new Time(9, 0)
+    new Time(hours, minutes)
   );
   const { data } = useGetPlanner(plannerId);
   const { register, handleSubmit, setValue } = useForm<FormData>();
   const [selectedTransportation, setSelectedTransportation] = useState("");
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [totalMinutes, setTotalMinutes] = useState(0);
-  const { data: locationData, isLoading: locationIsLoading } =
-    useGetLocation(locationId);
+
+  const { year, month, day, hour, minute } = fromUnixTime(
+    locationData?.unixTime
+  );
+
+  const travleTimeFormat = (travleTime: number) => {
+    const THours = Math.floor(travleTime / 60);
+    const TMinutes = travleTime % 60;
+    return { THours, TMinutes };
+  };
 
   useEffect(() => {
     if (locationData) {
       setValue("transportationNote", locationData.transportationNote);
       setValue("place", locationData.place);
       setValue("address", locationData.address);
-      // setValue("phoneNumber", locationData.phoneNumber);
+      setValue("phoneNumber", locationData.phoneNumber);
       setValue("memo", locationData.memo);
+      setHours(hour);
+      setMinutes(minute);
+      const { THours, TMinutes } = travleTimeFormat(locationData.travelTime);
+      setValue("travleTimeHours", THours);
+      setValue("travleTimeMinutes", TMinutes);
+      setCalValue(new CalendarDate(year, month, day));
+      setSelectedTransportation(locationData.transportation);
     }
   }, [locationData]);
 
@@ -109,30 +119,43 @@ export default function AditLocation({
     "배",
   ];
 
-  const highlightedDates: DateValue[] = data?.locationInfo.map(
-    (location: LocationInfo) =>
-      new CalendarDate(location.year, location.month, location.day)
-  );
-
-  const handleHoursChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value, 10) || 0;
-    setHours(value);
-    updateTotalMinutes(value, minutes);
-  };
-
-  // 분 입력 핸들러
-  const handleMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value, 10) || 0;
-    setMinutes(value);
-    updateTotalMinutes(hours, value);
-  };
-
-  // 총 분 상태 업데이트
-  const updateTotalMinutes = (hours: number, minutes: number) => {
-    setTotalMinutes(hours * 60 + minutes);
-  };
-
   const onSubmit = (formData: FormData) => {
+    if (!selectedTransportation || !calValue || !timeStartValue || !formData) {
+      Swal.fire({
+        icon: "error",
+        title: "일정 추가 실패",
+        text: "모든 항목을 입력해주세요.",
+      });
+      return;
+    }
+
+    if (
+      locationData &&
+      locationData.transportationNote === formData.transportationNote &&
+      locationData.place === formData.place &&
+      locationData.address === formData.address &&
+      locationData.phoneNumber === formData.phoneNumber &&
+      locationData.memo === formData.memo &&
+      locationData.travelTime ===
+        formData.travleTimeHours * 60 + formData.travleTimeMinutes &&
+      locationData.unixTime ===
+        toUnixTime({
+          year: calValue.year,
+          month: calValue.month,
+          day: calValue.day,
+          hour: timeStartValue.hour,
+          minute: timeStartValue.minute,
+        }) &&
+      locationData.transportation === selectedTransportation
+    ) {
+      Swal.fire({
+        icon: "info",
+        title: "변경 사항 없음",
+        text: "변경된 내용이 없습니다.",
+      });
+      return;
+    }
+
     const unixTime = toUnixTime({
       year: calValue.year,
       month: calValue.month,
@@ -141,26 +164,35 @@ export default function AditLocation({
       minute: timeStartValue.minute,
     });
 
-    const locationData = {
+    const { travleTimeHours, travleTimeMinutes } = formData;
+    const travleTime = travleTimeHours * 60 + travleTimeMinutes;
+    const newLocationData = {
       unixTime,
-      travelTime: totalMinutes,
+      travelTime: travleTime,
       transportation: selectedTransportation,
-      ...formData,
+      transportationNote: formData.transportationNote,
+      place: formData.place,
+      address: formData.address,
+      phoneNumber: formData.phoneNumber,
+      memo: formData.memo,
     };
-    // mutate(locationData, {
-    //   onSuccess: () => {
-    //     queryClient.invalidateQueries({ queryKey: ["planner", plannerId] });
-    //     queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
-    //     setModalState(0);
-    //   },
-    //   onError: () => {
-    //     Swal.fire({
-    //       icon: "error",
-    //       title: "일정 추가 실패",
-    //       text: "일정 추가에 실패했습니다. 다시 시도해주세요.",
-    //     });
-    //   },
-    // });
+
+    editLocation(newLocationData, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["planner", plannerId.toString()],
+        });
+        queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
+        setModalState(0);
+      },
+      onError: () => {
+        Swal.fire({
+          icon: "error",
+          title: "일정 추가 실패",
+          text: "일정 추가에 실패했습니다. 다시 시도해주세요.",
+        });
+      },
+    });
   };
 
   return (
@@ -186,15 +218,6 @@ export default function AditLocation({
               aria-label="Date Selection"
               value={calValue}
               onChange={setCalValue}
-              minValue={today(getLocalTimeZone())}
-              isDateUnavailable={(date) =>
-                highlightedDates?.some(
-                  (highlightedDate) =>
-                    date.year === highlightedDate.year &&
-                    date.month === highlightedDate.month &&
-                    date.day === highlightedDate.day
-                )
-              }
             />
           </div>
           <TimeInput
@@ -237,14 +260,14 @@ export default function AditLocation({
               placeholder="시간"
               label="이동 시간 (시간)"
               className="font-semibold"
-              onChange={handleHoursChange}
+              {...register("travleTimeHours")}
             />
             <Input
               type="number"
               placeholder="분"
               label="이동 시간 (분)"
               className="font-semibold"
-              onChange={handleMinutesChange}
+              {...register("travleTimeMinutes")}
             />
           </div>
           <Textarea
@@ -259,7 +282,7 @@ export default function AditLocation({
             color="primary"
             type="submit"
             className="w-full"
-            // isLoading={isPending}
+            isLoading={editLocationIsPending}
           >
             장소 추가하기
           </Button>

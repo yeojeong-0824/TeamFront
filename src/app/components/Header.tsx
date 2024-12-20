@@ -14,10 +14,10 @@ const Header = (): JSX.Element => {
   const queryClient = useQueryClient();
   const { mutate: refreshReissue } = useRefreshReissue();
   const { mutate: removeRefreshToken } = useRemoveRefreshToken();
-  const isTokenExpired = (error as any)?.response?.status === 403;
+  const isTokenExpired = (error as any)?.response?.status;
 
   useEffect(() => {
-    if (isTokenExpired) {
+    if (isTokenExpired === 401) {
       localStorage.removeItem("accessToken");
       refreshReissue(undefined, {
         onSuccess: (data) => {
@@ -32,6 +32,12 @@ const Header = (): JSX.Element => {
             text: "다시 로그인 해주세요.",
           });
         },
+      });
+    } else if (isTokenExpired === 400 || isTokenExpired === 500) {
+      Swal.fire({
+        icon: "error",
+        title: "토큰 갱신 실패",
+        text: "다시 로그인 해주세요.",
       });
     }
   }, [isTokenExpired]);

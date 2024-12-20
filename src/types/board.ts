@@ -5,5 +5,5 @@ export type WriteUpdateType = {
   longitude: number;
   title: string;
   body: string;
-  plannerId: number;
+  plannerId?: number;
 };

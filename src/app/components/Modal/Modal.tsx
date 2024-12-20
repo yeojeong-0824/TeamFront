@@ -18,6 +18,7 @@ import { useState } from "react";
 import EditPlanner from "./EditPlanner";
 import AddLocation from "./AddLocation";
 import EditLocation from "./EditLocation";
+import { useRouter } from "next/navigation";
 
 interface Planner {
   id: number;
@@ -46,6 +47,7 @@ interface ModalCalendarProps {
 }
 
 export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { data, isLoading } = useGetPlanner(
     modalData ? modalData.id.toString() : ""
@@ -71,6 +73,11 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
       }
       return prev - 1;
     });
+  };
+
+  const handlePlannerPost = () => {
+    localStorage.setItem("plannerId", modalData?.id.toString() || "");
+    router.push(`/write`);
   };
 
   return (
@@ -153,6 +160,9 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
             )}
             {!isLoading && (
               <div className="flex justify-end gap-2 mt-3">
+                <Button color="success" size="sm" onClick={handlePlannerPost}>
+                  게시글 작성
+                </Button>
                 <Button
                   color="primary"
                   size="sm"

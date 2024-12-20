@@ -43,7 +43,7 @@ export default function Calender() {
   };
 
   const routePostCalender = () => router.push("/post-calender");
-  console.log(planners);
+
   return (
     <div className="min-h-[1300px] sm:my-12 p-1 sm:p-2">
       <div className="flex flex-col justify-between max-w-[800px] gap-3 mx-auto mt-24 p-3 text-gray-900">

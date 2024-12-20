@@ -31,7 +31,6 @@ export default function LoginUi() {
         router.back();
       },
       onError: (error) => {
-        console.log(error);
         Swal.fire({
           icon: "error",
           title: "로그인 실패",

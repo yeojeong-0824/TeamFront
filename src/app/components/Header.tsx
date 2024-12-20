@@ -14,10 +14,10 @@ const Header = (): JSX.Element => {
   const queryClient = useQueryClient();
   const { mutate: refreshReissue } = useRefreshReissue();
   const { mutate: removeRefreshToken } = useRemoveRefreshToken();
-  const isTokenExpired = (error as any)?.response?.status === 403; // 현재 토큰이 존재하지 않는/만료된 경우 둘 다 401에러가 발생한다. 두 가지 경우를 구분할 수 있으면 최초 사용자에게 에러 메세지를 표시하는 문제를 해결할 수 있다.
+  const isTokenExpired = (error as any)?.response?.status;
 
   useEffect(() => {
-    if (isTokenExpired) {
+    if (isTokenExpired === 401) {
       localStorage.removeItem("accessToken");
       refreshReissue(undefined, {
         onSuccess: (data) => {
@@ -32,6 +32,12 @@ const Header = (): JSX.Element => {
             text: "다시 로그인 해주세요.",
           });
         },
+      });
+    } else if (isTokenExpired === 400 || isTokenExpired === 500) {
+      Swal.fire({
+        icon: "error",
+        title: "토큰 갱신 실패",
+        text: "다시 로그인 해주세요.",
       });
     }
   }, [isTokenExpired]);

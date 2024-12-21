@@ -1,11 +1,10 @@
 "use client"
 
-import CardPost from "@/app/components/CardPost";
+import CommentCardPost from "@/app/components/CommentCardPost";
 import ErrorShow from "@/app/components/Error";
 import LoadingSpinner from "@/app/components/Loading";
 import NavigationNumberMain from "@/app/components/NavigationNumberMain";
 import useUserCommentsCall from "@/hooks/userHooks/useUserCommentsCall";
-import { Post } from "@/types/post";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
@@ -21,6 +20,8 @@ function CheckMyActivityComment() {
   const queryClient = useQueryClient();
   const { data, isLoading, isError, error } = useUserCommentsCall(currentPage || 1);
   const totalPages = data?.totalPages;
+
+  const comments = data?.content;
 
   useEffect(() => {
     router.push(`?page=${currentPage}`);
@@ -56,8 +57,8 @@ function CheckMyActivityComment() {
       {renderNoPostsFound()}
       <LoadingSpinner size={15} mt={400} isLoading={isLoading}/>
       {isError && <ErrorShow error={error?.message}/>}
-      {data?.content.map((post: Post) => (
-        <CardPost key={post.id} post={post} />
+      {data?.content.map((comment: any) => (
+        <CommentCardPost key={comment.id} comment={comment} />
       ))}
       <NavigationNumberMain currentPage={currentPage} setCurrentPage={setCurrentPage} totalPage={totalPages} />
     </div>

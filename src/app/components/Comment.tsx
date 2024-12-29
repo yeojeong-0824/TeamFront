@@ -15,17 +15,22 @@ import { useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import formatDate from "@/util/formatDate";
 import { Button } from "@nextui-org/react";
+import { useForm } from "react-hook-form";
 
 type CommentProps = {
   id: number;
   loginNickname: string;
 };
 
+interface FormData {
+  comment: string;
+}
+
 const Comment = ({ id, loginNickname }: CommentProps) => {
   const [commentOptionVisible, setCommentOptionVisible] = useState<
     number | null
   >(null); // 단일 ID로 변경
-  const [comment, setComment] = useState<string>("");
+  const { register, handleSubmit, setValue } = useForm<FormData>();
   const [updateToggle, setUpdateToggle] = useState<{ [key: number]: boolean }>(
     {}
   );
@@ -68,10 +73,9 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
     };
   }, [commentOptionVisible]);
 
-  const handleCommentPost = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!comment.trim()) {
-      setComment("");
+  const handleCommentPost = (formData: FormData) => {
+    if (!formData.comment.trim()) {
+      setValue("comment", "");
       return;
     }
     queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
@@ -84,8 +88,8 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
       });
       return;
     }
-    postCommentMutate({ id, score, comment });
-    setComment("");
+    postCommentMutate({ id, score, comment: formData.comment });
+    setValue("comment", "");
     setScore(0);
   };
 
@@ -184,7 +188,7 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
       ) : null}
       <form
         className="flex flex-col gap-1 mb-10 p-5 border-2 rounded-md"
-        onSubmit={handleCommentPost}
+        onSubmit={handleSubmit(handleCommentPost)}
       >
         <Rate value={score} onChange={(value) => setScore(value)} />
         <Textarea
@@ -194,8 +198,7 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
           isRequired
           minRows={1}
           maxRows={10}
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          {...register("comment")}
           className="text-sm sm:text-medium"
         />
         <div className="flex justify-end gap-1">

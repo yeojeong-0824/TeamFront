@@ -4,5 +4,8 @@ export default function formatTravelTime(totalMinutes: number) {
   if (hours === 0) {
     return `${minutes}분`;
   }
+  if (minutes === 0) {
+    return `${hours}시간`;
+  }
   return `${hours}시간 ${minutes}분`;
 }

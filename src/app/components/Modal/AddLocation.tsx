@@ -96,7 +96,7 @@ export default function AddLocation({
     "배",
   ];
 
-  const highlightedDates: DateValue[] = data?.locationInfo.map(
+  const highlightedDates: DateValue[] = data?.location.map(
     (location: LocationInfo) =>
       new CalendarDate(location.year, location.month, location.day)
   );
@@ -172,7 +172,6 @@ export default function AddLocation({
             aria-label="Date Selection"
             value={calValue}
             onChange={setCalValue}
-            minValue={today(getLocalTimeZone())}
             isDateUnavailable={(date) =>
               highlightedDates?.some(
                 (highlightedDate) =>

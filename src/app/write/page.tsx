@@ -168,7 +168,7 @@ const Write = () => {
               )}
               {calendarView && (
                 <div className="space-y-5">
-                  {data?.locationInfo.map(
+                  {data?.location.map(
                     (location: LocationInfo, index: number) => {
                       const dateTime = fromUnixTime(location.unixTime);
 

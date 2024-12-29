@@ -6,7 +6,7 @@ import Image from "next/image";
 import useAccessCheck from "@/hooks/TokenHooks/useAccessCheck";
 import { useQueryClient } from "@tanstack/react-query";
 import useRefreshReissue from "@/hooks/TokenHooks/useRefreshReissue";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useRemoveRefreshToken from "@/hooks/TokenHooks/useRemoveRefeshToken";
 
 const Header = (): JSX.Element => {
@@ -25,7 +25,7 @@ const Header = (): JSX.Element => {
           localStorage.setItem("accessToken", tokenWithBearer);
           queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
         },
-        onError: (error: any) => {
+        onError: () => {
           Swal.fire({
             icon: "error",
             title: "토큰 갱신 실패",

@@ -33,7 +33,7 @@ interface Planner {
   personnel: number;
   title: string;
   subTitle: string;
-  locationInfo: LocationInfo[];
+  location: LocationInfo[];
 }
 
 interface EditPlannerProps {
@@ -189,7 +189,7 @@ export default function EditPlanner({
           플래너 수정하기
         </Button>
       </form>
-      {plannerData?.locationInfo.length === 0 && (
+      {plannerData?.location.length === 0 && (
         <div>
           <p className="text-gray-500 text-sm m-10 text-center">
             해당 플래너에 일정이 아직 등록되지 않았습니다.
@@ -197,13 +197,13 @@ export default function EditPlanner({
         </div>
       )}
       <div className="flex justify-between items-center mt-10">
-        {plannerData?.locationInfo.length !== 0 && (
+        {plannerData?.location.length !== 0 && (
           <h1 className="text-xl font-semibold text-gray-800">
             현재 플래너에 저장된 장소{" "}
             <span className="text-sm text-gray-400 font-medium">수정/삭제</span>
           </h1>
         )}
-        {plannerData?.locationInfo.length !== 0 && (
+        {plannerData?.location.length !== 0 && (
           <button onClick={() => setCalendarView((prev) => !prev)}>
             {calendarView ? (
               <FaAngleDoubleUp className="text-2xl text-gray-500 hover:text-gray-900" />
@@ -215,7 +215,7 @@ export default function EditPlanner({
       </div>
       {calendarView && (
         <div className="space-y-5 mt-5">
-          {plannerData?.locationInfo.map(
+          {plannerData?.location.map(
             (location: LocationInfo, index: number) => {
               const dateTime = fromUnixTime(location?.unixTime);
 

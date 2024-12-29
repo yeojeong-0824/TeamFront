@@ -194,11 +194,17 @@ const Post = ({ params }: { params: ParamsId }) => {
               />
             </h2>
           </div>
-          <h2 className="text-lg sm:text-xl font-semibold">
+          <h2
+            className={`text-lg sm:text-xl font-semibold ${
+              data?.planner ? "block" : "hidden"
+            }`}
+          >
             게시글에 등록된 플래너
           </h2>
           {!plannerIsLoading ? (
-            <div className="border-b p-2">
+            <div
+              className={`border-b p-2 ${data?.planner ? "block" : "hidden"}`}
+            >
               {" "}
               <div className="space-y-2 mb-3">
                 <h1 className="text-lg font-semibold text-gray-800">
@@ -237,7 +243,7 @@ const Post = ({ params }: { params: ParamsId }) => {
               )}
               {calendarView && (
                 <div className="space-y-5">
-                  {plannerData?.locationInfo.map(
+                  {plannerData?.location.map(
                     (location: LocationInfo, index: number) => {
                       const dateTime = fromUnixTime(location.unixTime);
 

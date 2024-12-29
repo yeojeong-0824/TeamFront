@@ -65,7 +65,6 @@ export default function AditLocation({
   const { year, month, day, hour, minute } = fromUnixTime(
     locationData?.unixTime
   );
-
   const travleTimeFormat = (travleTime: number) => {
     const THours = Math.floor(travleTime / 60);
     const TMinutes = travleTime % 60;
@@ -88,7 +87,7 @@ export default function AditLocation({
       setSelectedTransportation(locationData.transportation);
     }
   }, [locationData]);
-
+  console.log(locationData);
   const inputFields = [
     {
       placeholder: "예시) 2호선 홍대입구역 3번 출구 10시 30분 출발 예정",
@@ -214,11 +213,11 @@ export default function AditLocation({
             {calValue.year}년 {calValue.month}월 {calValue.day}일
           </h1>
           <div className="flex justify-center">
-            <Calendar
+            {/* <Calendar
               aria-label="Date Selection"
               value={calValue}
               onChange={setCalValue}
-            />
+            /> */}
           </div>
           <TimeInput
             label="일정 시작 시간을 선택"

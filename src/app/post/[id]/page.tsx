@@ -118,7 +118,7 @@ const Post = ({ params }: { params: ParamsId }) => {
     });
     setPostOptionVisible(false);
   };
-
+  console.log(data);
   return (
     <div className="min-h-[1300px] sm:my-12 p-1 sm:p-2">
       <LoadingSpinner size={15} mt={400} isLoading={isLoading} />
@@ -199,12 +199,10 @@ const Post = ({ params }: { params: ParamsId }) => {
               data?.planner ? "block" : "hidden"
             }`}
           >
-            게시글에 등록된 플래너
+            등록된 플래너
           </h2>
           {!plannerIsLoading ? (
-            <div
-              className={`border-b p-2 ${data?.planner ? "block" : "hidden"}`}
-            >
+            <div className={`border-b p-2 ${plannerData ? "block" : "hidden"}`}>
               {" "}
               <div className="space-y-2 mb-3">
                 <h1 className="text-lg font-semibold text-gray-800">
@@ -215,8 +213,14 @@ const Post = ({ params }: { params: ParamsId }) => {
                   {plannerData?.personnel}명
                 </p>
               </div>
-              {data?.locationCount !== 0 ? (
-                <div className="flex justify-end">
+              {plannerData?.locationCount !== 0 ? (
+                <div className="flex justify-between">
+                  <p className="text-sm text-gray-500">
+                    <span className="text-blue-500 font-semibold">
+                      {plannerData?.locationCount}
+                    </span>
+                    개의 장소가 있습니다.
+                  </p>
                   <button
                     onClick={() => setCalendarView((prev) => !prev)}
                     type="button"

@@ -141,7 +141,13 @@ const Write = () => {
                 <p className="text-green-500">{data?.personnel}명</p>
               </div>
               {data?.locationCount !== 0 ? (
-                <div className="flex justify-end">
+                <div className="flex justify-between">
+                  <p className="text-sm text-gray-500">
+                    <span className="text-blue-500 font-semibold">
+                      {data?.locationCount}
+                    </span>
+                    개의 장소가 있습니다.
+                  </p>
                   <button
                     onClick={() => setCalendarView((prev) => !prev)}
                     type="button"

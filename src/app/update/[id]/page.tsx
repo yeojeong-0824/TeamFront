@@ -117,7 +117,7 @@ const Update = ({ params }: { params: ParamsId }) => {
       longitude,
       plannerId: Number(plannerId),
     };
-    console.log(plannerId);
+    console.log(postData);
     updateMutation.mutate(postData);
   };
 

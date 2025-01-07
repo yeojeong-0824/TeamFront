@@ -70,7 +70,7 @@ export default function AditLocation({
     const TMinutes = travleTime % 60;
     return { THours, TMinutes };
   };
-
+  console.log(hour, minute);
   useEffect(() => {
     if (locationData) {
       setValue("transportationNote", locationData.transportationNote);
@@ -80,6 +80,7 @@ export default function AditLocation({
       setValue("memo", locationData.memo);
       setHours(hour);
       setMinutes(minute);
+      setTimeStartValue(new Time(hour, minute));
       const { THours, TMinutes } = travleTimeFormat(locationData.travelTime);
       setValue("travleTimeHours", THours);
       setValue("travleTimeMinutes", TMinutes);
@@ -87,7 +88,6 @@ export default function AditLocation({
       setSelectedTransportation(locationData.transportation);
     }
   }, [locationData]);
-  console.log(locationData);
   const inputFields = [
     {
       placeholder: "예시) 2호선 홍대입구역 3번 출구 10시 30분 출발 예정",
@@ -213,11 +213,11 @@ export default function AditLocation({
             {calValue.year}년 {calValue.month}월 {calValue.day}일
           </h1>
           <div className="flex justify-center">
-            {/* <Calendar
+            <Calendar
               aria-label="Date Selection"
               value={calValue}
               onChange={setCalValue}
-            /> */}
+            />
           </div>
           <TimeInput
             label="일정 시작 시간을 선택"

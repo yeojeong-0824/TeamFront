@@ -51,6 +51,17 @@ const Write = () => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    // 모달 켜졌을 때 배경 스크롤 막기
+    if (showModal) {
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+    } else {
+      document.body.style.touchAction = "auto";
+      document.body.style.overflow = "auto";
+    }
+  }, [showModal]);
+
+  useEffect(() => {
     if (localStoragePlannerId) {
       setPlannerId(localStoragePlannerId);
     }
@@ -141,7 +152,13 @@ const Write = () => {
                 <p className="text-green-500">{data?.personnel}명</p>
               </div>
               {data?.locationCount !== 0 ? (
-                <div className="flex justify-end">
+                <div className="flex justify-between">
+                  <p className="text-sm text-gray-500">
+                    <span className="text-blue-500 font-semibold">
+                      {data?.locationCount}
+                    </span>
+                    개의 장소가 있습니다.
+                  </p>
                   <button
                     onClick={() => setCalendarView((prev) => !prev)}
                     type="button"

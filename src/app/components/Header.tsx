@@ -6,7 +6,7 @@ import Image from "next/image";
 import useAccessCheck from "@/hooks/TokenHooks/useAccessCheck";
 import { useQueryClient } from "@tanstack/react-query";
 import useRefreshReissue from "@/hooks/TokenHooks/useRefreshReissue";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useRemoveRefreshToken from "@/hooks/TokenHooks/useRemoveRefeshToken";
 
 const Header = (): JSX.Element => {
@@ -17,7 +17,7 @@ const Header = (): JSX.Element => {
   const isTokenExpired = (error as any)?.response?.status;
 
   useEffect(() => {
-    if (isTokenExpired === 401) {
+    if (isTokenExpired === 400) {
       localStorage.removeItem("accessToken");
       refreshReissue(undefined, {
         onSuccess: (data) => {
@@ -25,7 +25,14 @@ const Header = (): JSX.Element => {
           localStorage.setItem("accessToken", tokenWithBearer);
           queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
         },
-        onError: () => {
+        onError: (error: any) => {
+          if (error.response.status === 403) {
+            Swal.fire({
+              icon: "error",
+              title: "토큰이 존재하지 않습니다.",
+              text: "다시 로그인 해주세요.",
+            });
+          }
           Swal.fire({
             icon: "error",
             title: "토큰 갱신 실패",
@@ -33,12 +40,8 @@ const Header = (): JSX.Element => {
           });
         },
       });
-    } else if (isTokenExpired === 400 || isTokenExpired === 500) {
-      Swal.fire({
-        icon: "error",
-        title: "토큰 갱신 실패",
-        text: "다시 로그인 해주세요.",
-      });
+    } else if (isTokenExpired === 403 || isTokenExpired === 500) {
+      console.log(`token expired: ${isTokenExpired}`);
     }
   }, [isTokenExpired]);
 

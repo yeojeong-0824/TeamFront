@@ -51,6 +51,17 @@ const Write = () => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    // 모달 켜졌을 때 배경 스크롤 막기
+    if (showModal) {
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+    } else {
+      document.body.style.touchAction = "auto";
+      document.body.style.overflow = "auto";
+    }
+  }, [showModal]);
+
+  useEffect(() => {
     if (localStoragePlannerId) {
       setPlannerId(localStoragePlannerId);
     }

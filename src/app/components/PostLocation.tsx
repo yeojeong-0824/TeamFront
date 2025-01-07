@@ -252,12 +252,12 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
 
       <div className="w-full space-y-5 mt-10">
         <div className="flex justify-between items-center">
-          {data?.locationInfo.length !== 0 && (
+          {data?.location.length !== 0 && (
             <h1 className="text-xl font-semibold text-gray-800">
               현재 플래너에 저장된 장소
             </h1>
           )}
-          {data?.locationInfo.length !== 0 && (
+          {data?.location.length !== 0 && (
             <button onClick={() => setCalendarView((prev) => !prev)}>
               {calendarView ? (
                 <FaAngleDoubleUp className="text-2xl text-gray-500 hover:text-gray-900" />
@@ -271,7 +271,7 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
         {calendarView && <LocationItems locationItems={data?.locationInfo} />}
       </div>
 
-      {data?.locationInfo.length === 0 && (
+      {data?.location.length === 0 && (
         <div className="text-xl text-center text-gray-500 m-10">
           <p>해당 플래너에 아직 장소가 등록되지 않았습니다.</p>
         </div>

@@ -26,22 +26,11 @@ const Header = (): JSX.Element => {
           queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
         },
         onError: (error: any) => {
-          if (error.response.status === 403) {
-            Swal.fire({
-              icon: "error",
-              title: "토큰이 존재하지 않습니다.",
-              text: "다시 로그인 해주세요.",
-            });
-          }
-          Swal.fire({
-            icon: "error",
-            title: "토큰 갱신 실패",
-            text: "다시 로그인 해주세요.",
-          });
+          localStorage.removeItem("accessToken");
         },
       });
     } else if (isTokenExpired === 400 || isTokenExpired === 500) {
-      console.log(`token expired: ${isTokenExpired}`);
+      localStorage.removeItem("accessToken");
     }
   }, [isTokenExpired]);
 

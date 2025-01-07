@@ -17,7 +17,7 @@ const Header = (): JSX.Element => {
   const isTokenExpired = (error as any)?.response?.status;
 
   useEffect(() => {
-    if (isTokenExpired === 400) {
+    if (isTokenExpired === 403) {
       localStorage.removeItem("accessToken");
       refreshReissue(undefined, {
         onSuccess: (data) => {
@@ -40,7 +40,7 @@ const Header = (): JSX.Element => {
           });
         },
       });
-    } else if (isTokenExpired === 403 || isTokenExpired === 500) {
+    } else if (isTokenExpired === 400 || isTokenExpired === 500) {
       console.log(`token expired: ${isTokenExpired}`);
     }
   }, [isTokenExpired]);

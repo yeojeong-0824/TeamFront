@@ -13,13 +13,13 @@ function CheckMyActivity() {
         <div className="flex justify-center mb-6 space-x-4"> {/* 중앙 정렬을 위해 justify-center 사용 */}
           <button
             onClick={() => setPageStatus("board")}
-            className={`py-2 px-4 rounded border-none bg-transparent ${pageStatus === "board" ? "text-gray-800 font-bold" : "text-gray-600"}`}
+            className={`py-2 px-4 rounded border-none bg-transparent ${pageStatus === "board" ? "text-gray-800 font-bold underline" : "text-gray-600"}`}
           >
             게시판
           </button>
           <button
             onClick={() => setPageStatus("comment")}
-            className={`py-2 px-4 rounded border-none bg-transparent ${pageStatus === "comment" ? "text-gray-800 font-bold" : "text-gray-600"}`}
+            className={`py-2 px-4 rounded border-none bg-transparent ${pageStatus === "comment" ? "text-gray-800 font-bold underline" : "text-gray-600"}`}
           >
             댓글
           </button>

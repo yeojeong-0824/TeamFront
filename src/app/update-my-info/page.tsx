@@ -14,7 +14,6 @@ import CheckPasswordModal from "../components/CheckPasswordModal";
 import { UpdateUserInfo } from "@/types/userTypes/updateInfo";
 import useUpdateUserInfo from "@/hooks/userHooks/useUpdateUserInfo";
 import { useRouter } from "next/navigation";
-import Swal from "sweetalert2";
 
 export default function UpdateMyInfo() {
   const router = useRouter();
@@ -22,13 +21,12 @@ export default function UpdateMyInfo() {
   const [checkKey, setCheckKey] = useState("");
   const [nickname, setNickname] = useState("");
   const [age, setAge] = useState(0);
+  const [changeNickname, setChangeNickname] = useState(false);
 
   const updateData: UpdateUserInfo = {
     nickname: nickname,
     age: age,
   };
-
-  console.log(updateData);
 
   const { mutate, isPending } = useUpdateUserInfo();
   const { data: userInfo, error, isLoading } = useGetUserInfo();
@@ -117,17 +115,23 @@ export default function UpdateMyInfo() {
                 isDisabled={checkNickname.isSuccess}
                 {...register("nickname", {
                   ...nicknameV,
-                  onChange: (e) => setNickname(e.target.value),
+                  onChange: (e) => {
+                    setNickname(e.target.value);
+                    setChangeNickname(true);
+                  }
                 })}
               />
-              <Button
-                color="primary"
-                size="sm"
-                isDisabled={checkNickname.isSuccess}
-                onClick={handleCheckNickname}
-              >
-                {checkNickname.isSuccess ? "확인완료" : "중복확인"}
-              </Button>
+              {
+              changeNickname && (
+                <Button
+                  color="primary"
+                  size="sm"
+                  isDisabled={checkNickname.isSuccess}
+                  onClick={handleCheckNickname}
+                >
+                  {checkNickname.isSuccess ? "확인완료" : "중복확인"}
+                </Button>
+              )}
             </div>
             <ErrorMessage
               errors={errors}

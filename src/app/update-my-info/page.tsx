@@ -113,6 +113,7 @@ export default function UpdateMyInfo() {
                 variant="underlined"
                 label="닉네임"
                 isDisabled={checkNickname.isSuccess}
+                value={ nickname }
                 {...register("nickname", {
                   ...nicknameV,
                   onChange: (e) => {
@@ -145,6 +146,7 @@ export default function UpdateMyInfo() {
               type="number"
               variant="underlined"
               label="나이"
+              value={ age.toString() }
               {...register("age", {
                 ...ageV,
                 onChange: (e) => setAge(e.target.value),

@@ -14,7 +14,6 @@ import CheckPasswordModal from "../components/CheckPasswordModal";
 import { UpdateUserInfo } from "@/types/userTypes/updateInfo";
 import useUpdateUserInfo from "@/hooks/userHooks/useUpdateUserInfo";
 import { useRouter } from "next/navigation";
-import Swal from "sweetalert2";
 
 export default function UpdateMyInfo() {
   const router = useRouter();
@@ -22,6 +21,7 @@ export default function UpdateMyInfo() {
   const [checkKey, setCheckKey] = useState("");
   const [nickname, setNickname] = useState("");
   const [age, setAge] = useState(0);
+  const [changeNickname, setChangeNickname] = useState(false);
 
   const updateData: UpdateUserInfo = {
     nickname: nickname,
@@ -56,6 +56,9 @@ export default function UpdateMyInfo() {
     if (userInfo) {
       setValue("nickname", userInfo.nickname);
       setValue("age", userInfo.age);
+
+      setNickname(userInfo.nickname);
+      setAge(userInfo.age);
     }
   }, [userInfo, checkKey]);
 
@@ -78,44 +81,48 @@ export default function UpdateMyInfo() {
       {isLoading ? (
         <LoadingSpinner size={15} isLoading={isLoading} />
       ) : (
-        <>
-          <div className="p-10 mt-10 sm:p-20 bg-white text-center shadow-md rounded-lg w-1/4">
-            <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
-              내 정보 수정
-            </h3>
-            <form onSubmit={submit} className="flex flex-col gap-5 mt-5">
-              {/* email */}
-              <div className="flex items-end gap-1">
-                <Input
-                  type="email"
-                  variant="underlined"
-                  label="이메일"
-                  value={userInfo?.email}
-                  readOnly
-                />
-              </div>
-              {/* username */}
-              <div className="flex items-end gap-1">
-                <Input
-                  type="text"
-                  variant="underlined"
-                  label="아이디"
-                  value={userInfo?.username}
-                  readOnly
-                />
-              </div>
-              {/* nickname입력&중복확인&에러메세지 */}
-              <div className="flex items-end gap-1">
-                <Input
-                  type="text"
-                  variant="underlined"
-                  label="닉네임"
-                  isDisabled={checkNickname.isSuccess}
-                  {...register("nickname", {
-                    ...nicknameV,
-                    onChange: (e) => setNickname(e.target.value),
-                  })}
-                />
+        <div className="p-10 mt-10 sm:p-20 bg-white text-center shadow-md rounded-lg w-1/4">
+          <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
+            내 정보 수정
+          </h3>
+          <form onSubmit={submit} className="flex flex-col gap-5 mt-5">
+            {/* email */}
+            <div className="flex items-end gap-1">
+              <Input
+                type="email"
+                variant="underlined"
+                label="이메일"
+                value={userInfo?.email}
+                readOnly
+              />
+            </div>
+            {/* username */}
+            <div className="flex items-end gap-1">
+              <Input
+                type="text"
+                variant="underlined"
+                label="아이디"
+                value={userInfo?.username}
+                readOnly
+              />
+            </div>
+            {/* nickname입력&중복확인&에러메세지 */}
+            <div className="flex items-end gap-1">
+              <Input
+                type="text"
+                variant="underlined"
+                label="닉네임"
+                isDisabled={checkNickname.isSuccess}
+                {...register("nickname", {
+                  ...nicknameV,
+                  onChange: (e) => {
+                    setNickname(e.target.value);
+                    setChangeNickname(true);
+                  }
+                })}
+              />
+              {
+              changeNickname && (
                 <Button
                   color="primary"
                   size="sm"
@@ -124,43 +131,43 @@ export default function UpdateMyInfo() {
                 >
                   {checkNickname.isSuccess ? "확인완료" : "중복확인"}
                 </Button>
-              </div>
-              <ErrorMessage
-                errors={errors}
-                name="nickname"
-                render={({ message }) => (
-                  <p className={errorStyle}>{message}</p>
-                )}
-              />
-              {/* 나이 입력&에러메세지 */}
-              <Input
-                type="number"
-                variant="underlined"
-                label="나이"
-                {...register("age", {
-                  ...ageV,
-                  onChange: (e) => setAge(e.target.value),
-                })}
-              />
-              <ErrorMessage
-                errors={errors}
-                name="age"
-                render={({ message }) => (
-                  <p className={errorStyle}>{message}</p>
-                )}
-              />
-              {/* 수정 버튼 */}
-              <Button
-                color="primary"
-                variant="bordered"
-                type="submit"
-                // isLoading={signup.isPending}
-              >
-                내 정보 수정
-              </Button>
-            </form>
-          </div>
-        </>
+              )}
+            </div>
+            <ErrorMessage
+              errors={errors}
+              name="nickname"
+              render={({ message }) => (
+                <p className={errorStyle}>{message}</p>
+              )}
+            />
+            {/* 나이 입력&에러메세지 */}
+            <Input
+              type="number"
+              variant="underlined"
+              label="나이"
+              {...register("age", {
+                ...ageV,
+                onChange: (e) => setAge(e.target.value),
+              })}
+            />
+            <ErrorMessage
+              errors={errors}
+              name="age"
+              render={({ message }) => (
+                <p className={errorStyle}>{message}</p>
+              )}
+            />
+            {/* 수정 버튼 */}
+            <Button
+              color="primary"
+              variant="bordered"
+              type="submit"
+              // isLoading={signup.isPending}
+            >
+              내 정보 수정
+            </Button>
+          </form>
+        </div>
       )}
     </div>
   );

@@ -19,26 +19,10 @@ export default function UpdateMyInfo() {
   const router = useRouter();
 
   const [checkKey, setCheckKey] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [age, setAge] = useState(0);
-  const [changeNickname, setChangeNickname] = useState(false);
-
-  const updateData: UpdateUserInfo = {
-    nickname: nickname,
-    age: age,
-  };
+  const [isChangeNickname, setIsChangeNickname] = useState(false);
 
   const { mutate, isPending } = useUpdateUserInfo();
   const { data: userInfo, error, isLoading } = useGetUserInfo();
-
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    mutate(updateData, {
-      onSuccess: () => {
-        router.back();
-      },
-    });
-  };
 
   const {
     register,
@@ -56,9 +40,6 @@ export default function UpdateMyInfo() {
     if (userInfo) {
       setValue("nickname", userInfo.nickname);
       setValue("age", userInfo.age);
-
-      setNickname(userInfo.nickname);
-      setAge(userInfo.age);
     }
   }, [userInfo, checkKey]);
 
@@ -70,6 +51,20 @@ export default function UpdateMyInfo() {
     if (!isValid) return;
     const nickname = getValues("nickname");
     checkNickname.mutate(nickname);
+  };
+
+  // nickname 필드 변경 시 상태 업데이트
+  const handleNicknameChange = (event) => {
+    const currentNickname = event.target.value;
+    setIsChangeNickname(userInfo?.nickname !== currentNickname);
+  };
+
+  const submit = (updateData: UpdateUserInfo) => {
+    mutate(updateData, {
+      onSuccess: () => {
+        router.back();
+      },
+    });
   };
 
   const errorStyle = "text-sm text-red-500 font-semibold";
@@ -85,7 +80,7 @@ export default function UpdateMyInfo() {
           <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
             내 정보 수정
           </h3>
-          <form onSubmit={submit} className="flex flex-col gap-5 mt-5">
+          <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-5 mt-5">
             {/* email */}
             <div className="flex items-end gap-1">
               <Input
@@ -106,23 +101,18 @@ export default function UpdateMyInfo() {
                 readOnly
               />
             </div>
-            {/* nickname입력&중복확인&에러메세지 */}
+            {/* nickname 입력 & 중복 확인 & 에러 메시지 */}
             <div className="flex items-end gap-1">
               <Input
                 type="text"
                 variant="underlined"
                 label="닉네임"
                 isDisabled={checkNickname.isSuccess}
-                {...register("nickname", {
-                  ...nicknameV,
-                  onChange: (e) => {
-                    setNickname(e.target.value);
-                    setChangeNickname(true);
-                  }
-                })}
+                defaultValue={userInfo?.nickname}
+                {...register("nickname", nicknameV)}
+                onChange={handleNicknameChange} // 입력 필드 변경 시 상태 업데이트
               />
-              {
-              changeNickname && (
+              {isChangeNickname && (
                 <Button
                   color="primary"
                   size="sm"
@@ -140,15 +130,13 @@ export default function UpdateMyInfo() {
                 <p className={errorStyle}>{message}</p>
               )}
             />
-            {/* 나이 입력&에러메세지 */}
+            {/* 나이 입력 & 에러 메시지 */}
             <Input
               type="number"
               variant="underlined"
               label="나이"
-              {...register("age", {
-                ...ageV,
-                onChange: (e) => setAge(e.target.value),
-              })}
+              defaultValue={userInfo?.age}
+              {...register("age", ageV)}
             />
             <ErrorMessage
               errors={errors}

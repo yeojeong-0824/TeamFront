@@ -56,6 +56,8 @@ export default function UpdateMyInfo() {
   }, [watch("nickname")]);
 
   const onSubmit = (updateData: UpdateUserInfo) => {
+    if (!updateData) return;
+
     updateUserInfo(updateData, {
       onSuccess: () => {
         router.back();
@@ -108,7 +110,7 @@ export default function UpdateMyInfo() {
                 readOnly
               />
             </div>
-            {/* nickname입력&중복확인&에러메세지 */}
+            {/* nickname 입력 & 중복 확인 & 에러 메시지 */}
             <div className="flex items-end gap-1">
               <Input
                 type="text"
@@ -133,7 +135,7 @@ export default function UpdateMyInfo() {
               name="nickname"
               render={({ message }) => <p className={errorStyle}>{message}</p>}
             />
-            {/* 나이 입력&에러메세지 */}
+            {/* 나이 입력 & 에러 메시지 */}
             <Input
               type="number"
               variant="underlined"

@@ -3,7 +3,6 @@
 import { Button, Input } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
-import { nicknameV, ageV } from "../validationRules";
 import LoadingSpinner from "@/app/components/Loading";
 
 import useGetUserInfo from "@/hooks/userHooks/useGetUserInfo";
@@ -21,9 +20,9 @@ export default function UpdateMyInfo() {
   const [checkKey, setCheckKey] = useState("");
   const [changeNickname, setChangeNickname] = useState(false);
 
+  const { data: userInfo, isLoading: getUserInfoIsLoading } = useGetUserInfo();
   const { mutate: updateUserInfo, isPending: updateUserInfoIsPending } =
     useUpdateUserInfo();
-  const { data: userInfo, isLoading: getUserInfoIsLoading } = useGetUserInfo();
   const checkNickname = useCheckNickname();
 
   const {

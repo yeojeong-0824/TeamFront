@@ -2,13 +2,16 @@
 
 import { Button, Calendar } from "@nextui-org/react";
 import { IoIosAdd } from "react-icons/io";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { DateValue } from "@react-types/calendar";
 import { useRouter } from "next/navigation";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import useGetUserPlanners from "@/hooks/calender/useGetUserPlanners";
 import ModalCalendar from "../components/Modal/Modal";
 import LoadingSpinner from "../components/Loading";
+import getPlanner from "@/api/calender/getPlanner";
+import { useQueries } from "@tanstack/react-query";
+import { Stalemate } from "next/font/google";
 
 interface Planner {
   id: number;
@@ -16,6 +19,31 @@ interface Planner {
   personnel: number;
   title: string;
   subTitle: string;
+}
+
+interface Location {
+  id: number;
+  unixTime: number;
+  travelTime: number;
+  transportation: string;
+  transportationNote: string;
+  place: string;
+  address: string;
+  phoneNumber: string;
+  memo: string;
+  plannerId: number;
+  time: {
+    createTime: string;
+    updateTime: string;
+  };
+}
+
+interface DetailedPlanner extends Planner {
+  location: Location[];
+  time: {
+    createTime: string;
+    updateTime: string;
+  };
 }
 
 export default function Calender() {
@@ -26,6 +54,36 @@ export default function Calender() {
   const { data: planners, isLoading } = useGetUserPlanners();
   const [modalData, setModalData] = useState<Planner>();
   const [showModal, setShowModal] = useState(false);
+
+  const plannerQueries = useQueries({
+    queries: (planners?.content ?? []).map((planner: Planner) => ({
+      queryKey: ["planner", planner.id],
+      queryFn: () => getPlanner(planner.id.toString()),
+      staleTime: 5 * 60 * 1000,
+    })),
+  });
+
+  const isAllLoading =
+    isLoading || plannerQueries.some((query) => query.isLoading);
+
+  const filteredPlanners = useMemo(() => {
+    if (!planners?.content || plannerQueries.some((query) => query.isLoading)) {
+      return [];
+    }
+
+    const selectedMonth = calValue.month;
+
+    return planners.content.filter((planner: Planner, index: number) => {
+      const detailedPlanner = plannerQueries[index].data as DetailedPlanner;
+
+      if (!detailedPlanner?.location) return false;
+
+      return detailedPlanner.location.some((loc) => {
+        const locationDate = new Date(loc.unixTime * 1000);
+        return locationDate.getMonth() + 1 === selectedMonth;
+      });
+    });
+  }, [calValue.month, planners?.content, plannerQueries]);
 
   useEffect(() => {
     // 모달 켜졌을 때 배경 스크롤 막기
@@ -39,11 +97,11 @@ export default function Calender() {
   }, [showModal]);
 
   const ChangeDate = () => {
-    return calValue.year + "년 " + calValue.month + "월 " + calValue.day + "일";
+    return calValue.year + "년 " + calValue.month + "월 " + "플래너 목록";
   };
 
   const routePostCalender = () => router.push("/post-calender");
-  console.log(planners);
+
   return (
     <div className="min-h-[1300px] sm:my-12 p-1 sm:p-2">
       <div className="flex flex-col justify-between max-w-[800px] gap-3 mx-auto mt-24 p-3 text-gray-900">
@@ -56,8 +114,11 @@ export default function Calender() {
             <span className="text-[#3D6592]">플래너</span>를 이용해 더욱
             편리하게 여행 일정을 관리해보세요.
           </p>
+          <p className="text-gray-400 text-xs sm:text-medium ml-1">
+            선택한 날짜와 동일한 달에 속하는 플랜을 표시합니다.
+          </p>
         </div>
-        <h1 className="text-2xl font-semibold text-blue-500 my-3">
+        <h1 className="text-2xl font-semibold text-gray-500 my-3 text-center">
           {ChangeDate()}
         </h1>
         <Calendar
@@ -73,32 +134,40 @@ export default function Calender() {
             <IoIosAdd className="text-2xl font-semibold" />
           </div>
         </Button>
-        <LoadingSpinner isLoading={isLoading} size={15} mt={200} />
+        <LoadingSpinner isLoading={isAllLoading} size={15} mt={200} />
         <div className="space-y-5">
-          {planners?.content.map((planner: Planner) => (
-            <div
-              key={planner.id}
-              className="p-3 border-2 shadow-sm rounded-lg cursor-pointer hover:bg-gray-100"
-              onClick={() => {
-                setModalData(planner);
-                setShowModal(true);
-              }}
-            >
-              <h1 className="text-xl font-semibold">{planner.title}</h1>
-              <h2 className="text-lg">{planner.subTitle}</h2>
-              <p className="text-green-500">{planner.personnel}명</p>
-              {planner.locationCount !== 0 ? (
-                <p className="text-sm text-gray-500">
-                  <span className="text-blue-500 font-semibold">
-                    {planner.locationCount}
-                  </span>
-                  개의 장소가 있습니다.
-                </p>
-              ) : (
-                <p className="text-sm text-gray-500">등록된 장소가 없습니다.</p>
-              )}
-            </div>
-          ))}
+          {filteredPlanners.length !== 0 ? (
+            filteredPlanners.map((planner: Planner) => (
+              <div
+                key={planner.id}
+                className="p-3 border-2 shadow-sm rounded-lg cursor-pointer hover:bg-gray-100"
+                onClick={() => {
+                  setModalData(planner);
+                  setShowModal(true);
+                }}
+              >
+                <h1 className="text-xl font-semibold">{planner.title}</h1>
+                <h2 className="text-lg">{planner.subTitle}</h2>
+                <p className="text-green-500">{planner.personnel}명</p>
+                {planner.locationCount !== 0 ? (
+                  <p className="text-sm text-gray-500">
+                    <span className="text-blue-500 font-semibold">
+                      {planner.locationCount}
+                    </span>
+                    개의 장소가 있습니다.
+                  </p>
+                ) : (
+                  <p className="text-center font-semibold text-lg text-gray-500 mt-10">
+                    등록된 장소가 없습니다.
+                  </p>
+                )}
+              </div>
+            ))
+          ) : (
+            <p className="text-center font-semibold text-lg text-gray-500 mt-10">
+              선택한 달에 등록된 장소가 없습니다.
+            </p>
+          )}
         </div>
       </div>
       {showModal && (

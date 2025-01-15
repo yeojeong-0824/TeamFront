@@ -18,6 +18,7 @@ import { useState } from "react";
 import EditPlanner from "./EditPlanner";
 import AddLocation from "./AddLocation";
 import EditLocation from "./EditLocation";
+import { useRouter } from "next/navigation";
 
 interface Planner {
   id: number;
@@ -46,6 +47,7 @@ interface ModalCalendarProps {
 }
 
 export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { data, isLoading } = useGetPlanner(
     modalData ? modalData.id.toString() : ""
@@ -73,6 +75,11 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
     });
   };
 
+  const handlePlannerPost = () => {
+    localStorage.setItem("plannerId", modalData?.id.toString() || "");
+    router.push(`/write`);
+  };
+
   return (
     <div
       className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50"
@@ -93,58 +100,54 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
             </div>
             <LoadingSpinner isLoading={isLoading} size={15} />
             <div className="space-y-5">
-              {data?.locationInfo.map(
-                (location: LocationInfo, index: number) => {
-                  const dateTime = fromUnixTime(location.unixTime);
+              {data?.location?.map((location: LocationInfo, index: number) => {
+                const dateTime = fromUnixTime(location.unixTime);
 
-                  return (
-                    <div key={location.id}>
-                      <div className="flex gap-2 justify-center items-center mb-4">
-                        <FaCircleArrowDown className="text-3xl text-green-500" />
-                        <p className="text-orange-700">
-                          {formatTravelTime(location.travelTime)}
-                        </p>
+                return (
+                  <div key={location.id}>
+                    <div className="flex gap-2 justify-center items-center mb-4">
+                      <FaCircleArrowDown className="text-3xl text-green-500" />
+                      <p className="text-orange-700">
+                        {formatTravelTime(location.travelTime)}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
+                      <h2 className="font-semibold text-lg text-gray-700">
+                        {dateTime.year}년 {dateTime.month}월 {dateTime.day}일
+                      </h2>
+                      <p className="text-gray-700">
+                        {formatStartTime(dateTime.hour, dateTime.minute)}부터
+                      </p>
+                      <div className="flex gap-1 text-sm">
+                        <p>도착지 주소:</p>
+                        <p className="text-gray-500">{location.place},</p>
+                        <p className="text-gray-500">{location.address}</p>
                       </div>
-                      <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
-                        <h2 className="font-semibold text-lg text-gray-700">
-                          {dateTime.year}년 {dateTime.month}월 {dateTime.day}일
-                        </h2>
-                        <p className="text-gray-700">
-                          {formatStartTime(dateTime.hour, dateTime.minute)}부터
+                      <div className="text-sm space-y-2 text-gray-900">
+                        <p>
+                          교통수단:{" "}
+                          <span className="text-gray-500">
+                            {location.transportation}
+                          </span>
                         </p>
-                        <div className="flex gap-1 text-sm">
-                          <p>도착지 주소:</p>
-                          <p className="text-gray-500">{location.place},</p>
-                          <p className="text-gray-500">{location.address}</p>
-                        </div>
-                        <div className="text-sm space-y-2 text-gray-900">
-                          <p>
-                            교통수단:{" "}
-                            <span className="text-gray-500">
-                              {location.transportation}
-                            </span>
-                          </p>
-                          <p>
-                            교통수단 메모:{" "}
-                            <span className="text-gray-500">
-                              {location.transportationNote}
-                            </span>
-                          </p>
-                          <p>{location.phoneNumber}</p>
-                          <p>
-                            메모:{" "}
-                            <span className="text-gray-500">
-                              {location.memo}
-                            </span>
-                          </p>
-                        </div>
+                        <p>
+                          교통수단 메모:{" "}
+                          <span className="text-gray-500">
+                            {location.transportationNote}
+                          </span>
+                        </p>
+                        <p>{location.phoneNumber}</p>
+                        <p>
+                          메모:{" "}
+                          <span className="text-gray-500">{location.memo}</span>
+                        </p>
                       </div>
                     </div>
-                  );
-                }
-              )}
+                  </div>
+                );
+              })}
             </div>
-            {data?.locationInfo.length === 0 && (
+            {data?.location?.length === 0 && (
               <div>
                 <p className="text-gray-500 text-sm m-10 text-center">
                   해당 플래너에 일정이 아직 등록되지 않았습니다.
@@ -153,6 +156,9 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
             )}
             {!isLoading && (
               <div className="flex justify-end gap-2 mt-3">
+                <Button color="success" size="sm" onClick={handlePlannerPost}>
+                  게시글 작성
+                </Button>
                 <Button
                   color="primary"
                   size="sm"

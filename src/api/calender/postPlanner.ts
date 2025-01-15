@@ -14,6 +14,7 @@ export default async function postPlanner(plannerData: PlannerData) {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
+      withCredentials: true,
     }
   );
   return response.data;

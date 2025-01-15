@@ -17,7 +17,7 @@ const Header = (): JSX.Element => {
   const isTokenExpired = (error as any)?.response?.status;
 
   useEffect(() => {
-    if (isTokenExpired === 401) {
+    if (isTokenExpired === 403) {
       localStorage.removeItem("accessToken");
       refreshReissue(undefined, {
         onSuccess: (data) => {
@@ -26,19 +26,11 @@ const Header = (): JSX.Element => {
           queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
         },
         onError: (error: any) => {
-          Swal.fire({
-            icon: "error",
-            title: "토큰 갱신 실패",
-            text: "다시 로그인 해주세요.",
-          });
+          localStorage.removeItem("accessToken");
         },
       });
     } else if (isTokenExpired === 400 || isTokenExpired === 500) {
-      Swal.fire({
-        icon: "error",
-        title: "토큰 갱신 실패",
-        text: "다시 로그인 해주세요.",
-      });
+      localStorage.removeItem("accessToken");
     }
   }, [isTokenExpired]);
 

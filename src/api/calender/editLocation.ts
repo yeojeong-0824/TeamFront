@@ -24,4 +24,5 @@ export default async function editLocation(
       },
     }
   );
+  return response.data;
 }

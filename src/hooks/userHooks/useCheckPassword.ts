@@ -5,16 +5,7 @@ import Swal from "sweetalert2";
 
 const useCheckPassword = () => {
   return useMutation({
-    mutationFn:(password: CheckOldPassword)=> checkPassword(password),
-    onSuccess: () => {
-      Swal.fire({
-        icon: "success",
-        title: "비밀번호 확인 성공",
-        text: "회원 정보 수정을 진행해주세요.",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-    },
+    mutationFn: (password: CheckOldPassword) => checkPassword(password),
     onError: () => {
       Swal.fire({
         icon: "error",

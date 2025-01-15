@@ -19,13 +19,10 @@ export default function UpdateMyInfo() {
   const router = useRouter();
 
   const [checkKey, setCheckKey] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [age, setAge] = useState(0);
-  const [changeNickname, setChangeNickname] = useState(false);
 
   const updateData: UpdateUserInfo = {
-    nickname: nickname,
-    age: age,
+    nickname: "",
+    age: 0,
   };
 
   const { mutate, isPending } = useUpdateUserInfo();
@@ -56,9 +53,6 @@ export default function UpdateMyInfo() {
     if (userInfo) {
       setValue("nickname", userInfo.nickname);
       setValue("age", userInfo.age);
-
-      setNickname(userInfo.nickname);
-      setAge(userInfo.age);
     }
   }, [userInfo, checkKey]);
 
@@ -113,17 +107,11 @@ export default function UpdateMyInfo() {
                 variant="underlined"
                 label="닉네임"
                 isDisabled={checkNickname.isSuccess}
-                value={ nickname }
-                {...register("nickname", {
-                  ...nicknameV,
-                  onChange: (e) => {
-                    setNickname(e.target.value);
-                    setChangeNickname(true);
-                  }
-                })}
+                value={ userInfo?.nickname }
+                {...register("nickname", nicknameV)}
               />
               {
-              changeNickname && (
+              userInfo?.nickname == updateData.nickname && (
                 <Button
                   color="primary"
                   size="sm"
@@ -146,11 +134,8 @@ export default function UpdateMyInfo() {
               type="number"
               variant="underlined"
               label="나이"
-              value={ age.toString() }
-              {...register("age", {
-                ...ageV,
-                onChange: (e) => setAge(e.target.value),
-              })}
+              value={ userInfo?.age }
+              {...register("age", ageV)}
             />
             <ErrorMessage
               errors={errors}

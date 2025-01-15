@@ -54,7 +54,7 @@ export default function UpdateMyInfo() {
   };
 
   // nickname 필드 변경 시 상태 업데이트
-  const handleNicknameChange = (event) => {
+  const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentNickname = event.target.value;
     setIsChangeNickname(userInfo?.nickname !== currentNickname);
   };

@@ -66,7 +66,7 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
   const [minutes, setMinutes] = useState(0);
   const [totalMinutes, setTotalMinutes] = useState(0);
   const { mutate, isPending } = usePostLocation(plannerId);
-
+  console.log(data);
   const inputFields = [
     {
       placeholder: "예시) 2호선 홍대입구역 3번 출구 10시 30분 출발 예정",
@@ -245,7 +245,7 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
             type="submit"
             isLoading={isPending}
           >
-            장소 추가하기
+            일정 추가하기
           </Button>
         </div>
       </form>
@@ -254,7 +254,7 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
         <div className="flex justify-between items-center">
           {data?.location.length !== 0 && (
             <h1 className="text-xl font-semibold text-gray-800">
-              현재 플래너에 저장된 장소
+              현재 플랜에 저장된 일정
             </h1>
           )}
           {data?.location.length !== 0 && (
@@ -268,17 +268,22 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
           )}
         </div>
         <LoadingSpinner isLoading={isLoading} size={15} />
-        {calendarView && <LocationItems locationItems={data?.locationInfo} />}
+        {calendarView && <LocationItems locationItems={data?.location} />}
       </div>
 
       {data?.location.length === 0 && (
-        <div className="text-xl text-center text-gray-500 m-10">
-          <p>해당 플래너에 아직 장소가 등록되지 않았습니다.</p>
+        <div className="text-center text-gray-500 m-10">
+          <p>해당 플랜에 아직 일정이 등록되지 않았습니다.</p>
         </div>
       )}
 
-      <Button className="w-full mt-3" color="primary" onClick={routeCalender}>
-        작성 완료
+      <Button
+        className="w-full mt-3"
+        color="primary"
+        onClick={routeCalender}
+        isDisabled={isPending || data?.location.length === 0}
+      >
+        {data?.location.length === 0 ? "일정을 추가해주세요" : "작성 완료"}
       </Button>
     </div>
   );

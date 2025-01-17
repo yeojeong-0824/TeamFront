@@ -94,7 +94,7 @@ export default function PostCalender({
           isLoading={isPending}
           type="submit"
         >
-          플래너 추가
+          다음
         </Button>
       </form>
     </div>

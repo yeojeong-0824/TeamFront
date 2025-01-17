@@ -27,12 +27,12 @@ export default function PostCalenderPage() {
             >
               <FaChevronLeft />
             </button>
-            {step === 0 ? "플래너 추가하기" : "장소 추가하기"}
+            {step === 0 ? "플랜 추가하기" : "일정 추가하기"}
           </h1>
           <p className="text-xs sm:text-medium ml-1 text-gray-400">
             {step === 0
-              ? "플래너를 추가해주세요! 플래너란 여행 일정의 날짜와 제목을 의미합니다."
-              : "여행 장소를 추가해주세요! 장소란 여행 일정의 각 스케줄을 의미하고, 위치와 설명을 추가할 수 있습니다."}
+              ? "플랜을 추가해주세요! 여행 일정을 추가하고, 일정을 관리해보세요."
+              : "여행 일정을 추가해주세요! 일정이란 플랜의 각 세부 스케줄을 의미하고, 위치와 설명을 추가할 수 있습니다."}
           </p>
           {step === 0 && (
             <PostCalender setStep={setStep} setPlannerId={setPlannerId} />

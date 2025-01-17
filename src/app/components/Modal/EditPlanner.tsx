@@ -88,7 +88,7 @@ export default function EditPlanner({
         onSuccess: () => {
           Swal.fire({
             icon: "success",
-            title: "플래너가 성공적으로 수정되었습니다.",
+            title: "플랜이 성공적으로 수정되었습니다.",
             showConfirmButton: false,
             timer: 1500,
           });
@@ -101,7 +101,7 @@ export default function EditPlanner({
         onError: () => {
           Swal.fire({
             icon: "error",
-            title: "플래너 수정에 실패했습니다.",
+            title: "플랜 수정에 실패했습니다.",
             showConfirmButton: false,
             timer: 1500,
           });
@@ -119,6 +119,15 @@ export default function EditPlanner({
   };
 
   const handleDeleteLocation = (id: number) => {
+    if (plannerData.location.length === 1) {
+      Swal.fire({
+        icon: "error",
+        text: "일정은 최소 1개 이상이어야 합니다.",
+        showConfirmButton: false,
+        timer: 1000,
+      });
+      return;
+    }
     deleteLocation(id, {
       onSuccess: () => {
         queryClient.invalidateQueries({
@@ -133,11 +142,11 @@ export default function EditPlanner({
     setLocationId(id);
     setModalState(3);
   };
-
+  console.log(plannerData?.location);
   return (
-    <div>
+    <div className="pb-5">
       <h1 className="flex items-center gap-1 text-xl font-semibold">
-        플래너/장소 수정
+        플랜/일정 수정
         <CiEdit className="text-2xl font-semibold" />
       </h1>
       <form
@@ -186,24 +195,24 @@ export default function EditPlanner({
           type="submit"
           isLoading={editPlannerIsPending}
         >
-          플래너 수정하기
+          플랜 수정하기
         </Button>
       </form>
-      {plannerData?.locationCount === 0 && (
+      {plannerData?.location?.length === 0 && (
         <div>
           <p className="text-gray-500 text-sm m-10 text-center">
-            해당 플래너에 일정이 아직 등록되지 않았습니다.
+            해당 플랜에 일정이 아직 등록되지 않았습니다.
           </p>
         </div>
       )}
       <div className="flex justify-between items-center mt-10">
-        {plannerData?.locationCount !== 0 && (
+        {plannerData?.location?.length !== 0 && (
           <h1 className="text-xl font-semibold text-gray-800">
-            현재 플래너에 저장된 장소{" "}
+            현재 플랜에 저장된 일정 {plannerData?.location.length}개{" "}
             <span className="text-sm text-gray-400 font-medium">수정/삭제</span>
           </h1>
         )}
-        {plannerData?.locationCount !== 0 && (
+        {plannerData?.location?.length !== 0 && (
           <button onClick={() => setCalendarView((prev) => !prev)}>
             {calendarView ? (
               <FaAngleDoubleUp className="text-2xl text-gray-500 hover:text-gray-900" />
@@ -218,7 +227,7 @@ export default function EditPlanner({
           <span className="text-blue-500 font-semibold">
             {plannerData?.locationCount}
           </span>
-          개의 장소가 있습니다.
+          개의 일정이 있습니다.
         </p>
       )}
       {calendarView && (
@@ -267,14 +276,14 @@ export default function EditPlanner({
                       </p>
                     </div>
                     <div className="flex justify-end gap-2">
-                      {/* 장소 수정 */}
+                      {/* 일정 수정 */}
                       <Button
                         size="sm"
                         onClick={() => handleEditLocation(location.id)}
                       >
                         <CiEdit className="text-xl" />
                       </Button>
-                      {/* 장소 삭제 */}
+                      {/* 일정 삭제 */}
                       <Button
                         size="sm"
                         onClick={() => handleDeleteLocation(location.id)}

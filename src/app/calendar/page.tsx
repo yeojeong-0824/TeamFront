@@ -11,7 +11,6 @@ import ModalCalendar from "../components/Modal/Modal";
 import LoadingSpinner from "../components/Loading";
 import getPlanner from "@/api/calender/getPlanner";
 import { useQueries } from "@tanstack/react-query";
-import { Stalemate } from "next/font/google";
 
 interface Planner {
   id: number;
@@ -19,6 +18,7 @@ interface Planner {
   personnel: number;
   title: string;
   subTitle: string;
+  location: Location[];
 }
 
 interface Location {
@@ -97,7 +97,7 @@ export default function Calender() {
   }, [showModal]);
 
   const ChangeDate = () => {
-    return calValue.year + "년 " + calValue.month + "월 " + "플래너 목록";
+    return calValue.year + "년 " + calValue.month + "월 " + "플랜 목록";
   };
 
   const routePostCalender = () => router.push("/post-calender");
@@ -115,7 +115,7 @@ export default function Calender() {
             편리하게 여행 일정을 관리해보세요.
           </p>
           <p className="text-gray-400 text-xs sm:text-medium ml-1">
-            선택한 날짜와 동일한 달에 속하는 플랜을 표시합니다.
+            선택한 날짜가 포함된 달의 플랜을 표시합니다.
           </p>
         </div>
         <h1 className="text-2xl font-semibold text-gray-500 my-3 text-center">
@@ -130,13 +130,13 @@ export default function Calender() {
         />
         <Button color="primary" onClick={routePostCalender}>
           <div className="flex items-center">
-            플래너 추가
+            플랜 추가
             <IoIosAdd className="text-2xl font-semibold" />
           </div>
         </Button>
         <LoadingSpinner isLoading={isAllLoading} size={15} mt={200} />
         <div className="space-y-5">
-          {filteredPlanners.length !== 0 ? (
+          {filteredPlanners.length !== 0 &&
             filteredPlanners.map((planner: Planner) => (
               <div
                 key={planner.id}
@@ -149,23 +149,17 @@ export default function Calender() {
                 <h1 className="text-xl font-semibold">{planner.title}</h1>
                 <h2 className="text-lg">{planner.subTitle}</h2>
                 <p className="text-green-500">{planner.personnel}명</p>
-                {planner.locationCount !== 0 ? (
-                  <p className="text-sm text-gray-500">
-                    <span className="text-blue-500 font-semibold">
-                      {planner.locationCount}
-                    </span>
-                    개의 장소가 있습니다.
-                  </p>
-                ) : (
-                  <p className="text-center font-semibold text-lg text-gray-500 mt-10">
-                    등록된 장소가 없습니다.
-                  </p>
-                )}
+                <p className="text-sm text-gray-500">
+                  <span className="text-blue-500 font-semibold">
+                    {filteredPlanners.length}
+                  </span>
+                  개의 일정이 있습니다.
+                </p>
               </div>
-            ))
-          ) : (
+            ))}
+          {!isAllLoading && filteredPlanners.length === 0 && (
             <p className="text-center font-semibold text-lg text-gray-500 mt-10">
-              선택한 달에 등록된 장소가 없습니다.
+              선택한 달에 등록된 일정이 없습니다.
             </p>
           )}
         </div>

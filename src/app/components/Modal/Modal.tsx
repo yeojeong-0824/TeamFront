@@ -86,7 +86,7 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
       onClick={() => setShowModal(false)}
     >
       <div
-        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 rounded-lg w-[370px] sm:w-[700px] max-h-[625px] overflow-y-auto"
+        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 pb-0 rounded-lg w-[370px] sm:w-[700px] max-h-[625px] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {modalState === 0 && (
@@ -150,12 +150,12 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
             {data?.location?.length === 0 && (
               <div>
                 <p className="text-gray-500 text-sm m-10 text-center">
-                  해당 플래너에 일정이 아직 등록되지 않았습니다.
+                  해당 플랜에 일정이 아직 등록되지 않았습니다.
                 </p>
               </div>
             )}
             {!isLoading && (
-              <div className="flex justify-end gap-2 mt-3">
+              <div className="flex justify-end gap-2 mt-3 sticky bottom-0 p-3">
                 <Button color="success" size="sm" onClick={handlePlannerPost}>
                   게시글 작성
                 </Button>
@@ -165,7 +165,7 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
                   onClick={() => setModalState(2)}
                 >
                   <div className="flex items-center">
-                    장소 추가
+                    일정 추가
                     <IoIosAdd className="text-xl font-semibold" />
                   </div>
                 </Button>
@@ -175,7 +175,7 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
                   onClick={() => setModalState(1)}
                 >
                   <div className="flex items-center">
-                    플래너/장소 수정
+                    플랜/일정 수정
                     <CiEdit className="text-lg font-semibold" />
                   </div>
                 </Button>
@@ -186,7 +186,7 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
                   size="sm"
                 >
                   <div className="flex items-center gap-1">
-                    플래너 삭제
+                    플랜 삭제
                     <FiMinus className="text-[16px] font-semibold" />
                   </div>
                 </Button>

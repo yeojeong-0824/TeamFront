@@ -85,7 +85,7 @@ const ControlBarMain = ({
   };
 
   const handleLoginCheck = (url: string) => {
-    queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
+    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
     const updatedLoginStatus = queryClient.getQueryData(["accessCheck"]);
     if (!updatedLoginStatus) {
       Swal.fire({

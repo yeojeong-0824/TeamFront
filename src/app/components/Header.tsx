@@ -5,34 +5,31 @@ import Swal from "sweetalert2";
 import Image from "next/image";
 import useAccessCheck from "@/hooks/TokenHooks/useAccessCheck";
 import { useQueryClient } from "@tanstack/react-query";
-import useRefreshReissue from "@/hooks/TokenHooks/useRefreshReissue";
-import { useEffect } from "react";
 import useRemoveRefreshToken from "@/hooks/TokenHooks/useRemoveRefeshToken";
+import { useEffect } from "react";
 
 const Header = (): JSX.Element => {
-  const { data: accessCheckData, error } = useAccessCheck();
+  const { data: accessCheckData, isError, isLoading } = useAccessCheck();
   const queryClient = useQueryClient();
-  const { mutate: refreshReissue } = useRefreshReissue();
   const { mutate: removeRefreshToken } = useRemoveRefreshToken();
-  const isTokenExpired = (error as any)?.response?.status;
 
   useEffect(() => {
-    if (isTokenExpired === 403) {
-      localStorage.removeItem("accessToken");
-      refreshReissue(undefined, {
-        onSuccess: (data) => {
-          const tokenWithBearer = data.headers["authorization"];
-          localStorage.setItem("accessToken", tokenWithBearer);
-          queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
-        },
-        onError: (error: any) => {
-          localStorage.removeItem("accessToken");
-        },
+    if (isLoading) return;
+    if (isError) {
+      Swal.fire({
+        icon: "error",
+        title: "로그인 정보 오류",
+        text: "다시 로그인해주세요.",
       });
-    } else if (isTokenExpired === 400 || isTokenExpired === 500) {
-      localStorage.removeItem("accessToken");
+      return;
     }
-  }, [isTokenExpired]);
+    const tokenWithBearer = accessCheckData?.headers?.["authorization"];
+    if (tokenWithBearer) {
+      localStorage.removeItem("accessToken");
+      localStorage.setItem("accessToken", tokenWithBearer);
+      queryClient.refetchQueries({ queryKey: ["accessCheck"] });
+    }
+  }, [accessCheckData, isError, isLoading]);
 
   const handleLogout = () => {
     removeRefreshToken(undefined, {

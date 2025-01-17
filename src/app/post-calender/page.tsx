@@ -1,16 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PostCalender from "../components/PostCalender";
 import PostLocation from "../components/PostLocation";
 import { FaChevronLeft } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import useConfirmPageLeave from "@/util/useConfirmPageLeave";
+import { useQueryClient } from "@tanstack/react-query";
+import Swal from "sweetalert2";
 
 export default function PostCalenderPage() {
+  const queryClient = useQueryClient();
   const [step, setStep] = useState(0);
   const [plannerId, setPlannerId] = useState("");
   const router = useRouter();
+  const cacheData = queryClient.getQueryData(["accessCheck"]);
+
+  useEffect(() => {
+    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
+    if (!cacheData) {
+      Swal.fire({
+        icon: "error",
+        title: "로그인 필요",
+        text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
+      });
+    }
+  }, []);
 
   useConfirmPageLeave();
 

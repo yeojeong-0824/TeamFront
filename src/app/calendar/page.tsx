@@ -11,6 +11,8 @@ import ModalCalendar from "../components/Modal/Modal";
 import LoadingSpinner from "../components/Loading";
 import getPlanner from "@/api/calender/getPlanner";
 import { useQueries } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import Swal from "sweetalert2";
 
 interface Planner {
   id: number;
@@ -47,6 +49,7 @@ interface DetailedPlanner extends Planner {
 }
 
 export default function Calender() {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const [calValue, setCalValue] = useState<DateValue>(
     today(getLocalTimeZone())
@@ -54,6 +57,19 @@ export default function Calender() {
   const { data: planners, isLoading } = useGetUserPlanners();
   const [modalData, setModalData] = useState<Planner>();
   const [showModal, setShowModal] = useState(false);
+  const cacheData = queryClient.getQueryData(["accessCheck"]);
+
+  useEffect(() => {
+    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
+    if (!cacheData) {
+      Swal.fire({
+        icon: "error",
+        title: "로그인 필요",
+        text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
+      });
+      router.push(`/login-ui`);
+    }
+  });
 
   const plannerQueries = useQueries({
     queries: (planners?.content ?? []).map((planner: Planner) => ({
@@ -102,6 +118,20 @@ export default function Calender() {
 
   const routePostCalender = () => router.push("/post-calender");
 
+  const handleShowModal = (planner: Planner) => {
+    if (!cacheData) {
+      Swal.fire({
+        icon: "error",
+        title: "로그인 필요",
+        text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
+      });
+      router.push(`/login-ui`);
+      return;
+    }
+    setModalData(planner);
+    setShowModal(true);
+  };
+
   return (
     <div className="min-h-[1300px] sm:my-12 p-1 sm:p-2">
       <div className="flex flex-col justify-between max-w-[800px] gap-3 mx-auto mt-24 p-3 text-gray-900">
@@ -141,10 +171,7 @@ export default function Calender() {
               <div
                 key={planner.id}
                 className="p-3 border-2 shadow-sm rounded-lg cursor-pointer hover:bg-gray-100"
-                onClick={() => {
-                  setModalData(planner);
-                  setShowModal(true);
-                }}
+                onClick={() => handleShowModal(planner)}
               >
                 <h1 className="text-xl font-semibold">{planner.title}</h1>
                 <h2 className="text-lg">{planner.subTitle}</h2>

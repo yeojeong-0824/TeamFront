@@ -21,6 +21,7 @@ import formatStartTime from "@/util/formatStartTime";
 import { FaCircleArrowDown } from "react-icons/fa6";
 import PostModal from "../components/PostModal";
 import useConfirmPageLeave from "@/util/useConfirmPageLeave";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface LocationInfo {
   address: string;
@@ -36,6 +37,7 @@ interface LocationInfo {
 }
 
 const Write = () => {
+  const queryClient = useQueryClient();
   const { register, handleSubmit } = useForm<WriteUpdateType>();
   const writeMutation = useWritePost();
   const [location, setLocation] = useState<string>("");
@@ -50,6 +52,7 @@ const Write = () => {
   const { data, isLoading } = useGetPlanner(plannerId, !!plannerId);
   const [calendarView, setCalendarView] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const cacheData = queryClient.getQueryData(["accessCheck"]);
 
   useConfirmPageLeave();
 
@@ -65,6 +68,16 @@ const Write = () => {
   }, [showModal]);
 
   useEffect(() => {
+    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
+    if (!cacheData) {
+      Swal.fire({
+        icon: "error",
+        title: "로그인 필요",
+        text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
+      });
+      router.push(`/login-ui`);
+      return;
+    }
     if (localStoragePlannerId) {
       setPlannerId(localStoragePlannerId);
     }
@@ -89,6 +102,15 @@ const Write = () => {
       });
       return;
     }
+    if (!cacheData) {
+      Swal.fire({
+        icon: "error",
+        title: "로그인 필요",
+        text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
+      });
+      router.push(`/login-ui`);
+      return;
+    }
     const locationData = {
       title: title.title,
       body: html,
@@ -102,6 +124,19 @@ const Write = () => {
   };
 
   const handleCancel = () => router.back();
+
+  const handleShowModal = () => {
+    if (!cacheData) {
+      Swal.fire({
+        icon: "error",
+        title: "로그인 필요",
+        text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
+      });
+      router.push(`/login-ui`);
+      return;
+    }
+    setShowModal(true);
+  };
 
   const btnStyle =
     "p-1 px-3 sm:p-2 sm:px-6 border text-gray-900 hover:bg-gray-100 rounded-lg text-sm sm:text-base";
@@ -253,7 +288,7 @@ const Write = () => {
             <button
               className={`${btnStyle} bg-green-500 text-white hover:bg-green-600`}
               type="button"
-              onClick={() => setShowModal(true)}
+              onClick={handleShowModal}
             >
               플랜 목록에서 선택
             </button>

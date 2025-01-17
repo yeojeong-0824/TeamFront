@@ -53,7 +53,6 @@ const Post = ({ params }: { params: ParamsId }) => {
   );
   const [calendarView, setCalendarView] = useState<boolean>(false);
 
-  queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
   const cacheData = queryClient.getQueryData(["accessCheck"]);
   const { data: userInfoData, isLoading: userInfoIsLoading } = useGetUserInfo();
   const userCheck = data?.member?.nickname === userInfoData?.nickname;
@@ -70,6 +69,16 @@ const Post = ({ params }: { params: ParamsId }) => {
   };
 
   useEffect(() => {
+    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
+    if (!cacheData) {
+      Swal.fire({
+        icon: "error",
+        title: "로그인 필요",
+        text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
+      });
+      router.push(`/login-ui`);
+    }
+
     queryClient.invalidateQueries({
       queryKey: ["post", id],
     });
@@ -84,6 +93,7 @@ const Post = ({ params }: { params: ParamsId }) => {
   const handleThreeDots = () => setPostOptionVisible((prev) => !prev);
 
   const handleUpdate = () => {
+    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
     if (!cacheData) {
       Swal.fire({
         icon: "error",
@@ -97,6 +107,7 @@ const Post = ({ params }: { params: ParamsId }) => {
   };
 
   const handlePostDelete = () => {
+    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
     if (!cacheData) {
       Swal.fire({
         icon: "error",
@@ -118,7 +129,7 @@ const Post = ({ params }: { params: ParamsId }) => {
     });
     setPostOptionVisible(false);
   };
-  console.log(data);
+
   return (
     <div className="min-h-[1300px] sm:my-12 p-1 sm:p-2">
       <LoadingSpinner size={15} mt={400} isLoading={isLoading} />

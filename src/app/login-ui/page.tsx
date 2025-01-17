@@ -9,20 +9,20 @@ import { Input, Button } from "@nextui-org/react";
 import { useQueryClient } from "@tanstack/react-query";
 
 export default function LoginUi() {
+  const queryClient = useQueryClient();
   const { register, handleSubmit } = useForm<{
     username: string;
     password: string;
   }>();
   const router = useRouter();
   const { mutate: login, isPending: loginPending } = useLogin();
-  const queryClient = useQueryClient();
 
   const onSubmit = (data: { username: string; password: string }) => {
     login(data, {
       onSuccess: (res) => {
         const tokenWithBearer = res.headers["authorization"];
         localStorage.setItem("accessToken", tokenWithBearer);
-        queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
+        queryClient.refetchQueries({ queryKey: ["accessCheck"] });
         if (localStorage.getItem("signup")) {
           localStorage.removeItem("signup");
           router.push("/");

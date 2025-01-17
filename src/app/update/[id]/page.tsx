@@ -21,6 +21,7 @@ import formatTravelTime from "@/util/formatTravelTime";
 import formatStartTime from "@/util/formatStartTime";
 import useGetPlanner from "@/hooks/calender/useGetPlanner";
 import useConfirmPageLeave from "@/util/useConfirmPageLeave";
+import { useQueryClient } from "@tanstack/react-query";
 
 type SetLocalData = {
   setLocation: React.Dispatch<React.SetStateAction<string>>;
@@ -42,6 +43,7 @@ type LocationInfo = {
 };
 
 const Update = ({ params }: { params: ParamsId }) => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const { id } = params;
   const { data, isLoading, isError, error } = usePost(id);
@@ -57,6 +59,7 @@ const Update = ({ params }: { params: ParamsId }) => {
   const [plannerId, setPlannerId] = useState<string>("");
   const { data: plannerData } = useGetPlanner(plannerId, !!plannerId);
   const [calendarView, setCalendarView] = useState<boolean>(false);
+  const cacheData = queryClient.getQueryData(["accessCheck"]);
 
   useConfirmPageLeave();
 
@@ -71,6 +74,18 @@ const Update = ({ params }: { params: ParamsId }) => {
       body: "",
     },
   });
+
+  useEffect(() => {
+    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
+    if (!cacheData) {
+      Swal.fire({
+        icon: "error",
+        title: "로그인 필요",
+        text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
+      });
+      router.push(`/login-ui`);
+    }
+  }, []);
 
   useEffect(() => {
     if (data?.planner) {
@@ -111,6 +126,14 @@ const Update = ({ params }: { params: ParamsId }) => {
       });
       return;
     }
+    if (!cacheData) {
+      Swal.fire({
+        icon: "error",
+        title: "로그인 필요",
+        text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
+      });
+      router.push(`/login-ui`);
+    }
     const postData = {
       title: formData.title,
       body: html,
@@ -120,7 +143,6 @@ const Update = ({ params }: { params: ParamsId }) => {
       longitude,
       plannerId: Number(plannerId),
     };
-    console.log(postData);
     updateMutation.mutate(postData);
   };
 

@@ -7,6 +7,7 @@ export const accessCheck = async () => {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
+      withCredentials: true,
     }
   );
   return response;

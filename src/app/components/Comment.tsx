@@ -48,7 +48,6 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const queryClient = useQueryClient();
 
-  queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
   const cacheData = queryClient.getQueryData(["accessCheck"]);
 
   useEffect(() => {
@@ -78,7 +77,7 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
       setValue("comment", "");
       return;
     }
-    queryClient.invalidateQueries({ queryKey: ["accessCheck"] });
+    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
     const cacheData = queryClient.getQueryData(["accessCheck"]);
     if (!cacheData) {
       Swal.fire({

@@ -10,7 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 export default function DeleteUserCall() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [checkKey, setCheckKey] = useState("");
+  const [checkKey, setCheckKey] = useState(false);
 
   const { mutate, isPending } = useDeleteUser();
 

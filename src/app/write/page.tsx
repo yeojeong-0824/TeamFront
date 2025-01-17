@@ -20,6 +20,7 @@ import formatTravelTime from "@/util/formatTravelTime";
 import formatStartTime from "@/util/formatStartTime";
 import { FaCircleArrowDown } from "react-icons/fa6";
 import PostModal from "../components/PostModal";
+import useConfirmPageLeave from "@/util/useConfirmPageLeave";
 
 interface LocationInfo {
   address: string;
@@ -49,6 +50,8 @@ const Write = () => {
   const { data, isLoading } = useGetPlanner(plannerId, !!plannerId);
   const [calendarView, setCalendarView] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  useConfirmPageLeave();
 
   useEffect(() => {
     // 모달 켜졌을 때 배경 스크롤 막기
@@ -151,13 +154,13 @@ const Write = () => {
                 <h2 className="text-lg text-gray-500">{data?.subTitle}</h2>
                 <p className="text-green-500">{data?.personnel}명</p>
               </div>
-              {data?.locationCount !== 0 ? (
+              {data?.location.length !== 0 ? (
                 <div className="flex justify-between">
                   <p className="text-sm text-gray-500">
                     <span className="text-blue-500 font-semibold">
-                      {data?.locationCount}
+                      {data?.location?.length}
                     </span>
-                    개의 장소가 있습니다.
+                    개의 일정이 있습니다.
                   </p>
                   <button
                     onClick={() => setCalendarView((prev) => !prev)}
@@ -165,12 +168,12 @@ const Write = () => {
                   >
                     {calendarView ? (
                       <div className="flex items-center gap-1 text-gray-500 hover:text-gray-900">
-                        <span className="text-sm">장소 접기</span>
+                        <span className="text-sm">일정 접기</span>
                         <FaAngleDoubleUp className="text-lg" />
                       </div>
                     ) : (
                       <div className="flex items-center gap-1 text-gray-500 hover:text-gray-900">
-                        <span className="text-sm">장소 펼쳐보기</span>
+                        <span className="text-sm">일정 펼쳐보기</span>
                         <FaAngleDoubleDown className="text-lg" />
                       </div>
                     )}
@@ -179,7 +182,7 @@ const Write = () => {
               ) : (
                 <div className="flex justify-end">
                   <p className="text-sm text-gray-500">
-                    등록된 장소가 없습니다.
+                    등록된 일정이 없습니다.
                   </p>
                 </div>
               )}
@@ -252,7 +255,7 @@ const Write = () => {
               type="button"
               onClick={() => setShowModal(true)}
             >
-              플래너 목록에서 선택
+              플랜 목록에서 선택
             </button>
           </div>
           {showModal && (

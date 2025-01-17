@@ -20,6 +20,7 @@ import { FaCircleArrowDown } from "react-icons/fa6";
 import formatTravelTime from "@/util/formatTravelTime";
 import formatStartTime from "@/util/formatStartTime";
 import useGetPlanner from "@/hooks/calender/useGetPlanner";
+import useConfirmPageLeave from "@/util/useConfirmPageLeave";
 
 type SetLocalData = {
   setLocation: React.Dispatch<React.SetStateAction<string>>;
@@ -56,6 +57,8 @@ const Update = ({ params }: { params: ParamsId }) => {
   const [plannerId, setPlannerId] = useState<string>("");
   const { data: plannerData } = useGetPlanner(plannerId, !!plannerId);
   const [calendarView, setCalendarView] = useState<boolean>(false);
+
+  useConfirmPageLeave();
 
   const {
     register,
@@ -181,7 +184,7 @@ const Update = ({ params }: { params: ParamsId }) => {
                     <span className="text-blue-500 font-semibold">
                       {plannerData?.locationCount}
                     </span>
-                    개의 장소가 있습니다.
+                    개의 일정이 있습니다.
                   </p>
                   <button
                     onClick={() => setCalendarView((prev) => !prev)}
@@ -189,12 +192,12 @@ const Update = ({ params }: { params: ParamsId }) => {
                   >
                     {calendarView ? (
                       <div className="flex items-center gap-1 text-gray-500 hover:text-gray-900">
-                        <span className="text-sm">장소 접기</span>
+                        <span className="text-sm">일정 접기</span>
                         <FaAngleDoubleUp className="text-lg" />
                       </div>
                     ) : (
                       <div className="flex items-center gap-1 text-gray-500 hover:text-gray-900">
-                        <span className="text-sm">장소 펼쳐보기</span>
+                        <span className="text-sm">일정 펼쳐보기</span>
                         <FaAngleDoubleDown className="text-lg" />
                       </div>
                     )}
@@ -203,7 +206,7 @@ const Update = ({ params }: { params: ParamsId }) => {
               ) : (
                 <div className="flex justify-end">
                   <p className="text-sm text-gray-500">
-                    등록된 장소가 없습니다.
+                    등록된 일정이 없습니다.
                   </p>
                 </div>
               )}
@@ -276,7 +279,7 @@ const Update = ({ params }: { params: ParamsId }) => {
               type="button"
               onClick={() => setShowModal(true)}
             >
-              플래너 목록에서 선택
+              플랜 목록에서 선택
             </button>
           </div>
           {showModal && (

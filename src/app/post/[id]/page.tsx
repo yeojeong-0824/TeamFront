@@ -199,7 +199,7 @@ const Post = ({ params }: { params: ParamsId }) => {
               data?.planner ? "block" : "hidden"
             }`}
           >
-            등록된 플래너
+            등록된 플랜
           </h2>
           {!plannerIsLoading ? (
             <div className={`border-b p-2 ${plannerData ? "block" : "hidden"}`}>
@@ -219,7 +219,7 @@ const Post = ({ params }: { params: ParamsId }) => {
                     <span className="text-blue-500 font-semibold">
                       {plannerData?.locationCount}
                     </span>
-                    개의 장소가 있습니다.
+                    개의 일정이 있습니다.
                   </p>
                   <button
                     onClick={() => setCalendarView((prev) => !prev)}
@@ -227,12 +227,12 @@ const Post = ({ params }: { params: ParamsId }) => {
                   >
                     {calendarView ? (
                       <div className="flex items-center gap-1 text-gray-500 hover:text-gray-900">
-                        <span className="text-sm">장소 접기</span>
+                        <span className="text-sm">일정 접기</span>
                         <FaAngleDoubleUp className="text-lg" />
                       </div>
                     ) : (
                       <div className="flex items-center gap-1 text-gray-500 hover:text-gray-900">
-                        <span className="text-sm">장소 펼쳐보기</span>
+                        <span className="text-sm">일정 펼쳐보기</span>
                         <FaAngleDoubleDown className="text-lg" />
                       </div>
                     )}
@@ -241,7 +241,7 @@ const Post = ({ params }: { params: ParamsId }) => {
               ) : (
                 <div className="flex justify-end">
                   <p className="text-sm text-gray-500">
-                    등록된 장소가 없습니다.
+                    등록된 일정이 없습니다.
                   </p>
                 </div>
               )}

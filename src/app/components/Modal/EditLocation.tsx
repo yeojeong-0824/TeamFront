@@ -70,7 +70,7 @@ export default function AditLocation({
     const TMinutes = travleTime % 60;
     return { THours, TMinutes };
   };
-  console.log(hour, minute);
+
   useEffect(() => {
     if (locationData) {
       setValue("transportationNote", locationData.transportationNote);
@@ -197,7 +197,7 @@ export default function AditLocation({
   return (
     <div>
       <h1 className="flex items-center gap-1 text-2xl font-semibold mb-3">
-        장소 수정
+        일정 수정
       </h1>
       <div className="flex flex-col gap-2">
         <h1 className="text-xl font-semibold text-gray-800">{data?.title}</h1>
@@ -283,7 +283,7 @@ export default function AditLocation({
             className="w-full"
             isLoading={editLocationIsPending}
           >
-            장소 추가하기
+            일정 추가하기
           </Button>
         </form>
       )}

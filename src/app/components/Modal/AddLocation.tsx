@@ -153,7 +153,7 @@ export default function AddLocation({
   return (
     <div>
       <h1 className="flex items-center gap-1 text-2xl font-semibold mb-3">
-        장소 작성
+        일정 작성하기
       </h1>
       <div className="flex flex-col gap-2">
         <h1 className="text-xl font-semibold text-gray-800">{data?.title}</h1>
@@ -244,7 +244,7 @@ export default function AddLocation({
           className="w-full"
           isLoading={isPending}
         >
-          장소 추가하기
+          일정 추가하기
         </Button>
       </form>
     </div>

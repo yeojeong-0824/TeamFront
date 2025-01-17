@@ -12,30 +12,22 @@ import { UpdateUserPassword } from "@/types/userTypes/updateInfo";
 
 export default function UpdateMyPassword() {
   const router = useRouter();
-  const [checkKey, setCheckKey] = useState("");
-  const [checkPassword, setCheckPassword] = useState("");
-  const [password, setPassword] = useState("");
+  const [checkKey, setCheckKey] = useState(false);
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    getValues,
-    trigger,
+    formState: { errors }
   } = useForm<UpdateUserPassword>({
     mode: "onChange", // 입력 값이 변경될 때마다 유효성 검사
     reValidateMode: "onChange", // 입력 값이 변경될 때마다 유효성 검사
   });
 
-  const updateData: UpdateUserPassword = {
-    checkPassword: checkPassword,
-    password: password,
-  };
-
   const { mutate, isPending } = useUpdateUserPassword();
 
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = (updateData: UpdateUserPassword) => {
+    if(!updateData) return;
+
     mutate(updateData, {
       onSuccess: () => {
         router.back();
@@ -46,23 +38,21 @@ export default function UpdateMyPassword() {
   const errorStyle = "text-sm text-red-500 font-semibold";
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-1">
-      <div>
-        <CheckPasswordModal setCheckKey={setCheckKey} />
-      </div>
+      {!checkKey && <CheckPasswordModal setCheckKey={setCheckKey} />}
       <div className="p-10 mt-10 sm:p-20 bg-white text-center shadow-md rounded-lg w-1/4">
         <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
           새로운 비밀번호
         </h3>
-        <form onSubmit={submit} className="flex flex-col gap-5 mt-5">
+        <form
+          onSubmit={ handleSubmit(onSubmit) }
+          className="flex flex-col gap-5 mt-5"
+        >
           {/* 비밀번호 입력&에러메세지 */}
           <Input
             type="password"
             variant="underlined"
             label="비밀번호"
-            {...register("password", {
-              ...passwordV,
-              onChange: (e) => setPassword(e.target.value),
-            })}
+            {...register("password")}
           />
           <ErrorMessage
             errors={errors}
@@ -74,10 +64,7 @@ export default function UpdateMyPassword() {
             type="password"
             variant="underlined"
             label="비밀번호 확인"
-            {...register("checkPassword", {
-              ...passwordConfirmV,
-              onChange: (e) => setCheckPassword(e.target.value),
-            })}
+            {...register("checkPassword")}
           />
           <ErrorMessage
             errors={errors}

@@ -10,7 +10,7 @@ import { FiArrowRight } from "react-icons/fi";
 const CheckPasswordModal = ({
   setCheckKey,
 }: {
-  setCheckKey: (data: string) => void;
+  setCheckKey: (data: boolean) => void;
 }) => {
   const router = useRouter();
   const { mutate, isPending } = useCheckPassword();
@@ -29,7 +29,7 @@ const CheckPasswordModal = ({
 
     mutate(password, {
       onSuccess: () => {
-        setCheckKey("AUTHED");
+        setCheckKey(true);
       },
     });
   };

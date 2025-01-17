@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 export default function UpdateMyInfo() {
   const router = useRouter();
 
-  const [checkKey, setCheckKey] = useState("");
+  const [checkKey, setCheckKey] = useState(false);
   const [changeNickname, setChangeNickname] = useState(false);
 
   const { data: userInfo, isLoading: getUserInfoIsLoading } = useGetUserInfo();
@@ -79,12 +79,12 @@ export default function UpdateMyInfo() {
       {getUserInfoIsLoading ? (
         <LoadingSpinner size={15} isLoading={getUserInfoIsLoading} />
       ) : (
-        <div className="max-w-[800px] p-10 mt-10 sm:p-20 bg-white text-center shadow-md rounded-lg">
+        <div className="p-10 mt-10 sm:p-20 bg-white text-center shadow-md rounded-lg w-1/4">
           <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
             내 정보 수정
           </h3>
           <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={ handleSubmit(onSubmit) }
             className="flex flex-col gap-5 mt-5"
           >
             {/* email */}

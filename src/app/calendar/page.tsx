@@ -69,7 +69,7 @@ export default function Calender() {
       });
       router.push(`/login-ui`);
     }
-  });
+  }, [cacheData]);
 
   const plannerQueries = useQueries({
     queries: (planners?.content ?? []).map((planner: Planner) => ({

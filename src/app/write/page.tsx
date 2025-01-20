@@ -118,7 +118,7 @@ const Write = () => {
       formattedAddress,
       latitude,
       longitude,
-      plannerId: data?.id,
+      plannerId: data?.id || 0,
     };
     writeMutation.mutate(locationData);
   };

@@ -30,14 +30,14 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
   const [commentOptionVisible, setCommentOptionVisible] = useState<
     number | null
   >(null); // 단일 ID로 변경
-  const { register, handleSubmit, setValue } = useForm<FormData>();
+  const { register, handleSubmit, reset } = useForm<FormData>();
   const [updateToggle, setUpdateToggle] = useState<{ [key: number]: boolean }>(
     {}
   );
   const [updateComment, setUpdateComment] = useState<{ [key: number]: string }>(
     {}
   );
-  const { data, isLoading, isError, error, isSuccess } = useGetComment(id);
+  const { data } = useGetComment(id);
   const { mutate: postCommentMutate, isPending: PostCommentIsPending } =
     usePostComment(id);
   const { mutate: deleteCommentMutate } = useDelteMutation(id);
@@ -74,7 +74,7 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
 
   const handleCommentPost = (formData: FormData) => {
     if (!formData.comment.trim()) {
-      setValue("comment", "");
+      reset();
       return;
     }
     queryClient.refetchQueries({ queryKey: ["accessCheck"] });
@@ -87,9 +87,15 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
       });
       return;
     }
-    postCommentMutate({ id, score, comment: formData.comment });
-    setValue("comment", "");
-    setScore(0);
+    postCommentMutate(
+      { id, score, comment: formData.comment },
+      {
+        onSuccess: () => {
+          reset();
+          setScore(0);
+        },
+      }
+    );
   };
 
   const toggleCommentOptions = (commentId: number) => {
@@ -180,7 +186,7 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
 
   return (
     <div className="flex flex-col max-w-[800px] mx-auto p-3 text-gray-900">
-      {data?.content.length ? (
+      {data?.content?.length ? (
         <h2 className="text-sm sm:text-medium mb-10">
           {data?.content.length}개의 댓글
         </h2>
@@ -212,7 +218,7 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
       </form>
 
       <div>
-        {data?.content.map((comment: CommentResponse) => (
+        {data?.content?.map((comment: CommentResponse) => (
           <div
             className="flex flex-col gap-1 p-5 border-b text-gray-900"
             key={comment.id}

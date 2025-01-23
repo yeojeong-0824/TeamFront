@@ -69,16 +69,6 @@ const Post = ({ params }: { params: ParamsId }) => {
   };
 
   useEffect(() => {
-    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
-    if (!cacheData) {
-      Swal.fire({
-        icon: "error",
-        title: "로그인 필요",
-        text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
-      });
-      router.push(`/login-ui`);
-    }
-
     queryClient.invalidateQueries({
       queryKey: ["post", id],
     });

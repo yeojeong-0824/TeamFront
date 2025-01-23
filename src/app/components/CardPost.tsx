@@ -30,7 +30,7 @@ const CardPost = ({ post }: CardPostProps): JSX.Element => {
         <div className="flex items-center gap-3 font-semibold text-xs sm:text-sm">
           <p className="flex items-center">
             <FaRegCommentDots className="mr-1 text-md" />
-            {post.commentCount}
+            {!post.commentCount ? 0 : post.commentCount}
           </p>
           <p className="flex items-center text-xs sm:text-sm">
             <IoEyeOutline className="mr-1 text-medium sm:text-lg" />

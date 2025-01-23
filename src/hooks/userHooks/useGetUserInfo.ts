@@ -5,5 +5,6 @@ export default function useGetUserInfo() {
   return useQuery({
     queryKey: ["getUserInfo"],
     queryFn: getUserInfo,
+    retry: false,
   });
 }

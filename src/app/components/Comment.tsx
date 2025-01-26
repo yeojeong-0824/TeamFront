@@ -18,7 +18,7 @@ import { Button } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 
 type CommentProps = {
-  id: number;
+  id: string;
   loginNickname: string;
 };
 
@@ -37,7 +37,13 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
   const [updateComment, setUpdateComment] = useState<{ [key: number]: string }>(
     {}
   );
-  const { data } = useGetComment(id);
+  const [page, setPage] = useState<number>(1);
+  const [commentList, setCommentList] = useState<CommentResponse[]>([]);
+  const {
+    data,
+    isLoading: commentIsLoading,
+    refetch,
+  } = useGetComment(id, page);
   const { mutate: postCommentMutate, isPending: PostCommentIsPending } =
     usePostComment(id);
   const { mutate: deleteCommentMutate } = useDelteMutation(id);
@@ -49,6 +55,26 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
   const queryClient = useQueryClient();
 
   const cacheData = queryClient.getQueryData(["accessCheck"]);
+
+  const loadMoreComments = () => {
+    if (data?.totalPages === page) return;
+    setPage((prev) => prev + 1);
+    refetch();
+  };
+
+  useEffect(() => {
+    if (data) {
+      setCommentList((prev) => {
+        const newComments = data.content.filter(
+          (newComment: CommentResponse) =>
+            !prev.some(
+              (existingComment) => existingComment.id === newComment.id
+            )
+        );
+        return [...prev, ...newComments];
+      });
+    }
+  }, [data]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -111,7 +137,13 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
       });
       return;
     }
-    deleteCommentMutate(commentId);
+    deleteCommentMutate(commentId, {
+      onSuccess: () => {
+        setCommentList((prev) =>
+          prev.filter((comment) => comment.id !== commentId)
+        );
+      },
+    });
   };
 
   const handleUpdateComment = (commentId: number) => {
@@ -161,17 +193,34 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
 
     // 댓글 내용과 별점이 변경되지 않았으면 리턴
     if (
-      originalComment?.comment === updateComment[commentId] &&
+      originalComment?.comment === updateComment[commentId] ||
       finalScore === originalComment?.score
     ) {
       return;
     }
 
-    updateCommentMutate({
-      commentId,
-      score: finalScore,
-      comment: updateComment[commentId],
-    });
+    updateCommentMutate(
+      {
+        commentId,
+        score: finalScore,
+        comment: updateComment[commentId],
+      },
+      {
+        onSuccess: () => {
+          setCommentList((prev) =>
+            prev.map((comment) =>
+              comment.id === commentId
+                ? {
+                    ...comment,
+                    score: finalScore,
+                    comment: updateComment[commentId],
+                  }
+                : comment
+            )
+          );
+        },
+      }
+    );
     setCommentOptionVisible(null);
     setUpdateScore(0);
     setUpdateToggle((prev) => ({
@@ -186,11 +235,11 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
 
   return (
     <div className="flex flex-col max-w-[800px] mx-auto p-3 text-gray-900">
-      {data?.content?.length ? (
+      {data?.totalElements && (
         <h2 className="text-sm sm:text-medium mb-10">
-          {data?.content.length}개의 댓글
+          {data?.totalElements}개의 댓글
         </h2>
-      ) : null}
+      )}
       <form
         className="flex flex-col gap-1 mb-10 p-5 border-2 rounded-md"
         onSubmit={handleSubmit(handleCommentPost)}
@@ -218,7 +267,7 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
       </form>
 
       <div>
-        {data?.content?.map((comment: CommentResponse) => (
+        {commentList?.map((comment: CommentResponse) => (
           <div
             className="flex flex-col gap-1 p-5 border-b text-gray-900"
             key={comment.id}
@@ -332,6 +381,17 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
           </div>
         ))}
       </div>
+      {data?.totalPages !== page && (
+        <Button
+          type="button"
+          className="mt-5 text-white"
+          onClick={loadMoreComments}
+          color="success"
+          isLoading={commentIsLoading}
+        >
+          댓글 더보기
+        </Button>
+      )}
     </div>
   );
 };

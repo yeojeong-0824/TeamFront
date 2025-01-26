@@ -2,7 +2,7 @@ import postComment from "@/api/postComment";
 import { Comment } from "@/types/comment";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 
-const usePostComment = (id: number) => {
+const usePostComment = (id: string) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -10,6 +10,7 @@ const usePostComment = (id: number) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comment", id] });
       queryClient.invalidateQueries({ queryKey: ["post", id] });
+      queryClient.invalidateQueries({ queryKey: ["refetchComments", id] });
     },
   });
 

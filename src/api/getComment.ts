@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const getComment = async (id: number) => {
+const getComment = async (id: string, page: number) => {
   const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}boards/comments/${id}`,
+    `${process.env.NEXT_PUBLIC_API_URL}boards/comments/${id}?page=${page}`,
     {
       headers: {
         "Content-Type": "application/json",

@@ -24,6 +24,7 @@ import fromUnixTime from "@/util/fromUnixTime";
 import formatTravelTime from "@/util/formatTravelTime";
 import { FaCircleArrowDown } from "react-icons/fa6";
 import formatStartTime from "@/util/formatStartTime";
+import useRefetchComments from "@/hooks/useRefetchComments";
 
 interface LocationInfo {
   address: string;
@@ -51,6 +52,7 @@ const Post = ({ params }: { params: ParamsId }) => {
     data?.planner,
     !!data?.planner
   );
+  const { data: refetchComments } = useRefetchComments(id);
   const [calendarView, setCalendarView] = useState<boolean>(false);
 
   const cacheData = queryClient.getQueryData(["accessCheck"]);
@@ -321,9 +323,9 @@ const Post = ({ params }: { params: ParamsId }) => {
             </div>
           )}
           <div>
-            {data?.avgScore ? (
+            {refetchComments?.avgScore ? (
               <p className="text-lg sm:text-xl font-semibold text-yellow-500">
-                해당 게시글의 별점은 {data?.avgScore / 100}점입니다.
+                해당 게시글의 별점은 {refetchComments?.avgScore / 100}점입니다.
               </p>
             ) : null}
           </div>

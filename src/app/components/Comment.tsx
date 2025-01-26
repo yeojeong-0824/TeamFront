@@ -191,9 +191,9 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
         ? originalComment?.score
         : updateScore;
 
-    // 댓글 내용과 별점이 변경되지 않았으면 리턴
+    // 댓글 내용과 별점 둘 다 변경되지 않았다면, return
     if (
-      originalComment?.comment === updateComment[commentId] ||
+      originalComment?.comment === updateComment[commentId] &&
       finalScore === originalComment?.score
     ) {
       return;

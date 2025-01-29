@@ -16,11 +16,7 @@ const Header = (): JSX.Element => {
   useEffect(() => {
     if (isLoading) return;
     if (isError) {
-      Swal.fire({
-        icon: "error",
-        title: "로그인 정보 오류",
-        text: "다시 로그인해주세요.",
-      });
+      localStorage.removeItem("accessToken");
       return;
     }
     const tokenWithBearer = accessCheckData?.headers?.["authorization"];

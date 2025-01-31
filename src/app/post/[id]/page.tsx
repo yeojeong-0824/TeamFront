@@ -52,7 +52,7 @@ const Post = ({ params }: { params: ParamsId }) => {
     data?.planner,
     !!data?.planner
   );
-  const { data: refetchComments } = useRefetchComments(id);
+  const { data: refetchComments } = useRefetchComments(id.toString());
   const [calendarView, setCalendarView] = useState<boolean>(false);
 
   const cacheData = queryClient.getQueryData(["accessCheck"]);
@@ -331,7 +331,9 @@ const Post = ({ params }: { params: ParamsId }) => {
           </div>
         </div>
       )}
-      {isSuccess && <Comment id={id} loginNickname={userInfoData?.nickname} />}
+      {isSuccess && (
+        <Comment id={id.toString()} loginNickname={userInfoData?.nickname} />
+      )}
     </div>
   );
 };

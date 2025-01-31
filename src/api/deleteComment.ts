@@ -5,7 +5,6 @@ const deleteComment = async (commentId: number) => {
     `${process.env.NEXT_PUBLIC_API_URL}boards/comments/authed/${commentId}`,
     {
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
       withCredentials: true,

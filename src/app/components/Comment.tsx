@@ -235,11 +235,11 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
 
   return (
     <div className="flex flex-col max-w-[800px] mx-auto p-3 text-gray-900">
-      {data?.totalElements && (
+      {data?.totalElements ? (
         <h2 className="text-sm sm:text-medium mb-10">
           {data?.totalElements}개의 댓글
         </h2>
-      )}
+      ) : null}
       <form
         className="flex flex-col gap-1 mb-10 p-5 border-2 rounded-md"
         onSubmit={handleSubmit(handleCommentPost)}

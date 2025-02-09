@@ -33,6 +33,7 @@ export default function RootLayout({
         crossOrigin="anonymous"
         strategy="afterInteractive"
       />
+      <script src="/node_modules/quill-image-resize-module/image-resize.min.js"></script>
       <body className={inter.className}>
         <QueryProvider>
           <NextUIProvider>

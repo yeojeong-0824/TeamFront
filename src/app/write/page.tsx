@@ -195,7 +195,7 @@ const Write = () => {
     setImages((prev) => prev.filter((img) => img.url !== url));
     deleteImage(url);
   };
-
+  console.log(images[0]?.url);
   const btnStyle =
     "p-1 px-3 sm:p-2 sm:px-6 border text-gray-900 hover:bg-gray-100 rounded-lg text-sm sm:text-base";
   return (
@@ -383,21 +383,24 @@ const Write = () => {
             {images.length !== 0 || !postImagesIsPending ? (
               <div className="flex flex-col gap-2">
                 {images.map((image) => (
-                  <div
-                    key={image.url}
-                    className="relative w-full min-h-[300px]"
-                  >
+                  <div key={image.url} className="relative">
                     <Image
                       src={
                         `${process.env.NEXT_PUBLIC_API_URL}files/${image.url}` as string
                       }
                       alt="image"
-                      fill
-                      className="object-contain"
+                      width={500}
+                      height={300}
+                      sizes="100vw"
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                      }}
+                      className="rounded-md"
                     />
                     <button
                       type="button"
-                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"
+                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full z-10"
                       onClick={() => handleDeleteImage(image.url)}
                     >
                       <MdDeleteForever className="text-2xl" />

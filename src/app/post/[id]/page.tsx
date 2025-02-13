@@ -195,15 +195,21 @@ const Post = ({ params }: { params: ParamsId }) => {
           <div className="min-h-[600px] border-b-2">
             <h2 className="flex-grow mt-5 py-3 leading-relaxed">
               <div className="flex flex-col gap-3 mb-3">
-                {data?.images?.map((image: string, index: number) => (
-                  <div key={index} className="relative w-full min-h-[300px]">
+                {data?.images?.map((image: string) => (
+                  <div key={image}>
                     <Image
                       src={
                         `${process.env.NEXT_PUBLIC_API_URL}files/${image}` as string
                       }
                       alt="image"
-                      fill
-                      className="object-contain"
+                      width={500}
+                      height={300}
+                      sizes="100vw"
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                      }}
+                      className="rounded-md"
                     />
                   </div>
                 ))}

@@ -90,18 +90,6 @@ const Update = ({ params }: { params: ParamsId }) => {
   });
 
   useEffect(() => {
-    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
-    if (!cacheData) {
-      Swal.fire({
-        icon: "error",
-        title: "로그인 필요",
-        text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
-      });
-      router.push(`/login`);
-    }
-  }, []);
-
-  useEffect(() => {
     if (data?.planner !== 0) {
       setPlannerId(data?.planner);
     }
@@ -137,6 +125,7 @@ const Update = ({ params }: { params: ParamsId }) => {
   };
 
   const onSubmitForm = (formData: WriteUpdateType) => {
+    // submit을 누르면 기존 게시글 이미지 배열과 최종 state images 배열을 비교하여 삭제된 이미지를 찾아 삭제하는 로직 추가하여야 함
     if (
       formData.title === defaultValues?.title &&
       html === defaultValues?.body &&
@@ -158,6 +147,7 @@ const Update = ({ params }: { params: ParamsId }) => {
         text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
       });
       router.push(`/login`);
+      return;
     }
     const postData = {
       title: formData.title,
@@ -213,7 +203,7 @@ const Update = ({ params }: { params: ParamsId }) => {
 
   const handleDeleteImage = (url: string) => {
     setImages((prev) => prev.filter((img) => img.url !== url));
-    deleteImage(url);
+    // deleteImage(url);
   };
 
   const btnStyle =
@@ -408,21 +398,24 @@ const Update = ({ params }: { params: ParamsId }) => {
             {images.length !== 0 || !postImagesIsPending ? (
               <div className="flex flex-col gap-2">
                 {images.map((image) => (
-                  <div
-                    key={image.url}
-                    className="relative w-full min-h-[300px]"
-                  >
+                  <div key={image.url} className="relative">
                     <Image
                       src={
                         `${process.env.NEXT_PUBLIC_API_URL}files/${image.url}` as string
                       }
                       alt="image"
-                      fill
-                      className="object-contain"
+                      width={500}
+                      height={300}
+                      sizes="100vw"
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                      }}
+                      className="rounded-md"
                     />
                     <button
                       type="button"
-                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"
+                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full z-10"
                       onClick={() => handleDeleteImage(image.url)}
                     >
                       <MdDeleteForever className="text-2xl" />

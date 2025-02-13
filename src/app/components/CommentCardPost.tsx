@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { IoEyeOutline } from "react-icons/io5";
@@ -7,8 +7,8 @@ import formatDate from "@/util/formatDate";
 import { CommentData, CommentPostProps } from "@/types/userTypes/comment";
 import { Rate } from "antd";
 
-const CommentCardPost = ({ comment }: CommentPostProps ): JSX.Element => {
-  console.log(comment)
+const CommentCardPost = ({ comment }: CommentPostProps): JSX.Element => {
+  comment;
   const titleCut = () => {
     let title = comment?.board.title;
     const maxLength = 50;
@@ -30,8 +30,7 @@ const CommentCardPost = ({ comment }: CommentPostProps ): JSX.Element => {
         </div>
         <div className="flex items-center gap-3 font-semibold text-xs sm:text-sm">
           <p className="flex items-center">
-            <FaRegCommentDots className="mr-1 text-md" />
-            0
+            <FaRegCommentDots className="mr-1 text-md" />0
           </p>
           <p className="flex items-center text-xs sm:text-sm">
             <IoEyeOutline className="mr-1 text-medium sm:text-lg" />
@@ -39,14 +38,16 @@ const CommentCardPost = ({ comment }: CommentPostProps ): JSX.Element => {
           </p>
         </div>
       </div>
-      <Link href={`/post/${comment?.board?.id}`} className="font-bold text-sm md:text-medium hover:text-blue-500">
+      <Link
+        href={`/post/${comment?.board?.id}`}
+        className="font-bold text-sm md:text-medium hover:text-blue-500"
+      >
         {titleCut()}
       </Link>
       <details className="mt-2">
         <summary>내가 작성한 댓글</summary>
         <div className="bg-gray-50 rounded-md">
-        {
-          comment?.commentList.map((data: CommentData, index: number) => (
+          {comment?.commentList.map((data: CommentData, index: number) => (
             <div key={data?.id} className="mt-2 pt-6 pr-6 pl-6">
               {data?.score ? (
                 <Rate
@@ -62,9 +63,9 @@ const CommentCardPost = ({ comment }: CommentPostProps ): JSX.Element => {
                 <p>{formatDate(data?.time.createTime)}</p>
               </div>
               <p className="mb-4">{data?.comment}</p>
-              <hr/>
+              <hr />
             </div>
-        ))}
+          ))}
         </div>
       </details>
     </div>

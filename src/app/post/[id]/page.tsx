@@ -25,6 +25,8 @@ import formatTravelTime from "@/util/formatTravelTime";
 import { FaCircleArrowDown } from "react-icons/fa6";
 import formatStartTime from "@/util/formatStartTime";
 import useRefetchComments from "@/hooks/useRefetchComments";
+import Image from "next/image";
+import PostBody from "@/app/components/PostBody";
 
 interface LocationInfo {
   address: string;
@@ -37,6 +39,7 @@ interface LocationInfo {
   transportation: string;
   transportationNote: string;
   phoneNumber: string;
+  images: string[];
 }
 
 const Post = ({ params }: { params: ParamsId }) => {
@@ -92,7 +95,7 @@ const Post = ({ params }: { params: ParamsId }) => {
         title: "로그인 필요",
         text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
       });
-      router.push(`/login-ui`);
+      router.push(`/login`);
       return;
     }
     router.push(`/update/${id}`);
@@ -106,7 +109,7 @@ const Post = ({ params }: { params: ParamsId }) => {
         title: "로그인 필요",
         text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
       });
-      router.push(`/login-ui`);
+      router.push(`/login`);
       return;
     }
     deletePostMutate(id);
@@ -191,10 +194,21 @@ const Post = ({ params }: { params: ParamsId }) => {
           </div>
           <div className="min-h-[600px] border-b-2">
             <h2 className="flex-grow mt-5 py-3 leading-relaxed">
-              <div
-                dangerouslySetInnerHTML={{ __html: data?.body }}
-                className="custom-html-content"
-              />
+              <div className="flex flex-col gap-3 mb-3">
+                {data?.images?.map((image: string, index: number) => (
+                  <div key={index} className="relative w-full min-h-[300px]">
+                    <Image
+                      src={
+                        `${process.env.NEXT_PUBLIC_API_URL}files/${image}` as string
+                      }
+                      alt="image"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                ))}
+              </div>
+              <PostBody content={data?.body} />
             </h2>
           </div>
           <h2

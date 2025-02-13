@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export default async function postImages(image: Blob) {
+export default async function postImages(image: File) {
   const formData = new FormData();
   formData.append("image", image);
 

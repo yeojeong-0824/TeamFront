@@ -2,7 +2,7 @@
 
 import useWritePost from "@/hooks/useWritePost";
 import { WriteUpdateType } from "@/types/board";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import PlaceSearch from "../components/PlaceSearch";
 import { useRouter } from "next/navigation";
@@ -22,6 +22,10 @@ import { FaCircleArrowDown } from "react-icons/fa6";
 import PostModal from "../components/PostModal";
 import useConfirmPageLeave from "@/util/useConfirmPageLeave";
 import { useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
+import usePostImages from "@/hooks/usePostImages";
+import { MdDeleteForever } from "react-icons/md";
+import useDeleteImage from "@/hooks/useDeleteImage";
 
 interface LocationInfo {
   address: string;
@@ -34,6 +38,10 @@ interface LocationInfo {
   transportation: string;
   transportationNote: string;
   phoneNumber: string;
+}
+
+interface Image {
+  url: string;
 }
 
 const Write = () => {
@@ -53,6 +61,12 @@ const Write = () => {
   const [calendarView, setCalendarView] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const cacheData = queryClient.getQueryData(["accessCheck"]);
+  const imageRef = useRef<HTMLInputElement>(null);
+  const [images, setImages] = useState<Image[]>([]);
+  const { mutate: postImages, isPending: postImagesIsPending } =
+    usePostImages();
+  const { mutate: deleteImage, isPending: deleteImageIsPending } =
+    useDeleteImage();
 
   useConfirmPageLeave();
 
@@ -75,7 +89,7 @@ const Write = () => {
         title: "로그인 필요",
         text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
       });
-      router.push(`/login-ui`);
+      router.push(`/login`);
       return;
     }
     if (localStoragePlannerId) {
@@ -108,9 +122,10 @@ const Write = () => {
         title: "로그인 필요",
         text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
       });
-      router.push(`/login-ui`);
+      router.push(`/login`);
       return;
     }
+    const imageUrls = images.map((image) => image.url);
     const locationData = {
       title: title.title,
       body: html,
@@ -119,6 +134,7 @@ const Write = () => {
       latitude,
       longitude,
       plannerId: data?.id || 0,
+      images: imageUrls,
     };
     writeMutation.mutate(locationData);
   };
@@ -132,12 +148,54 @@ const Write = () => {
         title: "로그인 필요",
         text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
       });
-      router.push(`/login-ui`);
+      router.push(`/login`);
       return;
     }
     setShowModal(true);
   };
 
+  const handleImageClick = () => {
+    if (imageRef.current) {
+      imageRef.current.click();
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (
+      !file.type.includes("png") &&
+      !file.type.includes("jpg") &&
+      !file.type.includes("jpeg")
+    ) {
+      Swal.fire({
+        icon: "error",
+        title: "이미지 형식 오류",
+        text: "png 또는 jpg 형식의 이미지만 업로드 가능합니다.",
+      });
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      Swal.fire({
+        icon: "error",
+        title: "이미지 용량 초과",
+        text: "이미지 용량은 2MB 이하여야 합니다.",
+      });
+      return;
+    }
+    postImages(file, {
+      onSuccess: (data) => {
+        setImages((prev) => [...prev, { url: data.data.url }]);
+      },
+    });
+  };
+
+  const handleDeleteImage = (url: string) => {
+    setImages((prev) => prev.filter((img) => img.url !== url));
+    deleteImage(url);
+  };
+  console.log(images[0]?.url);
   const btnStyle =
     "p-1 px-3 sm:p-2 sm:px-6 border text-gray-900 hover:bg-gray-100 rounded-lg text-sm sm:text-base";
   return (
@@ -223,60 +281,56 @@ const Write = () => {
               )}
               {calendarView && (
                 <div className="space-y-5">
-                  {data?.location.map(
-                    (location: LocationInfo, index: number) => {
-                      const dateTime = fromUnixTime(location.unixTime);
+                  {data?.location.map((location: LocationInfo) => {
+                    const dateTime = fromUnixTime(location.unixTime);
 
-                      return (
-                        <div key={location.id}>
-                          <div className="flex gap-2 justify-center items-center mb-4">
-                            <FaCircleArrowDown className="text-3xl text-green-500" />
-                            <p className="text-orange-700">
-                              {formatTravelTime(location.travelTime)}
-                            </p>
+                    return (
+                      <div key={location.id}>
+                        <div className="flex gap-2 justify-center items-center mb-4">
+                          <FaCircleArrowDown className="text-3xl text-green-500" />
+                          <p className="text-orange-700">
+                            {formatTravelTime(location.travelTime)}
+                          </p>
+                        </div>
+                        <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
+                          <h2 className="font-semibold text-lg text-gray-700">
+                            {dateTime.year}년 {dateTime.month}월 {dateTime.day}
+                            일
+                          </h2>
+                          <p className="text-gray-700">
+                            {formatStartTime(dateTime.hour, dateTime.minute)}
+                            부터
+                          </p>
+                          <div className="flex gap-1 text-sm">
+                            <p>도착지 주소:</p>
+                            <p className="text-gray-500">{location.place},</p>
+                            <p className="text-gray-500">{location.address}</p>
                           </div>
-                          <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
-                            <h2 className="font-semibold text-lg text-gray-700">
-                              {dateTime.year}년 {dateTime.month}월{" "}
-                              {dateTime.day}일
-                            </h2>
-                            <p className="text-gray-700">
-                              {formatStartTime(dateTime.hour, dateTime.minute)}
-                              부터
+                          <div className="text-sm space-y-2 text-gray-900">
+                            <p>
+                              교통수단:{" "}
+                              <span className="text-gray-500">
+                                {location.transportation}
+                              </span>
                             </p>
-                            <div className="flex gap-1 text-sm">
-                              <p>도착지 주소:</p>
-                              <p className="text-gray-500">{location.place},</p>
-                              <p className="text-gray-500">
-                                {location.address}
-                              </p>
-                            </div>
-                            <div className="text-sm space-y-2 text-gray-900">
-                              <p>
-                                교통수단:{" "}
-                                <span className="text-gray-500">
-                                  {location.transportation}
-                                </span>
-                              </p>
-                              <p>
-                                교통수단 메모:{" "}
-                                <span className="text-gray-500">
-                                  {location.transportationNote}
-                                </span>
-                              </p>
-                              <p>{location.phoneNumber}</p>
-                              <p>
-                                메모:{" "}
-                                <span className="text-gray-500">
-                                  {location.memo}
-                                </span>
-                              </p>
-                            </div>
+                            <p>
+                              교통수단 메모:{" "}
+                              <span className="text-gray-500">
+                                {location.transportationNote}
+                              </span>
+                            </p>
+                            <p>{location.phoneNumber}</p>
+                            <p>
+                              메모:{" "}
+                              <span className="text-gray-500">
+                                {location.memo}
+                              </span>
+                            </p>
                           </div>
                         </div>
-                      );
-                    }
-                  )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -299,13 +353,67 @@ const Write = () => {
               setPlannerId={setPlannerId}
             />
           )}
-
+          <div className="flex flex-col gap-2">
+            <label htmlFor="image" className="text-sm sm:text-medium">
+              이미지
+              <span className="ml-3 text-sm text-gray-400">
+                이미지는 게시글 본문 최상단에 고정됩니다.
+              </span>
+            </label>
+            <input
+              ref={imageRef}
+              type="file"
+              className="hidden"
+              id="image"
+              onChange={handleImageChange}
+            />
+            <button
+              type="button"
+              onClick={handleImageClick}
+              className={btnStyle}
+              disabled={postImagesIsPending}
+            >
+              이미지 선택
+            </button>
+          </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="body" className="text-sm sm:text-medium">
               본문
             </label>
+            {images.length !== 0 || !postImagesIsPending ? (
+              <div className="flex flex-col gap-2">
+                {images.map((image) => (
+                  <div key={image.url} className="relative">
+                    <Image
+                      src={
+                        `${process.env.NEXT_PUBLIC_API_URL}files/${image.url}` as string
+                      }
+                      alt="image"
+                      width={500}
+                      height={300}
+                      sizes="100vw"
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                      }}
+                      className="rounded-md"
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full z-10"
+                      onClick={() => handleDeleteImage(image.url)}
+                    >
+                      <MdDeleteForever className="text-2xl" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <LoadingSpinner isLoading={postImagesIsPending} size={15} />
+            )}
             <QuillEditor html={html} setHtml={setHtml} />
           </div>
+
           <div className="flex justify-end gap-3">
             <button
               className={`${btnStyle} text-gray-900 hover:bg-gray-100`}
@@ -317,7 +425,11 @@ const Write = () => {
             <Button
               className={`${btnStyle} bg-[#6EB4FB] hover:bg-blue-500 text-white`}
               type="submit"
-              isLoading={writeMutation.isPending}
+              isLoading={
+                postImagesIsPending ||
+                writeMutation.isPending ||
+                deleteImageIsPending
+              }
             >
               등록
             </Button>

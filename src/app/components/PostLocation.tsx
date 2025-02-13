@@ -66,7 +66,7 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
   const [minutes, setMinutes] = useState(0);
   const [totalMinutes, setTotalMinutes] = useState(0);
   const { mutate, isPending } = usePostLocation(plannerId);
-  console.log(data);
+
   const inputFields = [
     {
       placeholder: "예시) 2호선 홍대입구역 3번 출구 10시 30분 출발 예정",

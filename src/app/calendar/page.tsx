@@ -58,18 +58,8 @@ export default function Calender() {
   const [modalData, setModalData] = useState<Planner>();
   const [showModal, setShowModal] = useState(false);
   const cacheData = queryClient.getQueryData(["accessCheck"]);
-
-  useEffect(() => {
-    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
-    if (!cacheData) {
-      Swal.fire({
-        icon: "error",
-        title: "로그인 필요",
-        text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
-      });
-      router.push(`/login-ui`);
-    }
-  }, [cacheData]);
+  const date = new Date(calValue.year, calValue.month - 1);
+  const unixTime = Math.floor(date.getTime() / 1000);
 
   const plannerQueries = useQueries({
     queries: (planners?.content ?? []).map((planner: Planner) => ({
@@ -125,7 +115,7 @@ export default function Calender() {
         title: "로그인 필요",
         text: "로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다",
       });
-      router.push(`/login-ui`);
+      router.push(`/login`);
       return;
     }
     setModalData(planner);

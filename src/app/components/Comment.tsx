@@ -381,7 +381,7 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
           </div>
         ))}
       </div>
-      {data?.totalPages !== page && (
+      {data?.totalPages !== 0 && data?.totalPages !== page ? (
         <Button
           type="button"
           className="mt-5 text-white"
@@ -391,7 +391,7 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
         >
           댓글 더보기
         </Button>
-      )}
+      ) : null}
     </div>
   );
 };

@@ -67,7 +67,7 @@ const Header = (): JSX.Element => {
           </div>
         ) : (
           <div className="flex gap-2">
-            <Link href={"/login-ui"} className={logoutLoginStyle}>
+            <Link href={"/login"} className={logoutLoginStyle}>
               로그인
             </Link>
             <Link href={"/sign-up"} className={infoSignupStyle}>

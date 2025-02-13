@@ -142,7 +142,7 @@ export default function EditPlanner({
     setLocationId(id);
     setModalState(3);
   };
-  console.log(plannerData?.location);
+
   return (
     <div className="pb-5">
       <h1 className="flex items-center gap-1 text-xl font-semibold">

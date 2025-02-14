@@ -9,7 +9,6 @@ import useSortPosts from "@/hooks/useSortPosts";
 import { useQueryClient } from "@tanstack/react-query";
 import LoadingSpinner from "./Loading";
 import ErrorShow from "./Error";
-
 import { useRouter, useSearchParams } from "next/navigation";
 
 const CardPosts = () => {

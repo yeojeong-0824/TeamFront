@@ -93,16 +93,11 @@ export default function EditPlanner({
       { ...data, personnel },
       {
         onSuccess: () => {
-          Swal.fire({
-            icon: "success",
-            title: "플랜이 성공적으로 수정되었습니다.",
-            showConfirmButton: false,
-            timer: 1500,
-          });
           queryClient.invalidateQueries({
             queryKey: ["planner", plannerData.id.toString()],
           });
           queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
+          queryClient.invalidateQueries({ queryKey: ["filterPlanner"] });
           setModalState(0);
         },
         onError: () => {
@@ -141,6 +136,7 @@ export default function EditPlanner({
           queryKey: ["planner", plannerData.id.toString()],
         });
         queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
+        queryClient.invalidateQueries({ queryKey: ["filterPlanner"] });
       },
     });
   };

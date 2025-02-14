@@ -5,7 +5,7 @@ export default async function deleteLocation(id: number) {
     `${process.env.NEXT_PUBLIC_API_URL}planners/locations/authed/${id}`,
     {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        Authorization: localStorage.getItem("accessToken"),
       },
     }
   );

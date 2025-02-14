@@ -18,6 +18,7 @@ import EditPlanner from "./EditPlanner";
 import AddLocation from "./AddLocation";
 import EditLocation from "./EditLocation";
 import { useRouter } from "next/navigation";
+import LoadingSpinner from "../Loading";
 
 interface Time {
   createTime: string;
@@ -56,16 +57,16 @@ interface ModalCalendarProps {
 export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  // const { data, isLoading } = useGetPlanner(
-  //   modalData ? modalData.id.toString() : ""
-  // );
+  const { data, isLoading } = useGetPlanner(
+    modalData ? modalData.id.toString() : ""
+  );
   const { mutate: deletePlanner, isPending: deletePlannerIsPending } =
     useDeletePlanner();
   const [modalState, setModalState] = useState(0);
   const [locationId, setLocationId] = useState<number>(0);
 
   const handleDeletePlanner = () => {
-    deletePlanner(modalData ? modalData.id.toString() : "", {
+    deletePlanner(data ? data.id.toString() : "", {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
         setShowModal(false);
@@ -83,7 +84,7 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
   };
 
   const handlePlannerPost = () => {
-    localStorage.setItem("plannerId", modalData?.id.toString() || "");
+    localStorage.setItem("plannerId", data?.id.toString() || "");
     router.push(`/write`);
   };
 
@@ -100,14 +101,14 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
           <>
             <div className="space-y-2 mb-3">
               <h1 className="text-xl font-semibold text-gray-800">
-                {modalData?.title}
+                {data?.title}
               </h1>
-              <h2 className="text-lg text-gray-500">{modalData?.subTitle}</h2>
-              <p className="text-green-500">{modalData?.personnel}명</p>
+              <h2 className="text-lg text-gray-500">{data?.subTitle}</h2>
+              <p className="text-green-500">{data?.personnel}명</p>
             </div>
-            {/* <LoadingSpinner isLoading={isLoading} size={15} /> */}
+            <LoadingSpinner isLoading={isLoading} size={15} />
             <div className="space-y-5">
-              {modalData?.location?.map((location: Location) => {
+              {data?.location?.map((location: Location) => {
                 const dateTime = fromUnixTime(location.unixTime);
 
                 return (
@@ -154,7 +155,7 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
                 );
               })}
             </div>
-            {modalData?.location?.length === 0 && (
+            {data?.location?.length === 0 && (
               <div>
                 <p className="text-gray-500 text-sm m-10 text-center">
                   해당 플랜에 일정이 아직 등록되지 않았습니다.
@@ -199,22 +200,22 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
             </div>
           </>
         )}
-        {modalState === 1 && modalData ? (
+        {modalState === 1 && (
           <EditPlanner
             setModalState={setModalState}
-            plannerData={modalData}
+            plannerData={data}
             setLocationId={setLocationId}
           />
-        ) : null}
+        )}
         {modalState === 2 && (
           <AddLocation
-            plannerId={modalData ? modalData.id.toString() : ""}
+            plannerId={data ? data.id.toString() : ""}
             setModalState={setModalState}
           />
         )}
         {modalState === 3 && (
           <EditLocation
-            plannerId={modalData ? modalData.id.toString() : ""}
+            plannerId={data ? data.id.toString() : ""}
             setModalState={setModalState}
             locationId={locationId}
           />

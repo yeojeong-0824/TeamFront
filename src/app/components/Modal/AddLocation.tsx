@@ -138,6 +138,7 @@ export default function AddLocation({
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["planner", plannerId] });
         queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
+        queryClient.invalidateQueries({ queryKey: ["filterPlanner"] });
         setModalState(0);
       },
       onError: () => {

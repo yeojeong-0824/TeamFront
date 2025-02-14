@@ -14,26 +14,33 @@ import Swal from "sweetalert2";
 import { useQueryClient } from "@tanstack/react-query";
 import useDeleteLocation from "@/hooks/calender/useDeleteLocation";
 
-interface LocationInfo {
-  address: string;
+interface Time {
+  createTime: string;
+  updateTime: string;
+}
+
+interface Location {
   id: number;
-  memo: string;
-  place: string;
-  plannerId: number;
-  travelTime: number;
   unixTime: number;
+  travelTime: number;
   transportation: string;
   transportationNote: string;
+  place: string;
+  address: string;
   phoneNumber: string;
+  memo: string;
+  plannerId: number;
+  time: Time;
 }
 
 interface Planner {
   id: number;
-  locationCount: number;
-  personnel: number;
   title: string;
+  personnel: number;
   subTitle: string;
-  location: LocationInfo[];
+  locationCount: number;
+  location: Location[];
+  time: Time;
 }
 
 interface EditPlannerProps {
@@ -86,16 +93,11 @@ export default function EditPlanner({
       { ...data, personnel },
       {
         onSuccess: () => {
-          Swal.fire({
-            icon: "success",
-            title: "플랜이 성공적으로 수정되었습니다.",
-            showConfirmButton: false,
-            timer: 1500,
-          });
           queryClient.invalidateQueries({
             queryKey: ["planner", plannerData.id.toString()],
           });
           queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
+          queryClient.invalidateQueries({ queryKey: ["filterPlanner"] });
           setModalState(0);
         },
         onError: () => {
@@ -134,6 +136,7 @@ export default function EditPlanner({
           queryKey: ["planner", plannerData.id.toString()],
         });
         queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
+        queryClient.invalidateQueries({ queryKey: ["filterPlanner"] });
       },
     });
   };
@@ -222,81 +225,71 @@ export default function EditPlanner({
           </button>
         )}
       </div>
-      {plannerData?.locationCount !== 0 && (
-        <p className="text-sm text-gray-500">
-          <span className="text-blue-500 font-semibold">
-            {plannerData?.locationCount}
-          </span>
-          개의 일정이 있습니다.
-        </p>
-      )}
       {calendarView && (
         <div className="space-y-5 mt-5">
-          {plannerData?.location.map(
-            (location: LocationInfo, index: number) => {
-              const dateTime = fromUnixTime(location?.unixTime);
+          {plannerData?.location.map((location: Location, index: number) => {
+            const dateTime = fromUnixTime(location?.unixTime);
 
-              return (
-                <div key={location.id}>
-                  <div className="flex gap-2 justify-center items-center mb-4">
-                    <FaCircleArrowDown className="text-3xl text-green-500" />
-                    <p className="text-orange-700">
-                      {formatTravelTime(location.travelTime)}
+            return (
+              <div key={location.id}>
+                <div className="flex gap-2 justify-center items-center mb-4">
+                  <FaCircleArrowDown className="text-3xl text-green-500" />
+                  <p className="text-orange-700">
+                    {formatTravelTime(location.travelTime)}
+                  </p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
+                  <h2 className="font-semibold text-lg text-gray-700">
+                    {dateTime.year}년 {dateTime.month}월 {dateTime.day}일
+                  </h2>
+                  <p className="text-gray-700">
+                    {formatStartTime(dateTime.hour, dateTime.minute)}부터
+                  </p>
+                  <div className="flex gap-1 text-sm">
+                    <p>도착지 주소:</p>
+                    <p className="text-gray-500">{location.place},</p>
+                    <p className="text-gray-500">{location.address}</p>
+                  </div>
+                  <div className="text-sm space-y-2 text-gray-900">
+                    <p>
+                      교통수단:{" "}
+                      <span className="text-gray-500">
+                        {location.transportation}
+                      </span>
+                    </p>
+                    <p>
+                      교통수단 메모:{" "}
+                      <span className="text-gray-500">
+                        {location.transportationNote}
+                      </span>
+                    </p>
+                    <p>{location.phoneNumber}</p>
+                    <p>
+                      메모:{" "}
+                      <span className="text-gray-500">{location.memo}</span>
                     </p>
                   </div>
-                  <div className="bg-gray-50 p-3 rounded-lg space-y-2 shadow-md">
-                    <h2 className="font-semibold text-lg text-gray-700">
-                      {dateTime.year}년 {dateTime.month}월 {dateTime.day}일
-                    </h2>
-                    <p className="text-gray-700">
-                      {formatStartTime(dateTime.hour, dateTime.minute)}부터
-                    </p>
-                    <div className="flex gap-1 text-sm">
-                      <p>도착지 주소:</p>
-                      <p className="text-gray-500">{location.place},</p>
-                      <p className="text-gray-500">{location.address}</p>
-                    </div>
-                    <div className="text-sm space-y-2 text-gray-900">
-                      <p>
-                        교통수단:{" "}
-                        <span className="text-gray-500">
-                          {location.transportation}
-                        </span>
-                      </p>
-                      <p>
-                        교통수단 메모:{" "}
-                        <span className="text-gray-500">
-                          {location.transportationNote}
-                        </span>
-                      </p>
-                      <p>{location.phoneNumber}</p>
-                      <p>
-                        메모:{" "}
-                        <span className="text-gray-500">{location.memo}</span>
-                      </p>
-                    </div>
-                    <div className="flex justify-end gap-2">
-                      {/* 일정 수정 */}
-                      <Button
-                        size="sm"
-                        onClick={() => handleEditLocation(location.id)}
-                      >
-                        <CiEdit className="text-xl" />
-                      </Button>
-                      {/* 일정 삭제 */}
-                      <Button
-                        size="sm"
-                        onClick={() => handleDeleteLocation(location.id)}
-                        isLoading={deleteLocationIsPending}
-                      >
-                        <CiTrash className="text-xl" />
-                      </Button>
-                    </div>
+                  <div className="flex justify-end gap-2">
+                    {/* 일정 수정 */}
+                    <Button
+                      size="sm"
+                      onClick={() => handleEditLocation(location.id)}
+                    >
+                      <CiEdit className="text-xl" />
+                    </Button>
+                    {/* 일정 삭제 */}
+                    <Button
+                      size="sm"
+                      onClick={() => handleDeleteLocation(location.id)}
+                      isLoading={deleteLocationIsPending}
+                    >
+                      <CiTrash className="text-xl" />
+                    </Button>
                   </div>
                 </div>
-              );
-            }
-          )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

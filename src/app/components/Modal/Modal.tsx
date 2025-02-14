@@ -13,32 +13,40 @@ import formatStartTime from "@/util/formatStartTime";
 import { FaCircleArrowDown } from "react-icons/fa6";
 import { CiEdit } from "react-icons/ci";
 import { MdChevronLeft } from "react-icons/md";
-import LoadingSpinner from "../Loading";
 import { useState } from "react";
 import EditPlanner from "./EditPlanner";
 import AddLocation from "./AddLocation";
 import EditLocation from "./EditLocation";
 import { useRouter } from "next/navigation";
+import LoadingSpinner from "../Loading";
+
+interface Time {
+  createTime: string;
+  updateTime: string;
+}
+
+interface Location {
+  id: number;
+  unixTime: number;
+  travelTime: number;
+  transportation: string;
+  transportationNote: string;
+  place: string;
+  address: string;
+  phoneNumber: string;
+  memo: string;
+  plannerId: number;
+  time: Time;
+}
 
 interface Planner {
   id: number;
-  locationCount: number;
-  personnel: number;
   title: string;
+  personnel: number;
   subTitle: string;
-}
-
-interface LocationInfo {
-  address: string;
-  id: number;
-  memo: string;
-  place: string;
-  plannerId: number;
-  travelTime: number;
-  unixTime: number;
-  transportation: string;
-  transportationNote: string;
-  phoneNumber: string;
+  locationCount: number;
+  location: Location[];
+  time: Time;
 }
 
 interface ModalCalendarProps {
@@ -58,7 +66,7 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
   const [locationId, setLocationId] = useState<number>(0);
 
   const handleDeletePlanner = () => {
-    deletePlanner(modalData ? modalData.id.toString() : "", {
+    deletePlanner(data ? data.id.toString() : "", {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
         setShowModal(false);
@@ -76,7 +84,7 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
   };
 
   const handlePlannerPost = () => {
-    localStorage.setItem("plannerId", modalData?.id.toString() || "");
+    localStorage.setItem("plannerId", data?.id.toString() || "");
     router.push(`/write`);
   };
 
@@ -86,7 +94,7 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
       onClick={() => setShowModal(false)}
     >
       <div
-        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 pb-0 rounded-lg w-[370px] sm:w-[700px] max-h-[625px] overflow-y-auto"
+        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 pb-0 rounded-lg w-[370px] sm:w-[700px] max-h-[625px] overflow-y-auto scrollbar-hide"
         onClick={(e) => e.stopPropagation()}
       >
         {modalState === 0 && (
@@ -100,7 +108,7 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
             </div>
             <LoadingSpinner isLoading={isLoading} size={15} />
             <div className="space-y-5">
-              {data?.location?.map((location: LocationInfo, index: number) => {
+              {data?.location?.map((location: Location) => {
                 const dateTime = fromUnixTime(location.unixTime);
 
                 return (
@@ -154,44 +162,42 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
                 </p>
               </div>
             )}
-            {!isLoading && (
-              <div className="flex justify-end gap-2 mt-3 sticky bottom-0 p-3">
-                <Button color="success" size="sm" onClick={handlePlannerPost}>
-                  게시글 작성
-                </Button>
-                <Button
-                  color="primary"
-                  size="sm"
-                  onClick={() => setModalState(2)}
-                >
-                  <div className="flex items-center">
-                    일정 추가
-                    <IoIosAdd className="text-xl font-semibold" />
-                  </div>
-                </Button>
-                <Button
-                  variant="solid"
-                  size="sm"
-                  onClick={() => setModalState(1)}
-                >
-                  <div className="flex items-center">
-                    플랜/일정 수정
-                    <CiEdit className="text-lg font-semibold" />
-                  </div>
-                </Button>
-                <Button
-                  onClick={handleDeletePlanner}
-                  isLoading={deletePlannerIsPending}
-                  variant="bordered"
-                  size="sm"
-                >
-                  <div className="flex items-center gap-1">
-                    플랜 삭제
-                    <FiMinus className="text-[16px] font-semibold" />
-                  </div>
-                </Button>
-              </div>
-            )}
+            <div className="flex justify-end gap-2 mt-3 sticky bottom-0 p-3">
+              <Button color="success" size="sm" onClick={handlePlannerPost}>
+                게시글 작성
+              </Button>
+              <Button
+                color="primary"
+                size="sm"
+                onClick={() => setModalState(2)}
+              >
+                <div className="flex items-center">
+                  일정 추가
+                  <IoIosAdd className="text-xl font-semibold" />
+                </div>
+              </Button>
+              <Button
+                variant="solid"
+                size="sm"
+                onClick={() => setModalState(1)}
+              >
+                <div className="flex items-center">
+                  플랜/일정 수정
+                  <CiEdit className="text-lg font-semibold" />
+                </div>
+              </Button>
+              <Button
+                onClick={handleDeletePlanner}
+                isLoading={deletePlannerIsPending}
+                variant="bordered"
+                size="sm"
+              >
+                <div className="flex items-center gap-1">
+                  플랜 삭제
+                  <FiMinus className="text-[16px] font-semibold" />
+                </div>
+              </Button>
+            </div>
           </>
         )}
         {modalState === 1 && (
@@ -203,13 +209,13 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
         )}
         {modalState === 2 && (
           <AddLocation
-            plannerId={modalData ? modalData.id.toString() : ""}
+            plannerId={data ? data.id.toString() : ""}
             setModalState={setModalState}
           />
         )}
         {modalState === 3 && (
           <EditLocation
-            plannerId={modalData ? modalData.id.toString() : ""}
+            plannerId={data ? data.id.toString() : ""}
             setModalState={setModalState}
             locationId={locationId}
           />

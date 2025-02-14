@@ -2,25 +2,19 @@
 
 import { Button, Calendar } from "@nextui-org/react";
 import { IoIosAdd } from "react-icons/io";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { DateValue } from "@react-types/calendar";
 import { useRouter } from "next/navigation";
 import { today, getLocalTimeZone } from "@internationalized/date";
-import useGetUserPlanners from "@/hooks/calender/useGetUserPlanners";
 import ModalCalendar from "../components/Modal/Modal";
 import LoadingSpinner from "../components/Loading";
-import getPlanner from "@/api/calender/getPlanner";
-import { useQueries } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import useFilterPlanner from "@/hooks/useFilterPlanner";
 
-interface Planner {
-  id: number;
-  locationCount: number;
-  personnel: number;
-  title: string;
-  subTitle: string;
-  location: Location[];
+interface Time {
+  createTime: string;
+  updateTime: string;
 }
 
 interface Location {
@@ -34,62 +28,41 @@ interface Location {
   phoneNumber: string;
   memo: string;
   plannerId: number;
-  time: {
-    createTime: string;
-    updateTime: string;
-  };
+  time: Time;
 }
 
-interface DetailedPlanner extends Planner {
+interface Planner {
+  id: number;
+  title: string;
+  personnel: number;
+  subTitle: string;
+  locationCount: number;
   location: Location[];
-  time: {
-    createTime: string;
-    updateTime: string;
-  };
+  time: Time;
 }
 
-export default function Calender() {
+interface FilterPlanner {
+  planner: Planner;
+}
+
+export default function CalenderPage() {
   const queryClient = useQueryClient();
   const router = useRouter();
   const [calValue, setCalValue] = useState<DateValue>(
     today(getLocalTimeZone())
   );
-  const { data: planners, isLoading } = useGetUserPlanners();
   const [modalData, setModalData] = useState<Planner>();
   const [showModal, setShowModal] = useState(false);
   const cacheData = queryClient.getQueryData(["accessCheck"]);
-  const date = new Date(calValue.year, calValue.month - 1);
-  const unixTime = Math.floor(date.getTime() / 1000);
+  const startOfMonth = new Date(calValue.year, calValue.month - 1, 1);
+  const endOfMonth = new Date(calValue.year, calValue.month, 0);
+  const startUnixTime = Math.floor(startOfMonth.getTime() / 1000);
+  const endUnixTime = Math.floor(endOfMonth.getTime() / 1000);
 
-  const plannerQueries = useQueries({
-    queries: (planners?.content ?? []).map((planner: Planner) => ({
-      queryKey: ["planner", planner.id],
-      queryFn: () => getPlanner(planner.id.toString()),
-      staleTime: 5 * 60 * 1000,
-    })),
-  });
-
-  const isAllLoading =
-    isLoading || plannerQueries.some((query) => query.isLoading);
-
-  const filteredPlanners = useMemo(() => {
-    if (!planners?.content || plannerQueries.some((query) => query.isLoading)) {
-      return [];
-    }
-
-    const selectedMonth = calValue.month;
-
-    return planners.content.filter((planner: Planner, index: number) => {
-      const detailedPlanner = plannerQueries[index].data as DetailedPlanner;
-
-      if (!detailedPlanner?.location) return false;
-
-      return detailedPlanner.location.some((loc) => {
-        const locationDate = new Date(loc.unixTime * 1000);
-        return locationDate.getMonth() + 1 === selectedMonth;
-      });
-    });
-  }, [calValue.month, planners?.content, plannerQueries]);
+  const { data: filterData, isLoading } = useFilterPlanner(
+    startUnixTime,
+    endUnixTime
+  );
 
   useEffect(() => {
     // 모달 켜졌을 때 배경 스크롤 막기
@@ -154,27 +127,31 @@ export default function Calender() {
             <IoIosAdd className="text-2xl font-semibold" />
           </div>
         </Button>
-        <LoadingSpinner isLoading={isAllLoading} size={15} mt={200} />
+        <LoadingSpinner isLoading={isLoading} size={15} mt={200} />
         <div className="space-y-5">
-          {filteredPlanners.length !== 0 &&
-            filteredPlanners.map((planner: Planner) => (
+          {filterData?.length !== 0 &&
+            filterData?.map((planner: FilterPlanner) => (
               <div
-                key={planner.id}
+                key={planner?.planner?.id}
                 className="p-3 border-2 shadow-sm rounded-lg cursor-pointer hover:bg-gray-100"
-                onClick={() => handleShowModal(planner)}
+                onClick={() => handleShowModal(planner.planner)}
               >
-                <h1 className="text-xl font-semibold">{planner.title}</h1>
-                <h2 className="text-lg">{planner.subTitle}</h2>
-                <p className="text-green-500">{planner.personnel}명</p>
+                <h1 className="text-xl font-semibold">
+                  {planner?.planner?.title}
+                </h1>
+                <h2 className="text-lg">{planner?.planner?.subTitle}</h2>
+                <p className="text-green-500">
+                  {planner?.planner?.personnel}명
+                </p>
                 <p className="text-sm text-gray-500">
                   <span className="text-blue-500 font-semibold">
-                    {filteredPlanners.length}
+                    {planner?.planner?.location?.length}
                   </span>
                   개의 일정이 있습니다.
                 </p>
               </div>
             ))}
-          {!isAllLoading && filteredPlanners.length === 0 && (
+          {!isLoading && filterData?.length === 0 && (
             <p className="text-center font-semibold text-lg text-gray-500 mt-10">
               선택한 달에 등록된 일정이 없습니다.
             </p>

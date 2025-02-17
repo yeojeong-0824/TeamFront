@@ -120,7 +120,12 @@ export default function PostLocation({ plannerId }: PostCalenderProps) {
     setTotalMinutes(hours * 60 + minutes);
   };
 
-  const routeCalender = () => router.push("/calendar");
+  const routeCalender = () => {
+    queryClient.invalidateQueries({ queryKey: ["planner"] });
+    queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
+    queryClient.invalidateQueries({ queryKey: ["filterPlanner"] });
+    router.push("/calendar");
+  };
 
   const onSubmit = (formData: FormData) => {
     const unixTime = toUnixTime({

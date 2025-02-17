@@ -181,6 +181,7 @@ export default function AditLocation({
         queryClient.invalidateQueries({
           queryKey: ["planner", plannerId.toString()],
         });
+        queryClient.invalidateQueries({ queryKey: ["planner", plannerId] });
         queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
         queryClient.invalidateQueries({ queryKey: ["filterPlanner"] });
         setModalState(0);

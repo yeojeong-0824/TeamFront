@@ -68,7 +68,9 @@ export default function Modal({ modalData, setShowModal }: ModalCalendarProps) {
   const handleDeletePlanner = () => {
     deletePlanner(data ? data.id.toString() : "", {
       onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["planner"] });
         queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
+        queryClient.invalidateQueries({ queryKey: ["filterPlanner"] });
         setShowModal(false);
       },
     });

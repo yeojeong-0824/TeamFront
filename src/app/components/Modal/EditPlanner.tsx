@@ -96,6 +96,7 @@ export default function EditPlanner({
           queryClient.invalidateQueries({
             queryKey: ["planner", plannerData.id.toString()],
           });
+          queryClient.invalidateQueries({ queryKey: ["planner"] });
           queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
           queryClient.invalidateQueries({ queryKey: ["filterPlanner"] });
           setModalState(0);
@@ -135,6 +136,7 @@ export default function EditPlanner({
         queryClient.invalidateQueries({
           queryKey: ["planner", plannerData.id.toString()],
         });
+        queryClient.invalidateQueries({ queryKey: ["planner"] });
         queryClient.invalidateQueries({ queryKey: ["userPlanners"] });
         queryClient.invalidateQueries({ queryKey: ["filterPlanner"] });
       },

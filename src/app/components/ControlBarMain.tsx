@@ -115,7 +115,7 @@ const ControlBarMain = ({
         </button>
         <button
           onClick={() => handleLoginCheck("/calendar")}
-          className={`${btnStyle} bg-pink-400 hover:bg-pink-500`}
+          className={`${btnStyle} bg-[#3D6691] hover:bg-[#2f5072]`}
         >
           <CiCalendarDate className="inline text-sm sm:text-xl" />
           캘린더

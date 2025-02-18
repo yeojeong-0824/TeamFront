@@ -5,6 +5,7 @@ import { CardPostProps } from "@/types/post";
 import { IoEyeOutline } from "react-icons/io5";
 import { FaRegCommentDots } from "react-icons/fa6";
 import formatDate from "@/util/formatDate";
+import Image from "next/image";
 
 const CardPost = ({ post }: CardPostProps): JSX.Element => {
   const titleCut = () => {
@@ -20,7 +21,7 @@ const CardPost = ({ post }: CardPostProps): JSX.Element => {
   };
 
   return (
-    <div className="p-3 border-b text-gray-900">
+    <div className="p-1 border-b text-gray-900">
       <div className="flex justify-between mb-3">
         <div className="flex items-center gap-3 text-xs sm:text-sm">
           <p>{post?.member?.nickname}</p>
@@ -38,13 +39,25 @@ const CardPost = ({ post }: CardPostProps): JSX.Element => {
           </p>
         </div>
       </div>
-
-      <Link
-        href={`/post/${post.id}`}
-        className="font-bold text-sm md:text-medium hover:text-blue-500"
-      >
-        {titleCut()}
-      </Link>
+      <div className="flex gap-3 mb-3">
+        <Link href={`/post/${post.id}`}>
+          <Image
+            alt="thumnail-image"
+            src={
+              `${process.env.NEXT_PUBLIC_API_URL}files/${post?.image}` as string
+            }
+            width={50}
+            height={50}
+            className="rounded-md"
+          />
+        </Link>
+        <Link
+          href={`/post/${post.id}`}
+          className="font-bold text-sm md:text-medium hover:text-blue-500"
+        >
+          {titleCut()}
+        </Link>
+      </div>
     </div>
   );
 };

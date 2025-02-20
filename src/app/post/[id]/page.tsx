@@ -27,6 +27,7 @@ import formatStartTime from "@/util/formatStartTime";
 import useRefetchComments from "@/hooks/useRefetchComments";
 import Image from "next/image";
 import PostBody from "@/app/components/PostBody";
+import blurImage from "@/util/blurImage";
 
 interface LocationInfo {
   address: string;
@@ -57,7 +58,6 @@ const Post = ({ params }: { params: ParamsId }) => {
   );
   const { data: refetchComments } = useRefetchComments(id.toString());
   const [calendarView, setCalendarView] = useState<boolean>(false);
-
   const cacheData = queryClient.getQueryData(["accessCheck"]);
   const { data: userInfoData, isLoading: userInfoIsLoading } = useGetUserInfo();
   const userCheck = data?.member?.nickname === userInfoData?.nickname;
@@ -205,11 +205,13 @@ const Post = ({ params }: { params: ParamsId }) => {
                       width={500}
                       height={300}
                       sizes="100vw"
+                      placeholder="blur"
+                      blurDataURL={blurImage}
                       style={{
                         width: "100%",
                         height: "auto",
                       }}
-                      className="rounded-md"
+                      className="rounded-md bg-gray-100"
                     />
                   </div>
                 ))}

@@ -6,6 +6,7 @@ import { IoEyeOutline } from "react-icons/io5";
 import { FaRegCommentDots } from "react-icons/fa6";
 import formatDate from "@/util/formatDate";
 import Image from "next/image";
+import blurImage from "@/util/blurImage";
 
 const CardPost = ({ post }: CardPostProps): JSX.Element => {
   const titleCut = () => {
@@ -48,7 +49,10 @@ const CardPost = ({ post }: CardPostProps): JSX.Element => {
             }
             width={50}
             height={50}
+            placeholder="blur"
+            blurDataURL={blurImage}
             className="rounded-md"
+            style={{ height: "50px" }}
           />
         </Link>
         <Link

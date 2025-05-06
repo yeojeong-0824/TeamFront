@@ -11,6 +11,7 @@ import LoadingSpinner from "../components/Loading";
 import { useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import useFilterPlanner from "@/hooks/useFilterPlanner";
+import useAccessCheck from "@/hooks/TokenHooks/useAccessCheck";
 
 interface Time {
   createTime: string;
@@ -53,7 +54,7 @@ export default function CalenderPage() {
   );
   const [modalData, setModalData] = useState<Planner>();
   const [showModal, setShowModal] = useState(false);
-  const cacheData = queryClient.getQueryData(["accessCheck"]);
+  const { data: cacheData, isLoading: accessCheckIsLoading } = useAccessCheck();
   const startOfMonth = new Date(calValue.year, calValue.month - 1, 1);
   const endOfMonth = new Date(calValue.year, calValue.month, 0);
   const startUnixTime = Math.floor(startOfMonth.getTime() / 1000);
@@ -82,7 +83,7 @@ export default function CalenderPage() {
   const routePostCalender = () => router.push("/post-calender");
 
   const handleShowModal = (planner: Planner) => {
-    if (!cacheData) {
+    if (!cacheData && !accessCheckIsLoading) {
       Swal.fire({
         icon: "error",
         title: "로그인 필요",
@@ -96,8 +97,8 @@ export default function CalenderPage() {
   };
 
   return (
-    <div className="min-h-[1300px] sm:my-12 p-1 sm:p-2">
-      <div className="flex flex-col justify-between max-w-[800px] gap-3 mx-auto mt-24 p-3 text-gray-900">
+    <div className="min-h-[calc(100vh-304px)] sm:min-h-[calc(100vh-294px)] mt-[63.48px] sm:mt-[90.9px] p-1 sm:p-2">
+      <div className="flex flex-col justify-between max-w-[800px] gap-3 mx-auto p-3 text-gray-900">
         <div className="flex flex-col gap-2">
           <h1 className="text-xl sm:text-3xl text-gray-700 leading-10">
             여행 일정 관리를 <span className="text-[#3D6592]">플래너</span>
@@ -152,7 +153,7 @@ export default function CalenderPage() {
               </div>
             ))}
           {!isLoading && filterData?.length === 0 && (
-            <p className="text-center font-semibold text-lg text-gray-500 mt-10">
+            <p className="text-center font-semibold text-lg text-gray-500 mt-10 min-h-[200px]">
               선택한 달에 등록된 일정이 없습니다.
             </p>
           )}

@@ -71,24 +71,26 @@ const CardPosts = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-[1300px] gap-3">
-      <ControlBarMain
-        sortOption={sortOption}
-        setSortOption={setSortOption}
-        setCurrentPage={setCurrentPage}
-      />
-      {renderNoPostsFound()}
-      <LoadingSpinner size={15} mt={400} isLoading={isLoading} />
-      {isError && <ErrorShow error={error?.message} />}
-      {data?.content.map((post: Post) => (
-        <CardPost key={post.id} post={post} />
-      ))}
+    <>
+      <div className="flex flex-col gap-3 min-h-[800px]">
+        <ControlBarMain
+          sortOption={sortOption}
+          setSortOption={setSortOption}
+          setCurrentPage={setCurrentPage}
+        />
+        {renderNoPostsFound()}
+        <LoadingSpinner size={15} mt={400} isLoading={isLoading} />
+        {isError && <ErrorShow error={error?.message} />}
+        {data?.content.map((post: Post) => (
+          <CardPost key={post.id} post={post} />
+        ))}
+      </div>
       <NavigationNumberMain
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         totalPage={totalPages}
       />
-    </div>
+    </>
   );
 };
 

@@ -41,20 +41,22 @@ const CardPost = ({ post }: CardPostProps): JSX.Element => {
         </div>
       </div>
       <div className="flex gap-3 mb-3">
-        <Link href={`/post/${post.id}`}>
-          <Image
-            alt="thumnail-image"
-            src={
-              `${process.env.NEXT_PUBLIC_API_URL}files/${post?.image}` as string
-            }
-            width={50}
-            height={50}
-            placeholder="blur"
-            blurDataURL={blurImage}
-            className="rounded-md"
-            style={{ height: "50px" }}
-          />
-        </Link>
+        {post?.image && (
+          <Link href={`/post/${post.id}`}>
+            <Image
+              alt="thumnail-image"
+              src={
+                `${process.env.NEXT_PUBLIC_API_URL}files/${post?.image}` as string
+              }
+              width={50}
+              height={50}
+              placeholder="blur"
+              blurDataURL={blurImage}
+              className="rounded-md"
+              style={{ height: "50px" }}
+            />
+          </Link>
+        )}
         <Link
           href={`/post/${post.id}`}
           className="font-bold text-sm md:text-medium hover:text-blue-500"

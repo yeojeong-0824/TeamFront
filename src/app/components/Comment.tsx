@@ -11,11 +11,11 @@ import { CommentResponse } from "@/types/comment";
 import useDelteMutation from "@/hooks/useDeleteComment";
 import useUpdateComment from "@/hooks/useUpdateComment";
 import { Rate } from "antd";
-import { useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import formatDate from "@/util/formatDate";
 import { Button } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
+import useAccessCheck from "@/hooks/TokenHooks/useAccessCheck";
 
 type CommentProps = {
   id: string;
@@ -52,9 +52,11 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
   const [updateScore, setUpdateScore] = useState<number>(0);
   const menuRefs = useRef<(HTMLDivElement | null)[]>([]);
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const queryClient = useQueryClient();
-
-  const cacheData = queryClient.getQueryData(["accessCheck"]);
+  const {
+    data: cacheData,
+    isLoading,
+    refetch: accessRefetch,
+  } = useAccessCheck();
 
   const loadMoreComments = () => {
     if (data?.totalPages === page) return;
@@ -103,9 +105,8 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
       reset();
       return;
     }
-    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
-    const cacheData = queryClient.getQueryData(["accessCheck"]);
-    if (!cacheData) {
+    accessRefetch();
+    if (!cacheData && !isLoading) {
       Swal.fire({
         icon: "error",
         title: "로그인 필요",
@@ -129,7 +130,7 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
   };
 
   const handleDeleteComment = (commentId: number) => {
-    if (!cacheData) {
+    if (!cacheData && !isLoading) {
       Swal.fire({
         icon: "error",
         title: "로그인 필요",
@@ -173,7 +174,7 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
   };
 
   const handlePostUpdate = (commentId: number) => {
-    if (!cacheData) {
+    if (!cacheData && !isLoading) {
       Swal.fire({
         icon: "error",
         title: "로그인 필요",
@@ -248,7 +249,7 @@ const Comment = ({ id, loginNickname }: CommentProps) => {
         <Textarea
           variant="underlined"
           labelPlacement="outside"
-          placeholder="여러분들의 의견을 댓글로 작성해주세요. 최대 255자 까지 작성 가능합니다."
+          placeholder="여러분들의 의견을 댓글로 작성해주세요."
           isRequired
           minRows={1}
           maxRows={10}

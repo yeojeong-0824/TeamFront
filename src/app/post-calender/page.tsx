@@ -6,19 +6,18 @@ import PostLocation from "../components/PostLocation";
 import { FaChevronLeft } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import useConfirmPageLeave from "@/util/useConfirmPageLeave";
-import { useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import useAccessCheck from "@/hooks/TokenHooks/useAccessCheck";
 
 export default function PostCalenderPage() {
-  const queryClient = useQueryClient();
   const [step, setStep] = useState(0);
   const [plannerId, setPlannerId] = useState("");
   const router = useRouter();
-  const cacheData = queryClient.getQueryData(["accessCheck"]);
+  const { data: accessCheck, isLoading, refetch } = useAccessCheck();
 
   useEffect(() => {
-    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
-    if (!cacheData) {
+    refetch();
+    if (!accessCheck && !isLoading) {
       Swal.fire({
         icon: "error",
         title: "로그인 필요",
@@ -32,8 +31,8 @@ export default function PostCalenderPage() {
   if (step === -1) router.push("/calendar");
 
   return (
-    <div className="min-h-[1300px] sm:my-12 p-1 sm:p-2">
-      <div className="flex flex-col justify-between max-w-[800px] gap-3 mx-auto mt-24 p-3 text-gray-900">
+    <div className="min-h-[calc(100vh-304px)] sm:min-h-[calc(100vh-294px)] mt-[63.48px] sm:mt-[90.9px] p-1 sm:p-2">
+      <div className="flex flex-col justify-between max-w-[800px] gap-3 mx-auto p-3 text-gray-900">
         <div className="flex flex-col gap-2">
           <h1 className="flex items-center text-xl sm:text-3xl text-gray-700 leading-10">
             <button

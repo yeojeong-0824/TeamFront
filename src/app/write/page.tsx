@@ -21,11 +21,11 @@ import formatStartTime from "@/util/formatStartTime";
 import { FaCircleArrowDown } from "react-icons/fa6";
 import PostModal from "../components/PostModal";
 import useConfirmPageLeave from "@/util/useConfirmPageLeave";
-import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import usePostImages from "@/hooks/usePostImages";
 import { MdDeleteForever } from "react-icons/md";
 import useDeleteImage from "@/hooks/useDeleteImage";
+import useAccessCheck from "@/hooks/TokenHooks/useAccessCheck";
 
 interface LocationInfo {
   address: string;
@@ -45,7 +45,6 @@ interface Image {
 }
 
 const Write = () => {
-  const queryClient = useQueryClient();
   const { register, handleSubmit } = useForm<WriteUpdateType>();
   const writeMutation = useWritePost();
   const [location, setLocation] = useState<string>("");
@@ -60,7 +59,11 @@ const Write = () => {
   const { data, isLoading } = useGetPlanner(plannerId, !!plannerId);
   const [calendarView, setCalendarView] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const cacheData = queryClient.getQueryData(["accessCheck"]);
+  const {
+    data: cacheData,
+    isLoading: accessIsLoading,
+    refetch,
+  } = useAccessCheck();
   const imageRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<Image[]>([]);
   const { mutate: postImages, isPending: postImagesIsPending } =
@@ -82,8 +85,8 @@ const Write = () => {
   }, [showModal]);
 
   useEffect(() => {
-    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
-    if (!cacheData) {
+    refetch();
+    if (!cacheData && !accessIsLoading) {
       Swal.fire({
         icon: "error",
         title: "로그인 필요",
@@ -195,17 +198,17 @@ const Write = () => {
     setImages((prev) => prev.filter((img) => img.url !== url));
     deleteImage(url);
   };
-  console.log(images[0]?.url);
+
   const btnStyle =
     "p-1 px-3 sm:p-2 sm:px-6 border text-gray-900 hover:bg-gray-100 rounded-lg text-sm sm:text-base";
   return (
     <>
-      <div className="min-h-[1100px] sm:my-12 p-2 text-gray-900">
+      <div className="min-h-[calc(100vh-304px)] sm:min-h-[calc(100vh-294px)] mt-[63.48px] sm:mt-[90.9px] p-2 text-gray-900">
         {writeMutation.isError && (
           <ErrorShow error={writeMutation.error.message} />
         )}
         <form
-          className="flex flex-col max-w-[800px] gap-8 mx-auto mt-24 p-3"
+          className="flex flex-col max-w-[800px] gap-8 mx-auto p-3"
           onSubmit={handleSubmit(onSubmitForm)}
         >
           <div className="flex flex-col gap-2">

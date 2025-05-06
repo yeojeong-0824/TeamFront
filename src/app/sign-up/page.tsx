@@ -156,8 +156,8 @@ export default function SignupDemo() {
 
   const errorStyle = "text-sm text-red-500 font-semibold";
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-1">
-      <div className="p-10 mt-10 sm:p-20 bg-white text-center shadow-md rounded-lg">
+    <div className="min-h-[calc(100vh-304px)] sm:min-h-[calc(100vh-294px)] flex items-center justify-center bg-white sm:bg-gray-100 p-1 mt-[63.48px] sm:mt-[90.9px]">
+      <div className="p-10 w-full sm:w-[500px] bg-white text-center shadow-none sm:shadow-md rounded-lg">
         <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
           회원가입
         </h3>

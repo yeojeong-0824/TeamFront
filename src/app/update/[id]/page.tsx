@@ -26,6 +26,7 @@ import usePostImages from "@/hooks/usePostImages";
 import Image from "next/image";
 import { MdDeleteForever } from "react-icons/md";
 import useDeleteImage from "@/hooks/useDeleteImage";
+import useAccessCheck from "@/hooks/TokenHooks/useAccessCheck";
 
 type SetLocalData = {
   setLocation: React.Dispatch<React.SetStateAction<string>>;
@@ -67,7 +68,7 @@ const Update = ({ params }: { params: ParamsId }) => {
   const [plannerId, setPlannerId] = useState<string>("");
   const { data: plannerData } = useGetPlanner(plannerId, !!plannerId);
   const [calendarView, setCalendarView] = useState<boolean>(false);
-  const cacheData = queryClient.getQueryData(["accessCheck"]);
+  const { data: accessCheck, isLoading: accessCheckLoading } = useAccessCheck();
   const [images, setImages] = useState<Image[]>([]);
   const imageRef = useRef<HTMLInputElement>(null);
   const { mutate: postImages, isPending: postImagesIsPending } =
@@ -140,7 +141,7 @@ const Update = ({ params }: { params: ParamsId }) => {
       });
       return;
     }
-    if (!cacheData) {
+    if (!accessCheck && !accessCheckLoading) {
       Swal.fire({
         icon: "error",
         title: "로그인 필요",

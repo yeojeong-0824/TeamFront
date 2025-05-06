@@ -51,8 +51,8 @@ export default function FindUsername() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-1">
-      <div className="p-10 sm:p-20 bg-white text-center shadow-md rounded-lg">
+    <div className="min-h-[calc(100vh-308px)] sm:min-h-[calc(100vh-298px)] mt-[63.48px] sm:mt-[90.9px] flex items-center justify-center bg-white sm:bg-gray-100 p-1 mb-1">
+      <div className="w-full sm:w-[500px] p-10 bg-white text-center shadow-none sm:shadow-md rounded-lg">
         <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
           아이디 찾기
         </h3>

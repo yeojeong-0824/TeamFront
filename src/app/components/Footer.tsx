@@ -17,7 +17,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="w-full min-h-[200px] mt-auto bg-[#2F5072] px-1">
+    <footer className="w-full min-h-[200px] bg-[#2F5072] px-1">
       <div className="max-w-[1200px] mx-auto py-6">
         <div className="flex-col items-center justify-between gap-4 md:flex md:flex-row">
           <div className="flex gap-[16px]">

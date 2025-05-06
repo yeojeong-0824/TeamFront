@@ -28,6 +28,7 @@ import useRefetchComments from "@/hooks/useRefetchComments";
 import Image from "next/image";
 import PostBody from "@/app/components/PostBody";
 import blurImage from "@/util/blurImage";
+import useAccessCheck from "@/hooks/TokenHooks/useAccessCheck";
 
 interface LocationInfo {
   address: string;
@@ -58,7 +59,11 @@ const Post = ({ params }: { params: ParamsId }) => {
   );
   const { data: refetchComments } = useRefetchComments(id.toString());
   const [calendarView, setCalendarView] = useState<boolean>(false);
-  const cacheData = queryClient.getQueryData(["accessCheck"]);
+  const {
+    data: accessCheck,
+    isLoading: accessCheckLoading,
+    refetch,
+  } = useAccessCheck();
   const { data: userInfoData, isLoading: userInfoIsLoading } = useGetUserInfo();
   const userCheck = data?.member?.nickname === userInfoData?.nickname;
 
@@ -88,8 +93,8 @@ const Post = ({ params }: { params: ParamsId }) => {
   const handleThreeDots = () => setPostOptionVisible((prev) => !prev);
 
   const handleUpdate = () => {
-    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
-    if (!cacheData) {
+    refetch();
+    if (!accessCheck && !accessCheckLoading) {
       Swal.fire({
         icon: "error",
         title: "로그인 필요",
@@ -102,8 +107,8 @@ const Post = ({ params }: { params: ParamsId }) => {
   };
 
   const handlePostDelete = () => {
-    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
-    if (!cacheData) {
+    refetch();
+    if (!accessCheck && !accessCheckLoading) {
       Swal.fire({
         icon: "error",
         title: "로그인 필요",

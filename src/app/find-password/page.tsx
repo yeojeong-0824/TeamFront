@@ -53,8 +53,8 @@ export default function FindPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-1">
-      <div className="p-10 sm:p-20 bg-white text-center shadow-md rounded-lg">
+    <div className="min-h-[calc(100vh-304px)] sm:min-h-[calc(100vh-294px)] mt-[63.48px] sm:mt-[90.9px] flex items-center justify-center bg-white sm:bg-gray-100 p-1">
+      <div className="w-full sm:w-[500px] p-10 bg-white text-center shadow-none sm:shadow-md rounded-lg">
         <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
           비밀번호 찾기
         </h3>

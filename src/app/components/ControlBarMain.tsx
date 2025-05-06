@@ -8,7 +8,7 @@ import { ControlBarMainProps } from "@/types/controlbar";
 import { Input } from "@nextui-org/react";
 import { CiSearch, CiCalendarDate } from "react-icons/ci";
 import { PiNotePencilThin } from "react-icons/pi";
-import { useQueryClient } from "@tanstack/react-query";
+import useAccessCheck from "@/hooks/TokenHooks/useAccessCheck";
 
 type FormData = {
   keyword: string;
@@ -30,7 +30,7 @@ const ControlBarMain = ({
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const queryClient = useQueryClient();
+  const { data: accessCheck, isLoading, refetch } = useAccessCheck();
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -85,9 +85,8 @@ const ControlBarMain = ({
   };
 
   const handleLoginCheck = (url: string) => {
-    queryClient.refetchQueries({ queryKey: ["accessCheck"] });
-    const updatedLoginStatus = queryClient.getQueryData(["accessCheck"]);
-    if (!updatedLoginStatus) {
+    refetch();
+    if (!accessCheck && !isLoading) {
       Swal.fire({
         icon: "error",
         title: "로그인이 필요한 서비스입니다.",

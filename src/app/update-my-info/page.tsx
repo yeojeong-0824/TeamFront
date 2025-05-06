@@ -43,7 +43,7 @@ export default function UpdateMyInfo() {
       setValue("nickname", userInfo.nickname);
       setValue("age", userInfo.age);
     }
-  }, [userInfo, checkKey]);
+  }, [userInfo, checkKey, setValue]);
 
   useEffect(() => {
     const nickname = watch("nickname");

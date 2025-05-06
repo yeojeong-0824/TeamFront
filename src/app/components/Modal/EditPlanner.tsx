@@ -73,7 +73,7 @@ export default function EditPlanner({
       setValue("title", plannerData.title);
       setValue("subTitle", plannerData.subTitle);
     }
-  }, [plannerData]);
+  }, [plannerData, setValue]);
 
   const onSubmit = (data: EditData) => {
     if (

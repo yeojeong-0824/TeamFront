@@ -25,7 +25,7 @@ const Header = (): JSX.Element => {
       localStorage.setItem("accessToken", tokenWithBearer);
       queryClient.refetchQueries({ queryKey: ["accessCheck"] });
     }
-  }, [accessCheckData, isError, isLoading]);
+  }, [accessCheckData, isError, isLoading, queryClient]);
 
   const handleLogout = () => {
     removeRefreshToken(undefined, {

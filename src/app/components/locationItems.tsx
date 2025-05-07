@@ -2,7 +2,6 @@ import { FaCircleArrowDown } from "react-icons/fa6";
 import fromUnixTime from "@/util/fromUnixTime";
 import formatStartTime from "@/util/formatStartTime";
 import formatTravelTime from "@/util/formatTravelTime";
-import LoadingSpinner from "./Loading";
 
 interface LocationInfo {
   address: string;
@@ -24,7 +23,7 @@ export default function LocationItems({
 }) {
   return (
     <div className="space-y-5">
-      {locationItems?.map((location: LocationInfo, index: number) => {
+      {locationItems?.map((location: LocationInfo) => {
         const dateTime = fromUnixTime(location.unixTime);
 
         return (

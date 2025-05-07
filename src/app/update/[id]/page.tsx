@@ -216,7 +216,7 @@ const Update = ({ params }: { params: ParamsId }) => {
           <ErrorShow error={updateMutation?.error?.message} />
         ))}
       {isLoading ? (
-        <LoadingSpinner size={15} mt={400} isLoading={true} />
+        <LoadingSpinner size={15} isLoading={true} />
       ) : (
         <form
           className="flex flex-col max-w-[800px] gap-8 mx-auto mt-24 p-3"

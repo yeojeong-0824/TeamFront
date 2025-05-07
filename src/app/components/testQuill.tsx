@@ -40,7 +40,7 @@ const QuillNoSSRWrapper = dynamic(
     );
     return Quill;
   },
-  { loading: () => <LoadingSpinner size={15} mt={400} isLoading />, ssr: false }
+  { loading: () => <LoadingSpinner size={15} isLoading />, ssr: false }
 );
 
 interface ReactQuillProps {

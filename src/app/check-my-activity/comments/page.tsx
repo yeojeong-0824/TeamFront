@@ -55,7 +55,7 @@ function CheckMyActivityComment() {
   return (
     <div>
       {renderNoPostsFound()}
-      <LoadingSpinner size={15} mt={400} isLoading={isLoading} />
+      <LoadingSpinner size={15} isLoading={isLoading} />
       {isError && <ErrorShow error={error?.message} />}
       {data?.content.map((comment: any) => (
         <CommentCardPost key={comment.id} comment={comment} />

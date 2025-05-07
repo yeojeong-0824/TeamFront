@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { ParmasKeyword } from "@/types/search";
 import { Post } from "@/types/post";
@@ -19,25 +19,31 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
 
-  const initialPage = parseInt(searchParams.get('page') || '1', 10);
-  const initialSortOption = searchParams.get('sort') || 'latest';
+  const initialPage = parseInt(searchParams.get("page") || "1", 10);
+  const initialSortOption = searchParams.get("sort") || "latest";
 
   const keyword = decodeURIComponent(params.keyword);
   const [currentPage, setCurrentPage] = useState<number>(initialPage);
   const [sortOption, setSortOption] = useState<string>(initialSortOption);
 
-  const { data, isLoading, isError, error } = useSearch(keyword, currentPage, sortOption);
+  const { data, isLoading, isError, error } = useSearch(
+    keyword,
+    currentPage,
+    sortOption
+  );
 
   const totalPages = data?.totalPages;
 
   useEffect(() => {
     router.push(`?page=${currentPage}&sort=${sortOption}`);
-    queryClient.invalidateQueries({ queryKey: ['sortPosts', currentPage, sortOption] });
+    queryClient.invalidateQueries({
+      queryKey: ["sortPosts", currentPage, sortOption],
+    });
   }, [currentPage, sortOption, queryClient, router]);
 
   useEffect(() => {
-    const page = parseInt(searchParams.get('page') || '1', 10);
-    const sort = searchParams.get('sort') || 'latest';
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const sort = searchParams.get("sort") || "latest";
     setCurrentPage(page);
     setSortOption(sort);
   }, [searchParams]);
@@ -50,7 +56,7 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
         </p>
       </div>
     );
-  };
+  }
 
   const renderNoPostsFound = () => {
     if (data?.content.length === 0) {
@@ -59,9 +65,14 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
           <p className="text-2xl font-bold text-gray-900">
             게시글이 존재하지 않습니다.
           </p>
-          <Link href={'/'} className="text-xl font-bold text-blue-500 hover:text-blue-600">돌아가기</Link>
+          <Link
+            href={"/"}
+            className="text-xl font-bold text-blue-500 hover:text-blue-600"
+          >
+            돌아가기
+          </Link>
         </div>
-      )
+      );
     }
   };
 
@@ -69,16 +80,19 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
     <>
       <div className="flex flex-col relative max-w-[800px] min-h-[1100px] gap-3 mx-auto sm:mt-10 p-2">
         <div className="flex flex-col gap-3 mt-10">
-          <ControlBarMain sortOption={sortOption}
+          <ControlBarMain
+            sortOption={sortOption}
             setSortOption={setSortOption}
-            setCurrentPage={setCurrentPage} />
-          <LoadingSpinner size={15} mt={400} isLoading={isLoading} />
+            setCurrentPage={setCurrentPage}
+          />
+          <LoadingSpinner size={15} isLoading={isLoading} />
           {isError && <ErrorShow error={error} />}
           {renderNoPostsFound()}
           {data?.content.map((post: Post) => (
             <CardPost key={post.id} post={post} />
           ))}
-          <NavigationNumberMain currentPage={currentPage}
+          <NavigationNumberMain
+            currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             totalPage={totalPages}
           />
@@ -86,6 +100,6 @@ const SearchPage = ({ params }: { params: ParmasKeyword }) => {
       </div>
     </>
   );
-}
+};
 
 export default SearchPage;

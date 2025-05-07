@@ -132,7 +132,7 @@ const Post = ({ params }: { params: ParamsId }) => {
 
   return (
     <div className="min-h-[1300px] sm:my-12 p-1 sm:p-2">
-      <LoadingSpinner size={15} mt={400} isLoading={isLoading} />
+      <LoadingSpinner size={15} isLoading={isLoading} />
       {isError && <ErrorShow error={error?.message} />}
       {isSuccess && (
         <div className="flex flex-col justify-between max-w-[800px] gap-3 mx-auto mt-24 p-3 text-gray-900">

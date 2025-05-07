@@ -6,9 +6,7 @@ export default function Board_main() {
   return (
     <div>
       <main className="relative max-w-[800px] min-h-[calc(100vh-280px)] mx-auto mt-10 sm:mt-20 p-2 sm:min-h-[calc(100vh-283px)]">
-        <Suspense
-          fallback={<LoadingSpinner size={15} mt={400} isLoading={true} />}
-        >
+        <Suspense fallback={<></>}>
           <CardPosts />
         </Suspense>
       </main>

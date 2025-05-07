@@ -128,7 +128,7 @@ export default function CalenderPage() {
             <IoIosAdd className="text-2xl font-semibold" />
           </div>
         </Button>
-        <LoadingSpinner isLoading={isLoading} size={15} mt={200} />
+        <LoadingSpinner isLoading={isLoading} size={15} />
         <div className="space-y-5">
           {filterData?.length !== 0 &&
             filterData?.map((planner: FilterPlanner) => (

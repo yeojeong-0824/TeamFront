@@ -109,7 +109,7 @@ export default function PostModal({
               onChange={setCalValue}
             />
           </div>
-          <LoadingSpinner isLoading={isLoading} size={15} mt={100} />
+          <LoadingSpinner isLoading={isLoading} size={15} />
           <div className="space-y-5">
             {filterData?.length !== 0 &&
               filterData?.map((planner: FilterPlanner) => (

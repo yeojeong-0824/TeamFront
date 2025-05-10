@@ -8,8 +8,8 @@ export default function CheckMyInfo() {
   const { data, error, isLoading } = useGetUserInfo();
 
   return (
-    <div className="bg-gray-100 flex items-center justify-center min-h-[calc(100vh-304px)] sm:min-h-[calc(100vh-294px)] mt-[63.48px] sm:mt-[90.9px]">
-      <div className="max-w-md w-full bg-white shadow-md rounded-lg overflow-hidden">
+    <div className="bg-white sm:bg-gray-100 flex items-center justify-center min-h-[calc(100vh-304px)] sm:min-h-[calc(100vh-294px)] mt-[63.48px] sm:mt-[90.9px]">
+      <div className="max-w-md w-full bg-white shadow-none sm:shadow-md rounded-lg overflow-hidden">
         <div className="p-6">
           <div className="mb-12">
             <h2 className="text-2xl font-semibold text-gray-800 mt-2">

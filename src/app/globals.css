@@ -4,7 +4,7 @@
 
 @layer components {
   .custom-html-content {
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: "Noto Sans KR", sans-serif;
     font-size: 16px;
     line-height: 1.5;
   }
@@ -41,7 +41,13 @@
 
   .custom-html-content blockquote {
     padding: 1rem;
-    border-left: 4px solid #CCCCCC;
+    border-left: 4px solid #cccccc;
+  }
+
+  .custom-html-content iframe {
+    width: 100%;
+    min-height: 450px;
+    border-radius: 15px;
   }
 }
 

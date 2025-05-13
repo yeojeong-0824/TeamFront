@@ -5,11 +5,11 @@ import LoadingSpinner from "./components/Loading";
 export default function Board_main() {
   return (
     <div>
-      <main className="relative max-w-[800px] min-h-[1300px] mx-auto mt-10 sm:mt-20 p-2">
-          <Suspense fallback={<LoadingSpinner size={15} mt={400} isLoading={true} />}>
-            <CardPosts />
-          </Suspense>
+      <main className="relative max-w-[800px] min-h-[calc(100vh-280px)] mx-auto mt-10 sm:mt-20 p-2 sm:min-h-[calc(100vh-283px)]">
+        <Suspense fallback={<></>}>
+          <CardPosts />
+        </Suspense>
       </main>
     </div>
   );
-};
+}

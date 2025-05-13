@@ -1,6 +1,7 @@
 export type ParamsId = { id: number };
 
 export type Post = {
+  image: string;
   avgScore: number;
   commentCount: number;
   formattedAddress: string;
@@ -11,14 +12,14 @@ export type Post = {
   member: {
     id: number;
     nickname: string;
-  }
+  };
   title: string;
   view: number;
   time: {
     createTime: string;
     updateTime: string;
-  }
-}
+  };
+};
 
 export interface CardPostProps {
   post: Post;

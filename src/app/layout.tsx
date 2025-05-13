@@ -20,6 +20,13 @@ declare global {
   }
 }
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: "no",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -36,11 +43,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <QueryProvider>
           <NextUIProvider>
-            <div className="flex flex-col min-h-screen">
-              <Header />
-              <div className="flex-grow">{children}</div>
-              <Footer />
-            </div>
+            <Header />
+            <div>{children}</div>
+            <Footer />
           </NextUIProvider>
         </QueryProvider>
       </body>

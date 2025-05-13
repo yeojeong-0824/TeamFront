@@ -1,11 +1,14 @@
 import axios from "axios";
 
 export const accessCheck = async () => {
-  const response = await axios(`${process.env.NEXT_PUBLIC_API_URL}token/access`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+  const response = await axios(
+    `${process.env.NEXT_PUBLIC_API_URL}tokens/access`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+      withCredentials: true,
     }
-  });
+  );
   return response;
 };
-

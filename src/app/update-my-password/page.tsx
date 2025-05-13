@@ -1,77 +1,82 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-
-import { url } from '../store';
+import { Button, Input } from "@nextui-org/react";
+import { useForm } from "react-hook-form";
+import { ErrorMessage } from "@hookform/error-message";
+import { passwordV, passwordConfirmV } from "../validationRules";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import CheckPasswordModal from "../components/CheckPasswordModal";
+import useUpdateUserPassword from "@/hooks/userHooks/useUpdateUserPassword";
+import { UpdateUserPassword } from "@/types/userTypes/updateInfo";
 
 export default function UpdateMyPassword() {
-    const router = useRouter();
+  const router = useRouter();
+  const [checkKey, setCheckKey] = useState(false);
 
-    const [updateData, setUpdateData] = useState({
-      newPassword: "",
-      password: ""
-    })
-  
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      setUpdateData({
-        ...updateData,
-        [name]: value
-      });
-    };
-  
-    // jwt 만료 되었을 때 설정을 안해줬습니다! api 요청에서 리팩토링이 필요해 보여서 jwt 토큰이 만료 안된 상황만 처리했습니다.
-    async function patchMember() {
-        try {
-            const response = await fetch(`${url}/member/authed/password`, {
-                method: "PATCH",
-                headers: {
-                    'Authorization': `${localStorage.getItem("accessToken")}`,
-                    'Content-Type': 'application/json' // 데이터 형식 설정
-                },
-                body: JSON.stringify(updateData)})
-            if (response.status === 200) {
-                alert("비밀번호가 수정되었습니다")
-                router.push('/check-my-info'); // 로그인 페이지로 리다이렉트
-            }
-            else if (response.status === 400) {
-                alert("입력값을 확인해주세요");
-            }
-        } catch (error) {
-            alert(error);
-        }
-    }
-  
-    return (
-        <div className = "h-screen flex items-center justify-center bg-gray-100">
-            <div className="bg-white w-full py-20 px-4 text-center border-1 border-gray-300 max-w-md shadow-md rounded-lg overflow-hidden">
-                <h3 className="text-3xl text-gray-800 font-semibold">비밀번호 수정</h3>
-                <div className="flex flex-col mt-5 px-5">
-                    <input
-                    placeholder ="NEW PASSWORD"
-                    className="bg-white focus:outline-none border-1 focus:border-opacity-50 focus:border-gray-300 mb-3 py-3 px-5 rounded-lg"
-                    type="password"
-                    id="newPassword"
-                    name="newPassword"
-                    value={updateData.newPassword}
-                    onChange={handleChange}
-                    required/>
-                    <input
-                    placeholder ="PASSWORD"
-                    type="password"
-                    className="bg-white focus:outline-none border-1 focus:border-opacity-50 focus:border-gray-300 py-3 px-5 rounded-lg"
-                    id="password"
-                    name="password"
-                    value={updateData.password}
-                    onChange={handleChange}
-                    required/>
-                    
-                    <button className='py-3 px-5 text-white bg-[#6EB4FB] mt-3 text-lg rounded-lg focus:outline-none hover:opacity-90 hover:bg-blue-500' onClick={patchMember}>
-                        비밀번호 수정
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UpdateUserPassword>({
+    mode: "onChange", // 입력 값이 변경될 때마다 유효성 검사
+    reValidateMode: "onChange", // 입력 값이 변경될 때마다 유효성 검사
+  });
+
+  const { mutate, isPending } = useUpdateUserPassword();
+
+  const onSubmit = (updateData: UpdateUserPassword) => {
+    if (!updateData) return;
+
+    mutate(updateData, {
+      onSuccess: () => {
+        router.back();
+      },
+    });
+  };
+
+  const errorStyle = "text-sm text-red-500 font-semibold";
+  return (
+    <div className="min-h-[calc(100vh-304px)] sm:min-h-[calc(100vh-294px)] mt-[63.48px] sm:mt-[90.9px] flex items-center justify-center bg-white sm:bg-gray-100 p-1">
+      {!checkKey && <CheckPasswordModal setCheckKey={setCheckKey} />}
+      <div className="p-10 mt-10 sm:p-20 bg-white text-center shadow-none sm:shadow-md rounded-lg max-w-[400px]">
+        <h3 className="text-xl sm:text-2xl text-gray-800 font-semibold mb-5">
+          새로운 비밀번호
+        </h3>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-5 mt-5"
+        >
+          {/* 비밀번호 입력&에러메세지 */}
+          <Input
+            type="password"
+            variant="underlined"
+            label="비밀번호"
+            {...register("password")}
+          />
+          <ErrorMessage
+            errors={errors}
+            name="password"
+            render={({ message }) => <p className={errorStyle}>{message}</p>}
+          />
+          {/* 비밀번호 확인 입력&에러메세지 */}
+          <Input
+            type="password"
+            variant="underlined"
+            label="비밀번호 확인"
+            {...register("checkPassword")}
+          />
+          <ErrorMessage
+            errors={errors}
+            name="checkPassword"
+            render={({ message }) => <p className={errorStyle}>{message}</p>}
+          />
+          {/* 비밀번호 변경 버튼 */}
+          <Button color="primary" variant="bordered" type="submit">
+            비밀번호 변경
+          </Button>
+        </form>
+      </div>
+    </div>
+  );
 }
